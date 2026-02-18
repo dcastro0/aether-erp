@@ -1,0 +1,20 @@
+# Arquivos de Sistema
+.DS_Store
+Thumbs.db
+
+# Backend
+backend/.env
+backend/tmp/
+backend/bin/
+backend/main  # Binário compilado
+backend/coverage.out
+
+# Frontend
+frontend/node_modules/
+frontend/dist/
+frontend/.env
+frontend/.env.local
+frontend/npm-debug.log*
+frontend/yarn-debug.log*
+frontend/yarn-error.log*
+frontend/pnpm-debug.log*
