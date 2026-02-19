@@ -9,6 +9,7 @@ import (
 
 	"github.com/caio/aether-backend/internal/auth"
 	"github.com/caio/aether-backend/internal/customers"
+	"github.com/caio/aether-backend/internal/dashboard"
 	"github.com/caio/aether-backend/internal/orders"
 	"github.com/caio/aether-backend/internal/products"
 	jwtware "github.com/gofiber/contrib/jwt"
@@ -56,6 +57,11 @@ func main() {
 	orderService := orders.NewService(dbPool)
   orderHandler := orders.NewHandler(orderService)
 
+	dashboardService := dashboard.NewService(dbPool)
+	dashboardHandler := dashboard.NewHandler(dashboardService)
+
+
+
 	app := fiber.New(fiber.Config{
 		AppName:       "Aether ERP",
 		CaseSensitive: true,
@@ -88,6 +94,10 @@ func main() {
 
 	protected := api.Group("/protected")
 
+	profileGroup := protected.Group("/profile")
+	profileGroup.Put("/", authHandler.UpdateProfile)
+	profileGroup.Put("/password", authHandler.UpdatePassword)
+
 	productsGroup := protected.Group("/products")
 	productsGroup.Post("/", productHandler.Create)
 	productsGroup.Get("/", productHandler.List)
@@ -102,6 +112,9 @@ func main() {
   ordersGroup.Post("/", orderHandler.Create)
   ordersGroup.Get("/", orderHandler.List)
 	ordersGroup.Get("/:id", orderHandler.GetDetails)
+
+	dashboardGroup := protected.Group("/dashboard")
+	dashboardGroup.Get("/metrics", dashboardHandler.GetMetrics)
 
 	go func() {
 		port := os.Getenv("PORT")

@@ -18,6 +18,7 @@ import {
 } from "lucide-react";
 import { DashboardLayout } from "../components/DashboardLayout";
 import { api, type Product, type CreateProductDTO } from "../lib/api";
+import { exportToCSV } from "../lib/export";
 
 const productSchema = z.object({
   name: z.string().min(3, "Nome deve ter no mínimo 3 caracteres"),
@@ -76,6 +77,25 @@ export default function ProductsPage() {
     createMutation.mutate(data);
   };
 
+  const handleExport = () => {
+    if (!products) return;
+
+    exportToCSV(
+      products,
+      [
+        { header: "Nome", accessor: (p) => p.name },
+        { header: "SKU", accessor: (p) => p.sku || "" },
+        { header: "Preço", accessor: (p) => p.price },
+        { header: "Estoque", accessor: (p) => p.stock_quantity },
+        {
+          header: "Status",
+          accessor: (p) => (p.is_active ? "Ativo" : "Inativo"),
+        },
+      ],
+      "relatorio_produtos",
+    );
+  };
+
   const metrics = useMemo(() => {
     if (!products) return { totalValue: 0, lowStock: 0, totalItems: 0 };
     return {
@@ -107,7 +127,10 @@ export default function ProductsPage() {
             </p>
           </div>
           <div className="flex gap-3">
-            <button className="flex items-center gap-2 rounded-lg border border-slate-200 bg-white px-4 py-2 text-sm font-medium text-slate-700 hover:bg-slate-50 shadow-sm transition-all">
+            <button
+              onClick={handleExport}
+              className="flex items-center gap-2 rounded-lg border border-slate-200 bg-white px-4 py-2 text-sm font-medium text-slate-700 hover:bg-slate-50 shadow-sm transition-all"
+            >
               <Download size={16} />
               Exportar
             </button>
@@ -380,7 +403,7 @@ export default function ProductsPage() {
                         step="0.01"
                         {...register("price")}
                         className="block w-full rounded-lg border-slate-200 bg-slate-50 pl-9 pr-4 py-2.5 text-sm text-slate-900 focus:border-blue-500 focus:bg-white focus:ring-blue-500 transition-all"
-                        placeholder="0,00"
+                        placeholder="0.00"
                       />
                     </div>
                     {errors.price && (

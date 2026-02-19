@@ -28,3 +28,12 @@ type LoginResponse struct {
 	AccessToken string       `json:"access_token"`
 	User        UserResponse `json:"user"`
 }
+
+type UpdateProfileRequest struct {
+	FullName string `json:"full_name" validate:"required"`
+}
+
+type UpdatePasswordRequest struct {
+	CurrentPassword string `json:"current_password" validate:"required"`
+	NewPassword     string `json:"new_password" validate:"required,min=6"`
+}

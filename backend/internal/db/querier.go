@@ -20,6 +20,7 @@ type Querier interface {
 	CreateRefreshToken(ctx context.Context, arg CreateRefreshTokenParams) (pgtype.UUID, error)
 	CreateUser(ctx context.Context, arg CreateUserParams) (CreateUserRow, error)
 	DeleteCustomer(ctx context.Context, arg DeleteCustomerParams) error
+	GetDashboardMetrics(ctx context.Context, dollar_1 pgtype.UUID) (GetDashboardMetricsRow, error)
 	GetOrderItems(ctx context.Context, orderID pgtype.UUID) ([]GetOrderItemsRow, error)
 	GetOrganizationBySlug(ctx context.Context, slug string) (Organization, error)
 	GetProductMetrics(ctx context.Context, organizationID pgtype.UUID) (GetProductMetricsRow, error)
@@ -31,6 +32,8 @@ type Querier interface {
 	ListProducts(ctx context.Context, organizationID pgtype.UUID) ([]Product, error)
 	UpdateCustomer(ctx context.Context, arg UpdateCustomerParams) (Customer, error)
 	UpdateProductStock(ctx context.Context, arg UpdateProductStockParams) error
+	UpdateUserName(ctx context.Context, arg UpdateUserNameParams) (UpdateUserNameRow, error)
+	UpdateUserPassword(ctx context.Context, arg UpdateUserPasswordParams) error
 }
 
 var _ Querier = (*Queries)(nil)

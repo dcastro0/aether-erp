@@ -79,6 +79,13 @@ export interface OrderDetails {
   items: OrderItem[];
 }
 
+export interface DashboardMetrics {
+  total_revenue: number;
+  sales_count: number;
+  customers_count: number;
+  low_stock_count: number;
+}
+
 export const api = {
   baseUrl: "http://localhost:3000/api",
 
@@ -110,6 +117,20 @@ export const api = {
   async post<T>(endpoint: string, data: unknown): Promise<T> {
     const res = await fetch(`${this.baseUrl}${endpoint}`, {
       method: "POST",
+      headers: this._getHeaders(),
+      body: JSON.stringify(data),
+    });
+
+    if (!res.ok) {
+      const errorData = await res.json().catch(() => ({}));
+      throw new Error(errorData.error || "Erro na requisição");
+    }
+
+    return res.json();
+  },
+  async put<T>(endpoint: string, data: unknown): Promise<T> {
+    const res = await fetch(`${this.baseUrl}${endpoint}`, {
+      method: "PUT",
       headers: this._getHeaders(),
       body: JSON.stringify(data),
     });

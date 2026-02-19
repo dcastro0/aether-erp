@@ -10,6 +10,7 @@ import (
 	"github.com/golang-jwt/jwt/v5"
 	"github.com/google/uuid"
 	"github.com/jackc/pgx/v5"
+	"github.com/jackc/pgx/v5/pgtype"
 	"github.com/jackc/pgx/v5/pgxpool"
 	"github.com/rs/zerolog/log"
 	"golang.org/x/crypto/bcrypt"
@@ -71,7 +72,7 @@ func (s *Service) Login(ctx context.Context, req LoginRequest) (LoginResponse, e
 
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{
 		"sub": uuid.UUID(user.ID.Bytes).String(),
-		"exp": time.Now().Add(time.Hour * 24).Unix(), // 24 horas
+		"exp": time.Now().Add(time.Hour * 24).Unix(),
 	})
 
 	tokenString, err := token.SignedString([]byte(os.Getenv("JWT_SECRET")))
@@ -79,9 +80,6 @@ func (s *Service) Login(ctx context.Context, req LoginRequest) (LoginResponse, e
 		log.Error().Err(err).Msg("failed to sign token")
 		return LoginResponse{}, errors.New("could not generate token")
 	}
-
-	// Opcional: Aqui poderíamos salvar o Refresh Token no banco usando s.q.CreateRefreshToken
-	// Vamos manter simples por agora e retornar apenas o Access Token
 
 	return LoginResponse{
 		AccessToken: tokenString,
@@ -92,4 +90,33 @@ func (s *Service) Login(ctx context.Context, req LoginRequest) (LoginResponse, e
 			CreatedAt: user.CreatedAt.Time,
 		},
 	}, nil
+}
+
+func (s *Service) UpdateProfile(ctx context.Context, userID uuid.UUID, req UpdateProfileRequest) (db.UpdateUserNameRow, error) {
+	return s.q.UpdateUserName(ctx, db.UpdateUserNameParams{
+		ID:       pgtype.UUID{Bytes: userID, Valid: true},
+		FullName: req.FullName,
+	})
+}
+
+func (s *Service) UpdatePassword(ctx context.Context, userID uuid.UUID, req UpdatePasswordRequest) error {
+	user, err := s.q.GetUserByID(ctx, pgtype.UUID{Bytes: userID, Valid: true})
+	if err != nil {
+		return errors.New("utilizador não encontrado")
+	}
+
+	err = bcrypt.CompareHashAndPassword([]byte(user.PasswordHash), []byte(req.CurrentPassword))
+	if err != nil {
+		return errors.New("palavra-passe atual incorreta")
+	}
+
+	hashedPassword, err := bcrypt.GenerateFromPassword([]byte(req.NewPassword), bcrypt.DefaultCost)
+	if err != nil {
+		return err
+	}
+
+	return s.q.UpdateUserPassword(ctx, db.UpdateUserPasswordParams{
+		ID:           pgtype.UUID{Bytes: userID, Valid: true},
+		PasswordHash: string(hashedPassword),
+	})
 }
