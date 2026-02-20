@@ -18,16 +18,30 @@ type CreateOrderItemDTO struct {
 }
 
 type CreateOrderRequest struct {
-	CustomerID uuid.UUID          `json:"customer_id" validate:"required"`
-	Items      []CreateOrderItemDTO `json:"items" validate:"required,min=1"`
+	CustomerID    uuid.UUID            `json:"customer_id" validate:"required"`
+	PaymentMethod string               `json:"payment_method" validate:"required"`
+	Items         []CreateOrderItemDTO `json:"items" validate:"required,min=1"`
 }
 
 type OrderResponse struct {
-	ID           uuid.UUID `json:"id"`
-	CustomerName string    `json:"customer_name"`
-	TotalAmount  string    `json:"total_amount"`
-	Status       string    `json:"status"`
-	CreatedAt    string    `json:"created_at"`
+	ID            uuid.UUID `json:"id"`
+	CustomerName  string    `json:"customer_name"`
+	TotalAmount   string    `json:"total_amount"`
+	Status        string    `json:"status"`
+	PaymentMethod string    `json:"payment_method"`
+	CreatedAt     string    `json:"created_at"`
+}
+
+type OrderItemResponse struct {
+	ProductName string  `json:"product_name"`
+	Quantity    int     `json:"quantity"`
+	UnitPrice   float64 `json:"unit_price"`
+	TotalPrice  float64 `json:"total_price"`
+}
+
+type OrderDetailsResponse struct {
+	OrderResponse
+	Items []OrderItemResponse `json:"items"`
 }
 
 type Service struct {
@@ -49,7 +63,6 @@ func (s *Service) Create(ctx context.Context, orgID uuid.UUID, req CreateOrderRe
 
 	qtx := db.New(s.db).WithTx(tx)
 
-	// 1. Calcular total
 	var totalAmount float64
 	for _, item := range req.Items {
 		totalAmount += item.UnitPrice * float64(item.Quantity)
@@ -58,20 +71,18 @@ func (s *Service) Create(ctx context.Context, orgID uuid.UUID, req CreateOrderRe
 	totalNumeric := pgtype.Numeric{}
 	totalNumeric.Scan(fmt.Sprintf("%.2f", totalAmount))
 
-	// 2. Criar Header do Pedido
-	order, err := qtx.CreateOrder(ctx, db.CreateOrderParams{
+	orderID, err := qtx.CreateOrder(ctx, db.CreateOrderParams{
 		OrganizationID: pgtype.UUID{Bytes: orgID, Valid: true},
 		CustomerID:     pgtype.UUID{Bytes: req.CustomerID, Valid: true},
 		TotalAmount:    totalNumeric,
 		Status:         "completed",
+		PaymentMethod:  req.PaymentMethod,
 	})
 	if err != nil {
 		return err
 	}
 
-	// 3. Processar Itens e Baixar Estoque
 	for _, item := range req.Items {
-		// Baixar Estoque
 		err := qtx.UpdateProductStock(ctx, db.UpdateProductStockParams{
 			ID:            pgtype.UUID{Bytes: item.ProductID, Valid: true},
 			StockQuantity: int32(item.Quantity),
@@ -83,13 +94,12 @@ func (s *Service) Create(ctx context.Context, orgID uuid.UUID, req CreateOrderRe
 		itemTotal := item.UnitPrice * float64(item.Quantity)
 		itemTotalNumeric := pgtype.Numeric{}
 		itemTotalNumeric.Scan(fmt.Sprintf("%.2f", itemTotal))
-		
+
 		unitPriceNumeric := pgtype.Numeric{}
 		unitPriceNumeric.Scan(fmt.Sprintf("%.2f", item.UnitPrice))
 
-		// Criar Item
 		_, err = qtx.CreateOrderItem(ctx, db.CreateOrderItemParams{
-			OrderID:    order.ID,
+			OrderID:    orderID,
 			ProductID:  pgtype.UUID{Bytes: item.ProductID, Valid: true},
 			Quantity:   int32(item.Quantity),
 			UnitPrice:  unitPriceNumeric,
@@ -114,53 +124,35 @@ func (s *Service) List(ctx context.Context, orgID uuid.UUID) ([]OrderResponse, e
 	for _, r := range rows {
 		val, _ := r.TotalAmount.Float64Value()
 		orders = append(orders, OrderResponse{
-			ID:           uuid.UUID(r.ID.Bytes),
-			CustomerName: r.CustomerName,
-			TotalAmount:  fmt.Sprintf("%.2f", val.Float64),
-			Status:       r.Status,
-			CreatedAt:    r.CreatedAt.Time.Format("2006-01-02"),
+			ID:            uuid.UUID(r.ID.Bytes),
+			CustomerName:  r.CustomerName,
+			TotalAmount:   fmt.Sprintf("%.2f", val.Float64),
+			Status:        r.Status,
+			PaymentMethod: r.PaymentMethod,
+			CreatedAt:     r.CreatedAt.Time.Format("2006-01-02"),
 		})
 	}
 
 	return orders, nil
 }
-// ... (outros structs)
 
-type OrderItemResponse struct {
-	ProductName string  `json:"product_name"`
-	Quantity    int     `json:"quantity"`
-	UnitPrice   float64 `json:"unit_price"`
-	TotalPrice  float64 `json:"total_price"`
-}
-
-type OrderDetailsResponse struct {
-	OrderResponse
-	Items []OrderItemResponse `json:"items"`
-}
-
-// ... (métodos Create e List existentes)
-
-// Adicione este método novo:
 func (s *Service) GetDetails(ctx context.Context, orderID uuid.UUID) (OrderDetailsResponse, error) {
 	q := db.New(s.db)
 
-	// 1. Buscar os itens do pedido
 	rows, err := q.GetOrderItems(ctx, pgtype.UUID{Bytes: orderID, Valid: true})
 	if err != nil {
 		return OrderDetailsResponse{}, err
 	}
-    
-    // Se não tiver itens, pode ser que o pedido não exista ou esteja vazio (raro)
-    if len(rows) == 0 {
-        return OrderDetailsResponse{}, errors.New("pedido não encontrado ou sem itens")
-    }
 
-	// 2. Montar a resposta
+	if len(rows) == 0 {
+		return OrderDetailsResponse{}, errors.New("pedido não encontrado ou sem itens")
+	}
+
 	var items []OrderItemResponse
 	for _, r := range rows {
 		unitPrice, _ := r.UnitPrice.Float64Value()
 		totalPrice, _ := r.TotalPrice.Float64Value()
-		
+
 		items = append(items, OrderItemResponse{
 			ProductName: r.ProductName,
 			Quantity:    int(r.Quantity),
@@ -169,10 +161,6 @@ func (s *Service) GetDetails(ctx context.Context, orderID uuid.UUID) (OrderDetai
 		})
 	}
 
-    // Nota: Para simplificar, não busquei o Header do pedido de novo (Customer Name, etc) 
-    // porque geralmente o frontend já tem isso na lista, mas num sistema real fariamos um JOIN ou outra query.
-    // Vamos retornar os itens e o frontend compõe o visual.
-	
 	return OrderDetailsResponse{
 		Items: items,
 	}, nil

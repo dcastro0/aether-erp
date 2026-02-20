@@ -11,12 +11,28 @@ import (
 	"github.com/jackc/pgx/v5/pgtype"
 )
 
+const addProductStock = `-- name: AddProductStock :exec
+UPDATE products
+SET stock_quantity = stock_quantity + $2
+WHERE id = $1
+`
+
+type AddProductStockParams struct {
+	ID            pgtype.UUID `json:"id"`
+	StockQuantity int32       `json:"stock_quantity"`
+}
+
+func (q *Queries) AddProductStock(ctx context.Context, arg AddProductStockParams) error {
+	_, err := q.db.Exec(ctx, addProductStock, arg.ID, arg.StockQuantity)
+	return err
+}
+
 const createOrder = `-- name: CreateOrder :one
 INSERT INTO orders (
-  organization_id, customer_id, total_amount, status
+  organization_id, customer_id, total_amount, status, payment_method
 ) VALUES (
-  $1, $2, $3, $4
-) RETURNING id, organization_id, customer_id, total_amount, status, created_at, payment_method
+  $1, $2, $3, $4, $5
+) RETURNING id
 `
 
 type CreateOrderParams struct {
@@ -24,26 +40,20 @@ type CreateOrderParams struct {
 	CustomerID     pgtype.UUID    `json:"customer_id"`
 	TotalAmount    pgtype.Numeric `json:"total_amount"`
 	Status         string         `json:"status"`
+	PaymentMethod  string         `json:"payment_method"`
 }
 
-func (q *Queries) CreateOrder(ctx context.Context, arg CreateOrderParams) (Order, error) {
+func (q *Queries) CreateOrder(ctx context.Context, arg CreateOrderParams) (pgtype.UUID, error) {
 	row := q.db.QueryRow(ctx, createOrder,
 		arg.OrganizationID,
 		arg.CustomerID,
 		arg.TotalAmount,
 		arg.Status,
+		arg.PaymentMethod,
 	)
-	var i Order
-	err := row.Scan(
-		&i.ID,
-		&i.OrganizationID,
-		&i.CustomerID,
-		&i.TotalAmount,
-		&i.Status,
-		&i.CreatedAt,
-		&i.PaymentMethod,
-	)
-	return i, err
+	var id pgtype.UUID
+	err := row.Scan(&id)
+	return id, err
 }
 
 const createOrderItem = `-- name: CreateOrderItem :one
@@ -135,6 +145,7 @@ SELECT
     o.total_amount, 
     o.status, 
     o.created_at,
+    o.payment_method,
     c.name as customer_name
 FROM orders o
 JOIN customers c ON o.customer_id = c.id
@@ -143,11 +154,12 @@ ORDER BY o.created_at DESC
 `
 
 type ListOrdersRow struct {
-	ID           pgtype.UUID        `json:"id"`
-	TotalAmount  pgtype.Numeric     `json:"total_amount"`
-	Status       string             `json:"status"`
-	CreatedAt    pgtype.Timestamptz `json:"created_at"`
-	CustomerName string             `json:"customer_name"`
+	ID            pgtype.UUID        `json:"id"`
+	TotalAmount   pgtype.Numeric     `json:"total_amount"`
+	Status        string             `json:"status"`
+	CreatedAt     pgtype.Timestamptz `json:"created_at"`
+	PaymentMethod string             `json:"payment_method"`
+	CustomerName  string             `json:"customer_name"`
 }
 
 func (q *Queries) ListOrders(ctx context.Context, organizationID pgtype.UUID) ([]ListOrdersRow, error) {
@@ -164,6 +176,7 @@ func (q *Queries) ListOrders(ctx context.Context, organizationID pgtype.UUID) ([
 			&i.TotalAmount,
 			&i.Status,
 			&i.CreatedAt,
+			&i.PaymentMethod,
 			&i.CustomerName,
 		); err != nil {
 			return nil, err

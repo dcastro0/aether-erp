@@ -57,6 +57,7 @@ export interface OrderItemDTO {
 
 export interface CreateOrderDTO {
   customer_id: string;
+  payment_method: string;
   items: OrderItemDTO[];
 }
 

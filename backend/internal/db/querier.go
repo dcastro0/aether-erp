@@ -11,9 +11,10 @@ import (
 )
 
 type Querier interface {
+	AddProductStock(ctx context.Context, arg AddProductStockParams) error
 	AddUserToOrganization(ctx context.Context, arg AddUserToOrganizationParams) (OrganizationMember, error)
 	CreateCustomer(ctx context.Context, arg CreateCustomerParams) (Customer, error)
-	CreateOrder(ctx context.Context, arg CreateOrderParams) (Order, error)
+	CreateOrder(ctx context.Context, arg CreateOrderParams) (pgtype.UUID, error)
 	CreateOrderItem(ctx context.Context, arg CreateOrderItemParams) (OrderItem, error)
 	CreateOrganization(ctx context.Context, arg CreateOrganizationParams) (Organization, error)
 	CreateProduct(ctx context.Context, arg CreateProductParams) (Product, error)
