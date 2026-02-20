@@ -16,7 +16,7 @@ INSERT INTO orders (
   organization_id, customer_id, total_amount, status
 ) VALUES (
   $1, $2, $3, $4
-) RETURNING id, organization_id, customer_id, total_amount, status, created_at
+) RETURNING id, organization_id, customer_id, total_amount, status, created_at, payment_method
 `
 
 type CreateOrderParams struct {
@@ -41,6 +41,7 @@ func (q *Queries) CreateOrder(ctx context.Context, arg CreateOrderParams) (Order
 		&i.TotalAmount,
 		&i.Status,
 		&i.CreatedAt,
+		&i.PaymentMethod,
 	)
 	return i, err
 }

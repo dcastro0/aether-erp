@@ -14,9 +14,11 @@ import {
   Phone,
   Mail,
   MoreHorizontal,
+  Download,
 } from "lucide-react";
 import { DashboardLayout } from "../components/DashboardLayout";
 import { api, type Customer, type CreateCustomerDTO } from "../lib/api";
+import { exportToCSV } from "../lib/export";
 
 const customerSchema = z.object({
   name: z.string().min(3, "Nome é obrigatório"),
@@ -73,6 +75,29 @@ export default function CustomersPage() {
     createMutation.mutate(data);
   };
 
+  const handleExport = () => {
+    if (!customers) return;
+
+    exportToCSV(
+      customers,
+      [
+        { header: "Nome/Razão Social", accessor: (c) => c.name },
+        { header: "Email", accessor: (c) => c.email || "" },
+        { header: "Telefone", accessor: (c) => c.phone || "" },
+        { header: "Documento", accessor: (c) => c.document || "" },
+        {
+          header: "Tipo",
+          accessor: (c) => (c.type === "company" ? "Empresa" : "Pessoa Física"),
+        },
+        {
+          header: "Data de Cadastro",
+          accessor: (c) => new Date(c.created_at).toLocaleDateString(),
+        },
+      ],
+      "relatorio_clientes",
+    );
+  };
+
   const filteredCustomers = customers?.filter(
     (c) =>
       c.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -82,7 +107,6 @@ export default function CustomersPage() {
   return (
     <DashboardLayout>
       <div className="space-y-8">
-        {/* Header */}
         <div className="flex flex-col justify-between gap-4 md:flex-row md:items-center">
           <div>
             <h1 className="text-2xl font-bold tracking-tight text-slate-900">
@@ -92,16 +116,24 @@ export default function CustomersPage() {
               Gerencie sua base de contatos e parceiros.
             </p>
           </div>
-          <button
-            onClick={() => setIsModalOpen(true)}
-            className="flex items-center gap-2 rounded-lg bg-blue-600 px-4 py-2 text-sm font-medium text-white hover:bg-blue-700 shadow-md shadow-blue-600/20 transition-all"
-          >
-            <Plus size={16} />
-            Novo Cliente
-          </button>
+          <div className="flex gap-3">
+            <button
+              onClick={handleExport}
+              className="flex items-center gap-2 rounded-lg border border-slate-200 bg-white px-4 py-2 text-sm font-medium text-slate-700 hover:bg-slate-50 shadow-sm transition-all"
+            >
+              <Download size={16} />
+              Exportar
+            </button>
+            <button
+              onClick={() => setIsModalOpen(true)}
+              className="flex items-center gap-2 rounded-lg bg-blue-600 px-4 py-2 text-sm font-medium text-white hover:bg-blue-700 shadow-md shadow-blue-600/20 transition-all"
+            >
+              <Plus size={16} />
+              Novo Cliente
+            </button>
+          </div>
         </div>
 
-        {/* Busca e Filtros */}
         <div className="flex flex-col gap-4 sm:flex-row sm:items-center justify-between bg-white p-4 rounded-xl border border-slate-200 shadow-sm">
           <div className="relative flex-1 max-w-md">
             <Search
@@ -122,7 +154,6 @@ export default function CustomersPage() {
           </button>
         </div>
 
-        {/* Lista de Clientes */}
         <div className="rounded-xl border border-slate-200 bg-white shadow-sm overflow-hidden">
           {isLoading ? (
             <div className="flex h-64 items-center justify-center">
@@ -238,7 +269,6 @@ export default function CustomersPage() {
         </div>
       </div>
 
-      {/* Modal de Criação */}
       {isModalOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/40 backdrop-blur-sm p-4 animate-in fade-in duration-200">
           <div className="w-full max-w-lg rounded-xl bg-white p-8 shadow-2xl animate-in zoom-in-95 duration-200 border border-slate-100">
@@ -247,7 +277,6 @@ export default function CustomersPage() {
             </h2>
 
             <form onSubmit={handleSubmit(onSubmit)} className="space-y-5">
-              {/* Tipo de Cliente (Radio Cards) */}
               <div className="grid grid-cols-2 gap-4">
                 <label
                   className={`cursor-pointer border rounded-lg p-3 flex items-center gap-3 transition-all ${watch("type") === "individual" ? "border-blue-500 bg-blue-50 ring-1 ring-blue-500" : "border-slate-200 hover:bg-slate-50"}`}

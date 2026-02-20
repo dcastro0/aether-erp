@@ -74,6 +74,7 @@ type Order struct {
 	TotalAmount    pgtype.Numeric     `json:"total_amount"`
 	Status         string             `json:"status"`
 	CreatedAt      pgtype.Timestamptz `json:"created_at"`
+	PaymentMethod  string             `json:"payment_method"`
 }
 
 type OrderItem struct {

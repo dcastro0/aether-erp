@@ -65,6 +65,7 @@ export interface Order {
   customer_name: string;
   total_amount: string;
   status: string;
+  payment_method: string;
   created_at: string;
 }
 
@@ -73,6 +74,7 @@ export interface OrderItem {
   quantity: number;
   unit_price: number;
   total_price: number;
+  payment_method: string;
 }
 
 export interface OrderDetails {
