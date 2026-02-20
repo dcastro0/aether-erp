@@ -75,3 +75,27 @@ func (h *Handler) GetMetrics(c *fiber.Ctx) error {
 
 	return c.JSON(metrics)
 }
+
+func (h *Handler) Update(c *fiber.Ctx) error {
+	orgID, err := h.getOrgID(c)
+	if err != nil {
+		return c.Status(fiber.StatusUnauthorized).JSON(fiber.Map{"error": "organization not found"})
+	}
+
+	productID, err := uuid.Parse(c.Params("id"))
+	if err != nil {
+		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{"error": "invalid product id"})
+	}
+
+	var req UpdateProductRequest
+	if err := c.BodyParser(&req); err != nil {
+		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{"error": "invalid body"})
+	}
+
+	product, err := h.service.Update(c.Context(), productID, orgID, req)
+	if err != nil {
+		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{"error": err.Error()})
+	}
+
+	return c.JSON(product)
+}

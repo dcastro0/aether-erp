@@ -59,3 +59,30 @@ func (s *Service) List(ctx context.Context, orgID uuid.UUID) ([]db.Product, erro
 func (s *Service) GetMetrics(ctx context.Context, orgID uuid.UUID) (db.GetProductMetricsRow, error) {
 	return s.q.GetProductMetrics(ctx, pgtype.UUID{Bytes: orgID, Valid: true})
 }
+
+type UpdateProductRequest struct {
+	Name          string  `json:"name" validate:"required"`
+	Price         float64 `json:"price" validate:"gte=0"`
+	StockQuantity int     `json:"stock_quantity" validate:"gte=0"`
+	Description   string  `json:"description"`
+	SKU           string  `json:"sku"`
+	IsActive      bool    `json:"is_active"`
+}
+
+func (s *Service) Update(ctx context.Context, id uuid.UUID, orgID uuid.UUID, req UpdateProductRequest) (db.Product, error) {
+	priceNumeric := pgtype.Numeric{}
+	if err := priceNumeric.Scan(fmt.Sprintf("%.2f", req.Price)); err != nil {
+		return db.Product{}, err
+	}
+
+	return s.q.UpdateProduct(ctx, db.UpdateProductParams{
+		ID:             pgtype.UUID{Bytes: id, Valid: true},
+		OrganizationID: pgtype.UUID{Bytes: orgID, Valid: true},
+		Name:           req.Name,
+		Description:    pgtype.Text{String: req.Description, Valid: req.Description != ""},
+		Price:          priceNumeric,
+		StockQuantity:  int32(req.StockQuantity),
+		Sku:            pgtype.Text{String: req.SKU, Valid: req.SKU != ""},
+		IsActive:       req.IsActive,
+	})
+}

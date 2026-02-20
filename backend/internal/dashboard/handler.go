@@ -1,8 +1,8 @@
 package dashboard
 
 import (
+	"github.com/caio/aether-backend/internal/auth"
 	"github.com/gofiber/fiber/v2"
-	"github.com/google/uuid"
 )
 
 type Handler struct {
@@ -13,14 +13,10 @@ func NewHandler(service *Service) *Handler {
 	return &Handler{service: service}
 }
 
-func (h *Handler) getOrgID(c *fiber.Ctx) (uuid.UUID, error) {
-	return uuid.Parse("a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11")
-}
-
 func (h *Handler) GetMetrics(c *fiber.Ctx) error {
-	orgID, err := h.getOrgID(c)
+	_, orgID, err := auth.GetUserAndOrgID(c)
 	if err != nil {
-		return c.Status(fiber.StatusUnauthorized).JSON(fiber.Map{"error": "organization error"})
+		return c.Status(fiber.StatusUnauthorized).JSON(fiber.Map{"error": "unauthorized"})
 	}
 
 	metrics, err := h.service.GetMetrics(c.Context(), orgID)

@@ -9,6 +9,15 @@ import {
   ArrowDownRight,
   Clock,
 } from "lucide-react";
+import {
+  LineChart,
+  Line,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  Tooltip,
+  ResponsiveContainer,
+} from "recharts";
 import { DashboardLayout } from "../components/DashboardLayout";
 import { api } from "../lib/api";
 
@@ -16,7 +25,7 @@ export default function HomePage() {
   const navigate = useNavigate();
   const { data: stats, isLoading } = useQuery({
     queryKey: ["dashboard-stats"],
-    queryFn: () => api.get<any>("/protected/dashboard/stats"),
+    queryFn: () => api.get<any>("/protected/dashboard/metrics"),
     staleTime: 1000 * 60 * 5,
     gcTime: 1000 * 60 * 30,
   });
@@ -56,20 +65,20 @@ export default function HomePage() {
       positive: true,
     },
     {
+      label: "Total de Vendas",
+      value: stats?.sales_count || 0,
+      icon: Package,
+      color: "emerald",
+      trend: "+5.1%",
+      positive: true,
+    },
+    {
       label: "Total de Clientes",
-      value: stats?.total_customers || 0,
+      value: stats?.customers_count || 0,
       icon: Users,
       color: "indigo",
       trend: "+3.2%",
       positive: true,
-    },
-    {
-      label: "Produtos em Estoque",
-      value: stats?.total_products || 0,
-      icon: Package,
-      color: "emerald",
-      trend: "-2.1%",
-      positive: false,
     },
     {
       label: "Alertas de Estoque",
@@ -130,18 +139,79 @@ export default function HomePage() {
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           <div className="lg:col-span-2 bg-white rounded-3xl p-8 border border-slate-100 shadow-sm">
-            <div className="flex justify-between items-center mb-8">
+            <div className="flex justify-between items-center mb-6">
               <h2 className="text-xl font-bold text-slate-900">
-                Vendas Recentes
+                Vendas Recentes (7 dias)
               </h2>
               <button className="text-sm font-semibold text-blue-600 hover:text-blue-700">
                 Ver relatório completo
               </button>
             </div>
-            <div className="h-64 flex items-center justify-center border-2 border-dashed border-slate-100 rounded-3xl bg-slate-50/50">
-              <span className="text-slate-400 font-medium italic">
-                Gráfico de desempenho em breve...
-              </span>
+            <div className="h-72 w-full">
+              {stats?.sales_over_time && stats.sales_over_time.length > 0 ? (
+                <ResponsiveContainer width="100%" height="100%">
+                  <LineChart data={stats.sales_over_time}>
+                    <CartesianGrid
+                      strokeDasharray="3 3"
+                      vertical={false}
+                      stroke="#f1f5f9"
+                    />
+                    <XAxis
+                      dataKey="date"
+                      axisLine={false}
+                      tickLine={false}
+                      tick={{ fill: "#64748b", fontSize: 12 }}
+                      dy={10}
+                      tickFormatter={(val) => {
+                        const d = new Date(val);
+                        return d.toLocaleDateString("pt-BR", {
+                          day: "2-digit",
+                          month: "2-digit",
+                        });
+                      }}
+                    />
+                    <YAxis
+                      axisLine={false}
+                      tickLine={false}
+                      tick={{ fill: "#64748b", fontSize: 12 }}
+                      tickFormatter={(val) => `R$ ${val}`}
+                      dx={-10}
+                    />
+                    <Tooltip
+                      contentStyle={{
+                        borderRadius: "12px",
+                        border: "none",
+                        boxShadow: "0 4px 6px -1px rgb(0 0 0 / 0.1)",
+                      }}
+                      formatter={(value: any) => [
+                        new Intl.NumberFormat("pt-BR", {
+                          style: "currency",
+                          currency: "BRL",
+                        }).format(Number(value) || 0),
+                        "Faturamento",
+                      ]}
+                      labelFormatter={(label) => {
+                        const d = new Date(label as string);
+                        return d.toLocaleDateString("pt-BR");
+                      }}
+                    />
+                    <Line
+                      type="monotone"
+                      dataKey="total"
+                      stroke="#2563eb"
+                      strokeWidth={3}
+                      dot={{ r: 4, strokeWidth: 2, fill: "#fff" }}
+                      activeDot={{ r: 6, strokeWidth: 0, fill: "#2563eb" }}
+                    />
+                  </LineChart>
+                </ResponsiveContainer>
+              ) : (
+                <div className="h-full w-full flex items-center justify-center border-2 border-dashed border-slate-100 rounded-3xl bg-slate-50/50">
+                  <span className="text-slate-400 font-medium">
+                    Sem dados de vendas nos últimos 7 dias.
+                  </span>
+                </div>
+              )}
             </div>
           </div>
 

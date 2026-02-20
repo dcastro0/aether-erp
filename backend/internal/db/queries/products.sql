@@ -16,3 +16,16 @@ SELECT
   SUM(CASE WHEN stock_quantity < 5 THEN 1 ELSE 0 END)::BIGINT as low_stock_count
 FROM products
 WHERE organization_id = $1;
+
+-- name: UpdateProduct :one
+UPDATE products
+SET
+  name = $2,
+  description = $3,
+  price = $4,
+  stock_quantity = $5,
+  sku = $6,
+  is_active = $7,
+  updated_at = NOW()
+WHERE id = $1 AND organization_id = $8
+RETURNING *;

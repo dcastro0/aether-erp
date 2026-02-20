@@ -102,6 +102,7 @@ func main() {
 	productsGroup.Post("/", productHandler.Create)
 	productsGroup.Get("/", productHandler.List)
 	productsGroup.Get("/metrics", productHandler.GetMetrics)
+	productsGroup.Put("/:id", productHandler.Update)
 
 	
 	customersGroup := protected.Group("/customers")

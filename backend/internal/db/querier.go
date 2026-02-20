@@ -25,6 +25,7 @@ type Querier interface {
 	GetOrderItems(ctx context.Context, orderID pgtype.UUID) ([]GetOrderItemsRow, error)
 	GetOrganizationBySlug(ctx context.Context, slug string) (Organization, error)
 	GetProductMetrics(ctx context.Context, organizationID pgtype.UUID) (GetProductMetricsRow, error)
+	GetSalesOverTime(ctx context.Context, dollar_1 pgtype.UUID) ([]GetSalesOverTimeRow, error)
 	GetUserByEmail(ctx context.Context, email string) (User, error)
 	GetUserByID(ctx context.Context, id pgtype.UUID) (User, error)
 	GetUserOrganizations(ctx context.Context, userID pgtype.UUID) ([]GetUserOrganizationsRow, error)
@@ -32,6 +33,7 @@ type Querier interface {
 	ListOrders(ctx context.Context, organizationID pgtype.UUID) ([]ListOrdersRow, error)
 	ListProducts(ctx context.Context, organizationID pgtype.UUID) ([]Product, error)
 	UpdateCustomer(ctx context.Context, arg UpdateCustomerParams) (Customer, error)
+	UpdateProduct(ctx context.Context, arg UpdateProductParams) (Product, error)
 	UpdateProductStock(ctx context.Context, arg UpdateProductStockParams) error
 	UpdateUserName(ctx context.Context, arg UpdateUserNameParams) (UpdateUserNameRow, error)
 	UpdateUserPassword(ctx context.Context, arg UpdateUserPasswordParams) error

@@ -37,3 +37,40 @@ func (q *Queries) GetDashboardMetrics(ctx context.Context, dollar_1 pgtype.UUID)
 	)
 	return i, err
 }
+
+const getSalesOverTime = `-- name: GetSalesOverTime :many
+SELECT
+    DATE(created_at)::TEXT AS sale_date,
+    COALESCE(SUM(total_amount), 0)::FLOAT AS total_sales
+FROM orders
+WHERE organization_id = $1::uuid
+  AND status = 'completed'
+  AND created_at >= NOW() - INTERVAL '7 days'
+GROUP BY DATE(created_at)
+ORDER BY DATE(created_at) ASC
+`
+
+type GetSalesOverTimeRow struct {
+	SaleDate   string  `json:"sale_date"`
+	TotalSales float64 `json:"total_sales"`
+}
+
+func (q *Queries) GetSalesOverTime(ctx context.Context, dollar_1 pgtype.UUID) ([]GetSalesOverTimeRow, error) {
+	rows, err := q.db.Query(ctx, getSalesOverTime, dollar_1)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	var items []GetSalesOverTimeRow
+	for rows.Next() {
+		var i GetSalesOverTimeRow
+		if err := rows.Scan(&i.SaleDate, &i.TotalSales); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}
