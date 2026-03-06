@@ -1,9 +1,8 @@
 package products
 
 import (
+	"github.com/dcastro0/aether-backend/internal/middleware"
 	"github.com/gofiber/fiber/v2"
-	"github.com/golang-jwt/jwt/v5"
-	"github.com/google/uuid"
 )
 
 type Handler struct {
@@ -14,33 +13,15 @@ func NewHandler(service *Service) *Handler {
 	return &Handler{service: service}
 }
 
-// Helper para pegar UserID do Token JWT
-func getUserID(c *fiber.Ctx) (uuid.UUID, error) {
-	user := c.Locals("user").(*jwt.Token)
-	claims := user.Claims.(jwt.MapClaims)
-	sub := claims["sub"].(string)
-	return uuid.Parse(sub)
-}
-
-// Middleware fake para pegar OrgID (Em produção viria do Header ou Token)
-func (h *Handler) getOrgID(c *fiber.Ctx) (uuid.UUID, error) {
-	// TODO: Implementar lógica real de seleção de organização
-	// Por enquanto, hardcoded para a ID que criamos no Passo 3
-	return uuid.Parse("a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11")
-}
-
 func (h *Handler) Create(c *fiber.Ctx) error {
-	orgID, err := h.getOrgID(c)
-	if err != nil {
-		return c.Status(fiber.StatusUnauthorized).JSON(fiber.Map{"error": "organization not found"})
-	}
+	claims := middleware.GetClaims(c)
 
 	var req CreateProductRequest
 	if err := c.BodyParser(&req); err != nil {
 		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{"error": "invalid body"})
 	}
 
-	product, err := h.service.Create(c.Context(), orgID, req)
+	product, err := h.service.Create(c.Context(), claims.OrgID, req)
 	if err != nil {
 		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{"error": err.Error()})
 	}
@@ -49,12 +30,9 @@ func (h *Handler) Create(c *fiber.Ctx) error {
 }
 
 func (h *Handler) List(c *fiber.Ctx) error {
-	orgID, err := h.getOrgID(c)
-	if err != nil {
-		return c.Status(fiber.StatusUnauthorized).JSON(fiber.Map{"error": "organization not found"})
-	}
+	claims := middleware.GetClaims(c)
 
-	products, err := h.service.List(c.Context(), orgID)
+	products, err := h.service.List(c.Context(), claims.OrgID)
 	if err != nil {
 		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{"error": err.Error()})
 	}
@@ -63,39 +41,12 @@ func (h *Handler) List(c *fiber.Ctx) error {
 }
 
 func (h *Handler) GetMetrics(c *fiber.Ctx) error {
-	orgID, err := h.getOrgID(c)
-	if err != nil {
-		return c.Status(fiber.StatusUnauthorized).JSON(fiber.Map{"error": "organization not found"})
-	}
+	claims := middleware.GetClaims(c)
 
-	metrics, err := h.service.GetMetrics(c.Context(), orgID)
+	metrics, err := h.service.GetMetrics(c.Context(), claims.OrgID)
 	if err != nil {
 		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{"error": err.Error()})
 	}
 
 	return c.JSON(metrics)
-}
-
-func (h *Handler) Update(c *fiber.Ctx) error {
-	orgID, err := h.getOrgID(c)
-	if err != nil {
-		return c.Status(fiber.StatusUnauthorized).JSON(fiber.Map{"error": "organization not found"})
-	}
-
-	productID, err := uuid.Parse(c.Params("id"))
-	if err != nil {
-		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{"error": "invalid product id"})
-	}
-
-	var req UpdateProductRequest
-	if err := c.BodyParser(&req); err != nil {
-		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{"error": "invalid body"})
-	}
-
-	product, err := h.service.Update(c.Context(), productID, orgID, req)
-	if err != nil {
-		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{"error": err.Error()})
-	}
-
-	return c.JSON(product)
 }

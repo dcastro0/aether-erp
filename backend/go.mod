@@ -1,5 +1,4 @@
-module github.com/caio/aether-backend
-
+module github.com/dcastro0/aether-backend
 go 1.25.7
 
 require (

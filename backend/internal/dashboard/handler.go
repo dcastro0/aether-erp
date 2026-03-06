@@ -1,7 +1,7 @@
 package dashboard
 
 import (
-	"github.com/caio/aether-backend/internal/auth"
+	"github.com/dcastro0/aether-backend/internal/middleware"
 	"github.com/gofiber/fiber/v2"
 )
 
@@ -14,12 +14,9 @@ func NewHandler(service *Service) *Handler {
 }
 
 func (h *Handler) GetMetrics(c *fiber.Ctx) error {
-	_, orgID, err := auth.GetUserAndOrgID(c)
-	if err != nil {
-		return c.Status(fiber.StatusUnauthorized).JSON(fiber.Map{"error": "unauthorized"})
-	}
+	claims := middleware.GetClaims(c)
 
-	metrics, err := h.service.GetMetrics(c.Context(), orgID)
+	metrics, err := h.service.GetMetrics(c.Context(), claims.OrgID)
 	if err != nil {
 		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{"error": err.Error()})
 	}

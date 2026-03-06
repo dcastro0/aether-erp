@@ -1,12 +1,11 @@
 package auth
 
 import (
+	"github.com/dcastro0/aether-backend/internal/middleware"
 	"github.com/go-playground/validator/v10"
 	"github.com/gofiber/fiber/v2"
-	"github.com/golang-jwt/jwt/v5"
-	"github.com/google/uuid"
 )
-
+	
 type Handler struct {
 	service   *Service
 	validator *validator.Validate
@@ -59,16 +58,14 @@ func (h *Handler) Login(c *fiber.Ctx) error {
 }
 
 func (h *Handler) UpdateProfile(c *fiber.Ctx) error {
-	userToken := c.Locals("user").(*jwt.Token)
-	claims := userToken.Claims.(jwt.MapClaims)
-	userID, _ := uuid.Parse(claims["sub"].(string))
+	claims := middleware.GetClaims(c)
 
 	var req UpdateProfileRequest
 	if err := c.BodyParser(&req); err != nil {
-		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{"error": "dados inválidos"})
+		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{"error": "invalid body"})
 	}
 
-	user, err := h.service.UpdateProfile(c.Context(), userID, req)
+	user, err := h.service.UpdateProfile(c.Context(), claims.UserID, req)
 	if err != nil {
 		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{"error": err.Error()})
 	}
@@ -82,16 +79,14 @@ func (h *Handler) UpdateProfile(c *fiber.Ctx) error {
 }
 
 func (h *Handler) UpdatePassword(c *fiber.Ctx) error {
-	userToken := c.Locals("user").(*jwt.Token)
-	claims := userToken.Claims.(jwt.MapClaims)
-	userID, _ := uuid.Parse(claims["sub"].(string))
+	claims := middleware.GetClaims(c)
 
 	var req UpdatePasswordRequest
 	if err := c.BodyParser(&req); err != nil {
-		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{"error": "dados inválidos"})
+		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{"error": "invalid body"})
 	}
 
-	if err := h.service.UpdatePassword(c.Context(), userID, req); err != nil {
+	if err := h.service.UpdatePassword(c.Context(), claims.UserID, req); err != nil {
 		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{"error": err.Error()})
 	}
 

@@ -7,11 +7,12 @@ import (
 	"syscall"
 	"time"
 
-	"github.com/caio/aether-backend/internal/auth"
-	"github.com/caio/aether-backend/internal/customers"
-	"github.com/caio/aether-backend/internal/dashboard"
-	"github.com/caio/aether-backend/internal/orders"
-	"github.com/caio/aether-backend/internal/products"
+	"github.com/dcastro0/aether-backend/internal/auth"
+	"github.com/dcastro0/aether-backend/internal/customers"
+	"github.com/dcastro0/aether-backend/internal/dashboard"
+	"github.com/dcastro0/aether-backend/internal/middleware"
+	"github.com/dcastro0/aether-backend/internal/orders"
+	"github.com/dcastro0/aether-backend/internal/products"
 	jwtware "github.com/gofiber/contrib/jwt"
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/fiber/v2/middleware/cors"
@@ -45,27 +46,15 @@ func main() {
 	}
 	log.Info().Msg("Connected to PostgreSQL")
 
-	authService := auth.NewService(dbPool)
-	authHandler := auth.NewHandler(authService)
-
-	productService := products.NewService(dbPool)
-	productHandler := products.NewHandler(productService)
-
-	customerService := customers.NewService(dbPool)
-  customerHandler := customers.NewHandler(customerService)
-
-	orderService := orders.NewService(dbPool)
-  orderHandler := orders.NewHandler(orderService)
-
-	dashboardService := dashboard.NewService(dbPool)
-	dashboardHandler := dashboard.NewHandler(dashboardService)
-
-
+	authHandler := auth.NewHandler(auth.NewService(dbPool))
+	productHandler := products.NewHandler(products.NewService(dbPool))
+	customerHandler := customers.NewHandler(customers.NewService(dbPool))
+	orderHandler := orders.NewHandler(orders.NewService(dbPool))
+	dashboardHandler := dashboard.NewHandler(dashboard.NewService(dbPool))
 
 	app := fiber.New(fiber.Config{
 		AppName:       "Aether ERP",
 		CaseSensitive: true,
-		// StrictRouting: true,
 	})
 
 	app.Use(logger.New())
@@ -88,11 +77,11 @@ func main() {
 	authGroup.Post("/register", authHandler.Register)
 	authGroup.Post("/login", authHandler.Login)
 
-	app.Use("/api/protected", jwtware.New(jwtware.Config{
+	jwtMiddleware := jwtware.New(jwtware.Config{
 		SigningKey: jwtware.SigningKey{Key: []byte(os.Getenv("JWT_SECRET"))},
-	}))
+	})
 
-	protected := api.Group("/protected")
+	protected := api.Group("/protected", jwtMiddleware, middleware.ExtractOrgClaims)
 
 	profileGroup := protected.Group("/profile")
 	profileGroup.Put("/", authHandler.UpdateProfile)
@@ -102,16 +91,16 @@ func main() {
 	productsGroup.Post("/", productHandler.Create)
 	productsGroup.Get("/", productHandler.List)
 	productsGroup.Get("/metrics", productHandler.GetMetrics)
-	productsGroup.Put("/:id", productHandler.Update)
 
-	
 	customersGroup := protected.Group("/customers")
-  customersGroup.Post("/", customerHandler.Create)
-  customersGroup.Get("/", customerHandler.List)
+	customersGroup.Post("/", customerHandler.Create)
+	customersGroup.Get("/", customerHandler.List)
+	customersGroup.Put("/:id", customerHandler.Update)
+	customersGroup.Delete("/:id", customerHandler.Delete)
 
 	ordersGroup := protected.Group("/orders")
-  ordersGroup.Post("/", orderHandler.Create)
-  ordersGroup.Get("/", orderHandler.List)
+	ordersGroup.Post("/", orderHandler.Create)
+	ordersGroup.Get("/", orderHandler.List)
 	ordersGroup.Get("/:id", orderHandler.GetDetails)
 
 	dashboardGroup := protected.Group("/dashboard")

@@ -3,7 +3,7 @@ package customers
 import (
 	"context"
 
-	"github.com/caio/aether-backend/internal/db"
+	"github.com/dcastro0/aether-backend/internal/db"
 	"github.com/google/uuid"
 	"github.com/jackc/pgx/v5/pgtype"
 	"github.com/jackc/pgx/v5/pgxpool"
@@ -42,4 +42,23 @@ func (s *Service) Create(ctx context.Context, orgID uuid.UUID, req CreateCustome
 
 func (s *Service) List(ctx context.Context, orgID uuid.UUID) ([]db.Customer, error) {
 	return s.q.ListCustomers(ctx, pgtype.UUID{Bytes: orgID, Valid: true})
+}
+
+func (s *Service) Update(ctx context.Context, orgID uuid.UUID, customerID uuid.UUID, req CreateCustomerRequest) (db.Customer, error) {
+	return s.q.UpdateCustomer(ctx, db.UpdateCustomerParams{
+		ID:             pgtype.UUID{Bytes: customerID, Valid: true},
+		OrganizationID: pgtype.UUID{Bytes: orgID, Valid: true},
+		Name:           req.Name,
+		Email:          pgtype.Text{String: req.Email, Valid: req.Email != ""},
+		Phone:          pgtype.Text{String: req.Phone, Valid: req.Phone != ""},
+		Document:       pgtype.Text{String: req.Document, Valid: req.Document != ""},
+		Type:           pgtype.Text{String: req.Type, Valid: req.Type != ""},
+	})
+}
+
+func (s *Service) Delete(ctx context.Context, orgID uuid.UUID, customerID uuid.UUID) error {
+	return s.q.DeleteCustomer(ctx, db.DeleteCustomerParams{
+		ID:             pgtype.UUID{Bytes: customerID, Valid: true},
+		OrganizationID: pgtype.UUID{Bytes: orgID, Valid: true},
+	})
 }

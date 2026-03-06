@@ -1,0 +1,1 @@
+ALTER TABLE organizations ALTER COLUMN document_number DROP NOT NULL;
