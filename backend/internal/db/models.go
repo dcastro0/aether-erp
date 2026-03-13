@@ -67,6 +67,21 @@ type Customer struct {
 	UpdatedAt      pgtype.Timestamptz `json:"updated_at"`
 }
 
+type FinancialTransaction struct {
+	ID             pgtype.UUID        `json:"id"`
+	OrganizationID pgtype.UUID        `json:"organization_id"`
+	Type           string             `json:"type"`
+	Status         string             `json:"status"`
+	Amount         pgtype.Numeric     `json:"amount"`
+	Description    string             `json:"description"`
+	DueDate        pgtype.Date        `json:"due_date"`
+	PaidAt         pgtype.Timestamptz `json:"paid_at"`
+	ReferenceType  pgtype.Text        `json:"reference_type"`
+	ReferenceID    pgtype.UUID        `json:"reference_id"`
+	CreatedAt      pgtype.Timestamptz `json:"created_at"`
+	UpdatedAt      pgtype.Timestamptz `json:"updated_at"`
+}
+
 type Order struct {
 	ID             pgtype.UUID        `json:"id"`
 	OrganizationID pgtype.UUID        `json:"organization_id"`

@@ -4,6 +4,7 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	"time"
 
 	"github.com/dcastro0/aether-backend/internal/db"
 	"github.com/google/uuid"
@@ -77,6 +78,21 @@ func (s *Service) Create(ctx context.Context, orgID uuid.UUID, req CreateOrderRe
 		TotalAmount:    totalNumeric,
 		Status:         "completed",
 		PaymentMethod:  req.PaymentMethod,
+	})
+	if err != nil {
+		return err
+	}
+
+	_, err = qtx.CreateFinancialTransaction(ctx, db.CreateFinancialTransactionParams{
+		OrganizationID: pgtype.UUID{Bytes: orgID, Valid: true},
+		Type:           "receivable",
+		Status:         "paid",
+		Amount:         totalNumeric,
+		Description:    fmt.Sprintf("Venda PDV - Via %s", req.PaymentMethod),
+		DueDate:        pgtype.Date{Time: time.Now(), Valid: true},
+		PaidAt:         pgtype.Timestamptz{Time: time.Now(), Valid: true},
+		ReferenceType:  pgtype.Text{String: "order", Valid: true},
+		ReferenceID:    orderID,
 	})
 	if err != nil {
 		return err

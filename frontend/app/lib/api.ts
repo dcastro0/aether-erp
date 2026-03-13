@@ -89,6 +89,38 @@ export interface DashboardMetrics {
   low_stock_count: number;
 }
 
+// Novos Tipos para Financeiro
+export interface FinancialTransaction {
+  id: string;
+  organization_id: string;
+  type: "payable" | "receivable";
+  status: "pending" | "paid" | "overdue" | "canceled";
+  amount: string; // From string to decimal display
+  description: string;
+  due_date: string;
+  paid_at?: string;
+  reference_type?: string;
+  reference_id?: string;
+  created_at: string;
+}
+
+export interface CreateFinancialTransactionDTO {
+  type: "payable" | "receivable";
+  status: "pending" | "paid" | "overdue" | "canceled";
+  amount: number;
+  description: string;
+  due_date: string;
+  reference_type?: string;
+  reference_id?: string;
+}
+
+export interface FinancialSummary {
+  total_payable_pending: string;
+  total_receivable_pending: string;
+  total_payable_paid: string;
+  total_receivable_paid: string;
+}
+
 export const api = {
   baseUrl: "http://localhost:3000/api",
 

@@ -10,6 +10,7 @@ import (
 	"github.com/dcastro0/aether-backend/internal/auth"
 	"github.com/dcastro0/aether-backend/internal/customers"
 	"github.com/dcastro0/aether-backend/internal/dashboard"
+	"github.com/dcastro0/aether-backend/internal/financial"
 	"github.com/dcastro0/aether-backend/internal/middleware"
 	"github.com/dcastro0/aether-backend/internal/orders"
 	"github.com/dcastro0/aether-backend/internal/products"
@@ -51,6 +52,7 @@ func main() {
 	customerHandler := customers.NewHandler(customers.NewService(dbPool))
 	orderHandler := orders.NewHandler(orders.NewService(dbPool))
 	dashboardHandler := dashboard.NewHandler(dashboard.NewService(dbPool))
+	financialHandler := financial.NewHandler(financial.NewService(dbPool))
 
 	app := fiber.New(fiber.Config{
 		AppName:       "Aether ERP",
@@ -102,6 +104,12 @@ func main() {
 	ordersGroup.Post("/", orderHandler.Create)
 	ordersGroup.Get("/", orderHandler.List)
 	ordersGroup.Get("/:id", orderHandler.GetDetails)
+
+	financialGroup := protected.Group("/financial")
+	financialGroup.Post("/transactions", financialHandler.Create)
+	financialGroup.Get("/transactions", financialHandler.List)
+	financialGroup.Put("/transactions/:id/pay", financialHandler.Pay)
+	financialGroup.Get("/summary", financialHandler.GetSummary)
 
 	dashboardGroup := protected.Group("/dashboard")
 	dashboardGroup.Get("/metrics", dashboardHandler.GetMetrics)
