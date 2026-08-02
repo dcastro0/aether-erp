@@ -218,6 +218,21 @@ export interface SellerPerformance {
   avg_ticket: number;
 }
 
+export interface NotificationItem {
+  id: string;
+  title: string;
+  message: string;
+  type: "stock" | "financial" | "security";
+  severity: "warning" | "error" | "info";
+  link: string;
+  created_at: string;
+}
+
+export interface NotificationSummary {
+  total_unread: number;
+  items: NotificationItem[];
+}
+
 export const api = {
   baseUrl: "http://localhost:3000/api",
 

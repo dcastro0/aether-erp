@@ -24,6 +24,7 @@ import {
   BarChart3
 } from "lucide-react";
 import { CommandMenu } from "./ui/CommandMenu";
+import { NotificationsPopover } from "./NotificationsPopover";
 import { api } from "../lib/api";
 
 export function DashboardLayout({ children }: { children: React.ReactNode }) {
@@ -191,12 +192,9 @@ export function DashboardLayout({ children }: { children: React.ReactNode }) {
             </kbd>
           </button>
 
-          {/* User Profile */}
+          {/* User Profile & Notifications */}
           <div className="flex items-center gap-4">
-            <button className="p-2 text-[#94A3B8] hover:text-[#F8FAFC] hover:bg-[#1E293B] rounded-lg transition-colors relative">
-              <Bell size={18} />
-              <span className="absolute top-1.5 right-1.5 w-2 h-2 rounded-full bg-[#0EA5E9]"></span>
-            </button>
+            <NotificationsPopover />
 
             <div className="h-6 w-px bg-[#1E293B]"></div>
 

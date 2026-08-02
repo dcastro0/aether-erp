@@ -14,6 +14,7 @@ import (
 	"github.com/dcastro0/aether-backend/internal/employees"
 	"github.com/dcastro0/aether-backend/internal/financial"
 	"github.com/dcastro0/aether-backend/internal/middleware"
+	"github.com/dcastro0/aether-backend/internal/notifications"
 	"github.com/dcastro0/aether-backend/internal/orders"
 	"github.com/dcastro0/aether-backend/internal/products"
 	"github.com/dcastro0/aether-backend/internal/purchases"
@@ -70,6 +71,7 @@ func main() {
 	supplierHandler := suppliers.NewHandler(suppliers.NewService(dbPool, auditService))
 	purchaseHandler := purchases.NewHandler(purchases.NewService(dbPool, auditService))
 	reportsHandler := reports.NewHandler(reports.NewService(dbPool))
+	notificationHandler := notifications.NewHandler(notifications.NewService(dbPool))
 
 	app := fiber.New(fiber.Config{
 		AppName:       "Aether ERP",
@@ -170,6 +172,9 @@ func main() {
 	reportsGroup.Get("/dre", reportsHandler.GetDRE)
 	reportsGroup.Get("/abc-curve", reportsHandler.GetABC)
 	reportsGroup.Get("/sellers", reportsHandler.GetSellers)
+
+	notificationsGroup := protected.Group("/notifications")
+	notificationsGroup.Get("/", notificationHandler.GetAlerts)
 
 	auditGroup := protected.Group("/audit-logs", middleware.RequireRole("admin"))
 	auditGroup.Get("/", auditHandler.List)
