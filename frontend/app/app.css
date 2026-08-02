@@ -5,103 +5,123 @@
   --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
   --font-mono: 'JetBrains Mono', monospace;
 
-  /* Legacy Aether Tokens (Mapped to Dark Tactical Theme) */
-  --color-aether-bg: #090D16;
-  --color-aether-surface: #0F172A;
-  --color-aether-border: #1E293B;
-  --color-aether-border-light: #334155;
-  --color-aether-text: #F8FAFC;
-  --color-aether-text-muted: #94A3B8;
-  --color-aether-accent: #0EA5E9;
-  --color-aether-accent-muted: rgba(14, 165, 233, 0.15);
-  --color-aether-accent-hover: #0284C7;
+  /* Legacy Aether Tokens mapped to CSS variables */
+  --color-aether-bg: var(--bg-canvas);
+  --color-aether-surface: var(--bg-surface);
+  --color-aether-border: var(--border-subtle);
+  --color-aether-border-light: var(--border-strong);
+  --color-aether-text: var(--text-primary);
+  --color-aether-text-muted: var(--text-secondary);
+  --color-aether-accent: var(--accent);
+  --color-aether-accent-muted: var(--accent-light);
+  --color-aether-accent-hover: var(--accent-hover);
   --color-aether-error: #F87171;
-
-  /* Modern Design System Tokens */
-  --color-canvas: #090D16;
-  --color-surface-1: #0F172A;
-  --color-surface-2: #1E293B;
-  --color-surface-3: #334155;
-
-  --color-border-subtle: #1E293B;
-  --color-border-strong: #334155;
-
-  --color-text-primary: #F8FAFC;
-  --color-text-secondary: #94A3B8;
-  --color-text-muted: #64748B;
-
-  --color-accent: #0EA5E9;
-  --color-accent-hover: #0284C7;
-
-  --color-success-text: #34D399;
-  --color-success-border: #059669;
-
-  --color-warning-text: #FBBF24;
-  --color-warning-border: #D97706;
-
-  --color-danger-text: #F87171;
-  --color-danger-border: #DC2626;
 }
 
+/* Default Dark Theme */
 :root {
-  --bg-primary: #090D16;
-  --bg-surface: #0F172A;
-  --border-primary: #1E293B;
-  --text-primary: #F8FAFC;
-  --text-muted: #94A3B8;
-  --accent: #0EA5E9;
-  --accent-muted: rgba(14, 165, 233, 0.15);
-  --accent-hover: #0284C7;
-  --error: #F87171;
-
   --bg-canvas: #090D16;
-  --bg-surface-1: #0F172A;
-  --bg-surface-2: #1E293B;
-  --bg-surface-3: #334155;
+  --bg-surface: #0F172A;
+  --bg-surface-hover: #1E293B;
+  --bg-surface-subtle: rgba(30, 41, 59, 0.5);
+  
   --border-subtle: #1E293B;
   --border-strong: #334155;
+  
+  --text-primary: #F8FAFC;
   --text-secondary: #94A3B8;
+  --text-muted: #64748B;
+  
+  --accent: #0EA5E9;
+  --accent-hover: #0284C7;
+  --accent-light: rgba(14, 165, 233, 0.15);
+  
+  --input-bg: #0F172A;
+  --input-border: #334155;
+  --input-text: #F8FAFC;
 
-  --color-success-bg: rgba(6, 78, 59, 0.4);
-  --color-success-text: #34D399;
-  --color-success-border: #059669;
-
-  --color-warning-bg: rgba(120, 53, 15, 0.4);
-  --color-warning-text: #FBBF24;
-  --color-warning-border: #D97706;
-
-  --color-danger-bg: rgba(127, 29, 29, 0.4);
-  --color-danger-text: #F87171;
-  --color-danger-border: #DC2626;
-
-  --color-accent: #0EA5E9;
-  --color-accent-hover: #0284C7;
-  --color-accent-glow: rgba(14, 165, 233, 0.25);
+  --card-bg: #0F172A;
+  --header-bg: #0F172A;
+  --sidebar-bg: #090D16;
 
   color-scheme: dark;
 }
 
-html,
-body {
-  background-color: #090D16;
-  color: #F8FAFC;
+/* Light Theme Variables */
+[data-theme="light"], .light {
+  --bg-canvas: #F8FAFC;
+  --bg-surface: #FFFFFF;
+  --bg-surface-hover: #F1F5F9;
+  --bg-surface-subtle: #F8FAFC;
+  
+  --border-subtle: #E2E8F0;
+  --border-strong: #CBD5E1;
+  
+  --text-primary: #0F172A;
+  --text-secondary: #475569;
+  --text-muted: #64748B;
+  
+  --accent: #0284C7;
+  --accent-hover: #0369A1;
+  --accent-light: rgba(2, 132, 199, 0.1);
+  
+  --input-bg: #FFFFFF;
+  --input-border: #CBD5E1;
+  --input-text: #0F172A;
+
+  --card-bg: #FFFFFF;
+  --header-bg: #FFFFFF;
+  --sidebar-bg: #F1F5F9;
+
+  color-scheme: light;
+}
+
+html, body {
+  background-color: var(--bg-canvas);
+  color: var(--text-primary);
   font-family: var(--font-sans);
   margin: 0;
   padding: 0;
   -webkit-font-smoothing: antialiased;
+  transition: background-color 0.2s ease, color 0.2s ease;
 }
 
-/* Base Form Styling for Consistent Usability */
+/* Form Controls Adaptation */
 input, select, textarea {
-  background-color: #0F172A;
-  border: 1px solid #334155;
-  color: #F8FAFC;
+  background-color: var(--input-bg);
+  border: 1px solid var(--input-border);
+  color: var(--input-text);
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
 }
 
 input:focus, select:focus, textarea:focus {
   outline: none;
-  border-color: #0EA5E9;
-  box-shadow: 0 0 0 2px rgba(14, 165, 233, 0.25);
+  border-color: var(--accent);
+  box-shadow: 0 0 0 2px var(--accent-light);
+}
+
+select option {
+  background-color: var(--bg-surface);
+  color: var(--text-primary);
+}
+
+/* Custom Scrollbars */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--bg-canvas);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--border-strong);
+  border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--text-muted);
 }
 
 .tabular-numbers {
@@ -110,6 +130,6 @@ input:focus, select:focus, textarea:focus {
 }
 
 *:focus-visible {
-  outline: 2px solid #0EA5E9;
+  outline: 2px solid var(--accent);
   outline-offset: 2px;
 }

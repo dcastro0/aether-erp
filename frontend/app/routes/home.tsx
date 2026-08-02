@@ -46,15 +46,15 @@ export default function HomePage() {
     return (
       <DashboardLayout>
         <div className="space-y-6 animate-pulse">
-          <div className="h-8 w-48 bg-[#1E293B] rounded-md"></div>
+          <div className="h-8 w-48 bg-[var(--border-subtle)] rounded-md"></div>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
             {[1, 2, 3, 4].map((i) => (
-              <div key={i} className="h-32 bg-[#0F172A] rounded-xl border border-[#1E293B]"></div>
+              <div key={i} className="h-32 bg-[var(--bg-surface)] rounded-xl border border-[var(--border-subtle)]"></div>
             ))}
           </div>
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-            <div className="lg:col-span-2 h-96 bg-[#0F172A] rounded-xl border border-[#1E293B]"></div>
-            <div className="h-96 bg-[#0F172A] rounded-xl border border-[#1E293B]"></div>
+            <div className="lg:col-span-2 h-96 bg-[var(--bg-surface)] rounded-xl border border-[var(--border-subtle)]"></div>
+            <div className="h-96 bg-[var(--bg-surface)] rounded-xl border border-[var(--border-subtle)]"></div>
           </div>
         </div>
       </DashboardLayout>
@@ -133,17 +133,17 @@ export default function HomePage() {
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
           <div>
             <label htmlFor="overview-title" className="sr-only">Painel de Métricas</label>
-            <h1 id="overview-title" className="text-2xl font-bold text-[#F8FAFC] tracking-tight">
+            <h1 id="overview-title" className="text-2xl font-bold text-[var(--text-primary)] tracking-tight">
               Visão Geral do Negócio
             </h1>
-            <p className="text-sm text-[#94A3B8] mt-0.5">
+            <p className="text-sm text-[var(--text-secondary)] mt-0.5">
               Painel executivo de desempenho financeiro, vendas e logística.
             </p>
           </div>
 
-          <div className="flex items-center gap-2 bg-[#0F172A] p-1.5 rounded-lg border border-[#1E293B]">
-            <Calendar className="w-4 h-4 text-[#64748B] ml-2" />
-            <span className="text-xs text-[#64748B] font-medium hidden md:inline">Período:</span>
+          <div className="flex items-center gap-2 bg-[var(--bg-surface)] p-1.5 rounded-lg border border-[var(--border-subtle)]">
+            <Calendar className="w-4 h-4 text-[var(--text-muted)] ml-2" />
+            <span className="text-xs text-[var(--text-muted)] font-medium hidden md:inline">Período:</span>
             {[
               { id: "7d", label: "7 Dias" },
               { id: "30d", label: "30 Dias" },
@@ -155,8 +155,8 @@ export default function HomePage() {
                 onClick={() => setTimeRange(range.id as any)}
                 className={`px-3 py-1 text-xs font-semibold rounded-md transition-all ${
                   timeRange === range.id
-                    ? "bg-[#0EA5E9] text-white shadow-sm"
-                    : "text-[#94A3B8] hover:text-[#F8FAFC] hover:bg-[#1E293B]"
+                    ? "bg-[var(--accent)] text-white shadow-sm"
+                    : "text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:bg-[var(--bg-surface-hover)]"
                 }`}
               >
                 {range.label}
@@ -170,17 +170,17 @@ export default function HomePage() {
           {cards.map((card, i) => (
             <div
               key={i}
-              className="bg-[#0F172A] rounded-xl border border-[#1E293B] p-6 shadow-md hover:border-[#334155] transition-all"
+              className="bg-[var(--bg-surface)] rounded-xl border border-[var(--border-subtle)] p-6 shadow-sm hover:border-[var(--border-strong)] transition-all"
             >
               <div className="flex justify-between items-start mb-4">
-                <div className="p-2.5 bg-[#1E293B] rounded-lg text-[#94A3B8]">
+                <div className="p-2.5 bg-[var(--bg-canvas)] rounded-lg text-[var(--text-secondary)] border border-[var(--border-subtle)]">
                   <card.icon size={20} strokeWidth={1.5} />
                 </div>
                 <div
                   className={`flex items-center gap-1 text-xs font-medium px-2 py-1 rounded-md border ${
                     card.positive
-                      ? "bg-[rgba(6,78,59,0.3)] text-[#34D399] border-[#059669]/30"
-                      : "bg-[rgba(127,29,29,0.3)] text-[#F87171] border-[#DC2626]/30"
+                      ? "bg-emerald-500/10 text-emerald-500 border-emerald-500/30"
+                      : "bg-rose-500/10 text-rose-500 border-rose-500/30"
                   }`}
                 >
                   {card.positive ? (
@@ -191,8 +191,8 @@ export default function HomePage() {
                   {card.trend}
                 </div>
               </div>
-              <p className="text-xs font-semibold uppercase tracking-wider text-[#94A3B8] mb-1">{card.label}</p>
-              <h3 className="text-2xl font-bold text-[#F8FAFC] tracking-tight tabular-numbers">
+              <p className="text-xs font-semibold uppercase tracking-wider text-[var(--text-secondary)] mb-1">{card.label}</p>
+              <h3 className="text-2xl font-bold text-[var(--text-primary)] tracking-tight tabular-numbers">
                 {card.value}
               </h3>
             </div>
@@ -202,15 +202,15 @@ export default function HomePage() {
         {/* ANALYTICS ROW 1: MAIN REVENUE CHART + CASH FLOW COMPARISON */}
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
           {/* REVENUE OVER TIME */}
-          <div className="lg:col-span-2 bg-[#0F172A] rounded-xl border border-[#1E293B] p-6 shadow-md">
+          <div className="lg:col-span-2 bg-[var(--bg-surface)] rounded-xl border border-[var(--border-subtle)] p-6 shadow-sm">
             <div className="flex justify-between items-center mb-6">
               <div>
-                <h2 className="text-base font-bold text-[#F8FAFC]">Evolução de Faturamento</h2>
-                <p className="text-xs text-[#94A3B8]">Volume de vendas acumulado no período</p>
+                <h2 className="text-base font-bold text-[var(--text-primary)]">Evolução de Faturamento</h2>
+                <p className="text-xs text-[var(--text-secondary)]">Volume de vendas acumulado no período</p>
               </div>
               <div className="flex items-center gap-2">
-                <span className="w-2.5 h-2.5 rounded-full bg-[#0EA5E9]"></span>
-                <span className="text-xs text-[#94A3B8] font-medium">Faturamento (R$)</span>
+                <span className="w-2.5 h-2.5 rounded-full bg-[var(--accent)]"></span>
+                <span className="text-xs text-[var(--text-secondary)] font-medium">Faturamento (R$)</span>
               </div>
             </div>
             <div className="h-[300px] w-full">
@@ -219,63 +219,63 @@ export default function HomePage() {
                   <AreaChart data={stats.sales_over_time}>
                     <defs>
                       <linearGradient id="colorRevenue" x1="0" y1="0" x2="0" y2="1">
-                        <stop offset="5%" stopColor="#0EA5E9" stopOpacity={0.3}/>
-                        <stop offset="95%" stopColor="#0EA5E9" stopOpacity={0}/>
+                        <stop offset="5%" stopColor="var(--accent)" stopOpacity={0.3}/>
+                        <stop offset="95%" stopColor="var(--accent)" stopOpacity={0}/>
                       </linearGradient>
                     </defs>
-                    <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#1E293B" />
+                    <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="var(--border-subtle)" />
                     <XAxis
                       dataKey="date"
                       axisLine={false}
                       tickLine={false}
-                      tick={{ fill: "#64748B", fontSize: 12 }}
+                      tick={{ fill: "var(--text-muted)", fontSize: 12 }}
                       dy={10}
                       tickFormatter={(val) => (typeof val === 'string' && val.length >= 10 ? val.substring(5, 10) : val)}
                     />
-                    <YAxis axisLine={false} tickLine={false} tick={{ fill: "#64748B", fontSize: 12 }} dx={-10} />
+                    <YAxis axisLine={false} tickLine={false} tick={{ fill: "var(--text-muted)", fontSize: 12 }} dx={-10} />
                     <Tooltip
                       contentStyle={{
-                        backgroundColor: "#0F172A",
-                        border: "1px solid #334155",
+                        backgroundColor: "var(--bg-surface)",
+                        border: "1px solid var(--border-strong)",
                         borderRadius: "8px",
-                        color: "#F8FAFC"
+                        color: "var(--text-primary)"
                       }}
                       formatter={(val: any) => [new Intl.NumberFormat("pt-BR", { style: "currency", currency: "BRL" }).format(val), "Receita"]}
                     />
-                    <Area type="monotone" dataKey="total" stroke="#0EA5E9" strokeWidth={2} fillOpacity={1} fill="url(#colorRevenue)" />
+                    <Area type="monotone" dataKey="total" stroke="var(--accent)" strokeWidth={2} fillOpacity={1} fill="url(#colorRevenue)" />
                   </AreaChart>
                 </ResponsiveContainer>
               ) : (
-                <div className="h-full w-full flex items-center justify-center rounded-lg border border-dashed border-[#1E293B] bg-[#090D16]">
-                  <span className="text-[#64748B] text-sm">Sem dados de vendas para o período.</span>
+                <div className="h-full w-full flex items-center justify-center rounded-lg border border-dashed border-[var(--border-subtle)] bg-[var(--bg-canvas)]">
+                  <span className="text-[var(--text-muted)] text-sm">Sem dados de vendas para o período.</span>
                 </div>
               )}
             </div>
           </div>
 
           {/* CASH FLOW COMPARATIVE CHART */}
-          <div className="bg-[#0F172A] rounded-xl border border-[#1E293B] p-6 shadow-md">
+          <div className="bg-[var(--bg-surface)] rounded-xl border border-[var(--border-subtle)] p-6 shadow-sm">
             <div className="flex justify-between items-center mb-6">
               <div>
-                <h2 className="text-base font-bold text-[#F8FAFC]">Fluxo de Caixa</h2>
-                <p className="text-xs text-[#94A3B8]">Receitas vs Despesas semestrais</p>
+                <h2 className="text-base font-bold text-[var(--text-primary)]">Fluxo de Caixa</h2>
+                <p className="text-xs text-[var(--text-secondary)]">Receitas vs Despesas semestrais</p>
               </div>
-              <BarChart3 className="w-5 h-5 text-[#0EA5E9]" />
+              <BarChart3 className="w-5 h-5 text-[var(--accent)]" />
             </div>
             <div className="h-[300px] w-full">
               <ResponsiveContainer width="100%" height="100%">
                 <ComposedChart data={cashFlowData}>
-                  <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#1E293B" />
-                  <XAxis dataKey="period" axisLine={false} tickLine={false} tick={{ fill: "#64748B", fontSize: 12 }} />
-                  <YAxis axisLine={false} tickLine={false} tick={{ fill: "#64748B", fontSize: 10 }} />
+                  <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="var(--border-subtle)" />
+                  <XAxis dataKey="period" axisLine={false} tickLine={false} tick={{ fill: "var(--text-muted)", fontSize: 12 }} />
+                  <YAxis axisLine={false} tickLine={false} tick={{ fill: "var(--text-muted)", fontSize: 10 }} />
                   <Tooltip
-                    contentStyle={{ backgroundColor: "#0F172A", border: "1px solid #334155", borderRadius: "8px", color: "#F8FAFC" }}
+                    contentStyle={{ backgroundColor: "var(--bg-surface)", border: "1px solid var(--border-strong)", borderRadius: "8px", color: "var(--text-primary)" }}
                     formatter={(value: number) => new Intl.NumberFormat("pt-BR", { style: "currency", currency: "BRL" }).format(value)}
                   />
                   <Legend wrapperStyle={{ fontSize: 12, paddingTop: 10 }} />
                   <Bar dataKey="receita" name="Receita" fill="#34D399" radius={[4, 4, 0, 0]} barSize={12} />
                   <Bar dataKey="despesa" name="Despesa" fill="#F87171" radius={[4, 4, 0, 0]} barSize={12} />
-                  <Line type="monotone" dataKey="saldo" name="Saldo Líquido" stroke="#0EA5E9" strokeWidth={2} dot={{ r: 3 }} />
+                  <Line type="monotone" dataKey="saldo" name="Saldo Líquido" stroke="var(--accent)" strokeWidth={2} dot={{ r: 3 }} />
                 </ComposedChart>
               </ResponsiveContainer>
             </div>
@@ -285,10 +285,10 @@ export default function HomePage() {
         {/* ANALYTICS ROW 2: PAYMENT METHODS, TOP PRODUCTS & STOCK HEALTH */}
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 pb-8">
           {/* PAYMENT METHOD PIE CHART */}
-          <div className="bg-[#0F172A] rounded-xl border border-[#1E293B] p-6 shadow-md">
+          <div className="bg-[var(--bg-surface)] rounded-xl border border-[var(--border-subtle)] p-6 shadow-sm">
             <div className="mb-6">
-              <h2 className="text-base font-bold text-[#F8FAFC]">Métodos de Pagamento</h2>
-              <p className="text-xs text-[#94A3B8]">Distribuição de receita por forma de pagamento</p>
+              <h2 className="text-base font-bold text-[var(--text-primary)]">Métodos de Pagamento</h2>
+              <p className="text-xs text-[var(--text-secondary)]">Distribuição de receita por forma de pagamento</p>
             </div>
             <div className="h-[260px] w-full">
               {stats?.sales_by_payment_method && stats.sales_by_payment_method.length > 0 ? (
@@ -311,55 +311,55 @@ export default function HomePage() {
                     </Pie>
                     <Tooltip
                       formatter={(val: number) => new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(val)}
-                      contentStyle={{ backgroundColor: "#0F172A", border: "1px solid #334155", borderRadius: "8px", color: "#F8FAFC" }}
+                      contentStyle={{ backgroundColor: "var(--bg-surface)", border: "1px solid var(--border-strong)", borderRadius: "8px", color: "var(--text-primary)" }}
                     />
                   </PieChart>
                 </ResponsiveContainer>
               ) : (
-                <div className="h-full w-full flex items-center justify-center rounded-lg border border-dashed border-[#1E293B] bg-[#090D16]">
-                  <span className="text-[#64748B] text-sm">Sem dados de pagamento.</span>
+                <div className="h-full w-full flex items-center justify-center rounded-lg border border-dashed border-[var(--border-subtle)] bg-[var(--bg-canvas)]">
+                  <span className="text-[var(--text-muted)] text-sm">Sem dados de pagamento.</span>
                 </div>
               )}
             </div>
           </div>
 
           {/* TOP PRODUCTS BAR CHART */}
-          <div className="bg-[#0F172A] rounded-xl border border-[#1E293B] p-6 shadow-md">
+          <div className="bg-[var(--bg-surface)] rounded-xl border border-[var(--border-subtle)] p-6 shadow-sm">
             <div className="mb-6">
-              <h2 className="text-base font-bold text-[#F8FAFC]">Mais Vendidos</h2>
-              <p className="text-xs text-[#94A3B8]">Produtos com maior saída no estoque</p>
+              <h2 className="text-base font-bold text-[var(--text-primary)]">Mais Vendidos</h2>
+              <p className="text-xs text-[var(--text-secondary)]">Produtos com maior saída no estoque</p>
             </div>
             <div className="h-[260px] w-full">
               {stats?.top_products && stats.top_products.length > 0 ? (
                 <ResponsiveContainer width="100%" height="100%">
                   <BarChart data={stats.top_products} layout="vertical" margin={{ top: 5, right: 20, left: 10, bottom: 5 }}>
-                    <CartesianGrid strokeDasharray="3 3" horizontal={true} vertical={false} stroke="#1E293B" />
-                    <XAxis type="number" tick={{ fill: "#64748B", fontSize: 11 }} axisLine={false} tickLine={false} />
-                    <YAxis dataKey="name" type="category" width={90} tick={{ fill: "#64748B", fontSize: 11 }} axisLine={false} tickLine={false} />
-                    <Tooltip contentStyle={{ backgroundColor: "#0F172A", border: "1px solid #334155", borderRadius: "8px", color: "#F8FAFC" }} />
-                    <Bar dataKey="total_quantity_sold" name="Qtd Vendida" fill="#0EA5E9" radius={[0, 4, 4, 0]} barSize={20} />
+                    <CartesianGrid strokeDasharray="3 3" horizontal={true} vertical={false} stroke="var(--border-subtle)" />
+                    <XAxis type="number" tick={{ fill: "var(--text-muted)", fontSize: 11 }} axisLine={false} tickLine={false} />
+                    <YAxis dataKey="name" type="category" width={90} tick={{ fill: "var(--text-muted)", fontSize: 11 }} axisLine={false} tickLine={false} />
+                    <Tooltip contentStyle={{ backgroundColor: "var(--bg-surface)", border: "1px solid var(--border-strong)", borderRadius: "8px", color: "var(--text-primary)" }} />
+                    <Bar dataKey="total_quantity_sold" name="Qtd Vendida" fill="var(--accent)" radius={[0, 4, 4, 0]} barSize={20} />
                   </BarChart>
                 </ResponsiveContainer>
               ) : (
-                <div className="h-full w-full flex items-center justify-center rounded-lg border border-dashed border-[#1E293B] bg-[#090D16]">
-                  <span className="text-[#64748B] text-sm">Sem dados de produtos.</span>
+                <div className="h-full w-full flex items-center justify-center rounded-lg border border-dashed border-[var(--border-subtle)] bg-[var(--bg-canvas)]">
+                  <span className="text-[var(--text-muted)] text-sm">Sem dados de produtos.</span>
                 </div>
               )}
             </div>
           </div>
 
           {/* STOCK HEALTH DONUT CHART */}
-          <div className="bg-[#0F172A] rounded-xl border border-[#1E293B] p-6 shadow-md flex flex-col justify-between">
+          <div className="bg-[var(--bg-surface)] rounded-xl border border-[var(--border-subtle)] p-6 shadow-sm flex flex-col justify-between">
             <div>
               <div className="flex items-center justify-between mb-2">
-                <h2 className="text-base font-bold text-[#F8FAFC]">Saúde do Estoque</h2>
+                <h2 className="text-base font-bold text-[var(--text-primary)]">Saúde do Estoque</h2>
                 {lowStockCount > 0 && (
-                  <span className="flex items-center gap-1 text-[11px] font-bold text-[#F87171] bg-[rgba(127,29,29,0.3)] px-2 py-0.5 rounded border border-[#DC2626]/30">
+                  <span className="flex items-center gap-1 text-[11px] font-bold text-rose-500 bg-rose-500/10 px-2 py-0.5 rounded border border-rose-500/30">
                     <AlertTriangle size={12} /> Alerta
                   </span>
                 )}
               </div>
-              <p className="text-xs text-[#94A3B8]">Proporção de produtos por nível de disponibilidade</p>
+              <p className="text-xs text-[var(--text-secondary)]">Proporção de produtos por nível de disponibilidade</p>
             </div>
 
             <div className="h-[180px] w-full my-2">
@@ -370,19 +370,19 @@ export default function HomePage() {
                       <Cell key={`cell-stock-${index}`} fill={entry.color} />
                     ))}
                   </Pie>
-                  <Tooltip contentStyle={{ backgroundColor: "#0F172A", border: "1px solid #334155", borderRadius: "8px", color: "#F8FAFC" }} />
+                  <Tooltip contentStyle={{ backgroundColor: "var(--bg-surface)", border: "1px solid var(--border-strong)", borderRadius: "8px", color: "var(--text-primary)" }} />
                 </PieChart>
               </ResponsiveContainer>
             </div>
 
-            <div className="flex items-center justify-around border-t border-[#1E293B] pt-3 text-xs">
+            <div className="flex items-center justify-around border-t border-[var(--border-subtle)] pt-3 text-xs">
               <div className="flex items-center gap-2">
                 <span className="w-3 h-3 rounded-full bg-[#34D399]"></span>
-                <span className="text-[#94A3B8]">Normal ({healthyCount})</span>
+                <span className="text-[var(--text-secondary)]">Normal ({healthyCount})</span>
               </div>
               <div className="flex items-center gap-2">
                 <span className="w-3 h-3 rounded-full bg-[#F87171]"></span>
-                <span className="text-[#F87171] font-semibold">Alerta ({lowStockCount})</span>
+                <span className="text-rose-500 font-semibold">Alerta ({lowStockCount})</span>
               </div>
             </div>
           </div>

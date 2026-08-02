@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Link, useLocation, useNavigate } from "react-router";
 import {
   LayoutDashboard,
@@ -21,7 +21,9 @@ import {
   AlertCircle,
   Truck,
   ShoppingBag,
-  BarChart3
+  BarChart3,
+  Sun,
+  Moon
 } from "lucide-react";
 import { CommandMenu } from "./ui/CommandMenu";
 import { NotificationsPopover } from "./NotificationsPopover";
@@ -31,6 +33,27 @@ export function DashboardLayout({ children }: { children: React.ReactNode }) {
   const location = useLocation();
   const navigate = useNavigate();
   const [isCommandMenuOpen, setIsCommandMenuOpen] = useState(false);
+
+  const [theme, setTheme] = useState<"dark" | "light">(() => {
+    if (typeof window !== "undefined") {
+      return (localStorage.getItem("theme") as "dark" | "light") || "dark";
+    }
+    return "dark";
+  });
+
+  useEffect(() => {
+    document.documentElement.setAttribute("data-theme", theme);
+    if (theme === "light") {
+      document.documentElement.classList.add("light");
+    } else {
+      document.documentElement.classList.remove("light");
+    }
+    localStorage.setItem("theme", theme);
+  }, [theme]);
+
+  const toggleTheme = () => {
+    setTheme((prev) => (prev === "dark" ? "light" : "dark"));
+  };
 
   // Mandatory password change state & User Info
   const [user, setUser] = useState(() => {
@@ -122,24 +145,24 @@ export function DashboardLayout({ children }: { children: React.ReactNode }) {
   };
 
   return (
-    <div className="flex h-screen bg-[#090D16] text-[#F8FAFC] font-sans antialiased selection:bg-[#0EA5E9]/20 selection:text-[#38BDF8]">
+    <div className="flex h-screen bg-[var(--bg-canvas)] text-[var(--text-primary)] font-sans antialiased selection:bg-[#0EA5E9]/20 selection:text-[#38BDF8]">
       {/* Sidebar Navigation */}
-      <aside className="w-64 bg-[#0F172A] border-r border-[#1E293B] flex flex-col z-20 shrink-0">
-        <div className="h-16 flex items-center px-6 border-b border-[#1E293B] shrink-0 justify-between">
+      <aside className="w-64 bg-[var(--sidebar-bg)] border-r border-[var(--border-subtle)] flex flex-col z-20 shrink-0 transition-colors">
+        <div className="h-16 flex items-center px-6 border-b border-[var(--border-subtle)] shrink-0 justify-between">
           <div className="flex items-center gap-3">
-            <div className="p-2 rounded-lg bg-[#0EA5E9]/10 border border-[#0EA5E9]/20 text-[#0EA5E9]">
+            <div className="p-2 rounded-lg bg-[var(--accent-light)] border border-[var(--accent)]/30 text-[var(--accent)]">
               <Cloud size={20} strokeWidth={2} />
             </div>
             <div>
-              <span className="text-base font-bold tracking-tight text-[#F8FAFC] block">Aether ERP</span>
-              <span className="text-[10px] text-[#64748B] tracking-wider uppercase font-semibold">Tactical Suite</span>
+              <span className="text-base font-bold tracking-tight text-[var(--text-primary)] block">Aether ERP</span>
+              <span className="text-[10px] text-[var(--text-muted)] tracking-wider uppercase font-semibold">Tactical Suite</span>
             </div>
           </div>
         </div>
 
         <nav className="flex-1 overflow-y-auto py-6 px-3 space-y-1">
           <div className="px-3 pb-2">
-            <span className="text-[10px] uppercase tracking-widest font-semibold text-[#64748B]">Navegação</span>
+            <span className="text-[10px] uppercase tracking-widest font-semibold text-[var(--text-muted)]">Navegação</span>
           </div>
           {menuItems.map((item) => {
             const isActive = location.pathname === item.path;
@@ -149,19 +172,19 @@ export function DashboardLayout({ children }: { children: React.ReactNode }) {
                 to={item.path}
                 className={`flex items-center gap-3 px-3 py-2.5 rounded-lg transition-all duration-150 group ${
                   isActive
-                    ? "bg-[#0EA5E9]/10 text-[#38BDF8] border border-[#0EA5E9]/30 font-medium"
-                    : "text-[#94A3B8] hover:bg-[#1E293B] hover:text-[#F8FAFC]"
+                    ? "bg-[var(--accent-light)] text-[var(--accent)] border border-[var(--accent)]/30 font-semibold"
+                    : "text-[var(--text-secondary)] hover:bg-[var(--bg-surface-hover)] hover:text-[var(--text-primary)]"
                 }`}
               >
-                <item.icon size={18} strokeWidth={isActive ? 2 : 1.5} className={isActive ? "text-[#0EA5E9]" : "text-[#64748B] group-hover:text-[#F8FAFC]"} />
+                <item.icon size={18} strokeWidth={isActive ? 2 : 1.5} className={isActive ? "text-[var(--accent)]" : "text-[var(--text-muted)] group-hover:text-[var(--text-primary)]"} />
                 <span className="text-sm">{item.label}</span>
               </Link>
             );
           })}
         </nav>
 
-        <div className="p-4 border-t border-[#1E293B] shrink-0 space-y-3">
-          <div className="flex items-center justify-between text-[11px] text-[#64748B] px-1">
+        <div className="p-4 border-t border-[var(--border-subtle)] shrink-0 space-y-3">
+          <div className="flex items-center justify-between text-[11px] text-[var(--text-muted)] px-1">
             <span>API Status</span>
             <span className="flex items-center gap-1 text-[#34D399] font-mono">
               <span className="w-1.5 h-1.5 rounded-full bg-[#34D399] animate-pulse"></span> OK
@@ -169,7 +192,7 @@ export function DashboardLayout({ children }: { children: React.ReactNode }) {
           </div>
           <button
             onClick={handleLogout}
-            className="w-full flex items-center gap-3 px-3 py-2 text-sm text-[#94A3B8] hover:text-[#F87171] hover:bg-[rgba(127,29,29,0.2)] rounded-lg transition-all duration-150 group border border-transparent hover:border-[#DC2626]/30"
+            className="w-full flex items-center gap-3 px-3 py-2 text-sm text-[var(--text-secondary)] hover:text-[#F87171] hover:bg-[rgba(127,29,29,0.15)] rounded-lg transition-all duration-150 group border border-transparent hover:border-[#DC2626]/30"
           >
             <LogOut size={16} strokeWidth={1.5} className="group-hover:text-[#F87171]" />
             <span>Sair do Sistema</span>
@@ -180,38 +203,46 @@ export function DashboardLayout({ children }: { children: React.ReactNode }) {
       {/* Main Container */}
       <div className="flex-1 flex flex-col min-w-0 overflow-hidden">
         {/* Top Header */}
-        <header className="h-16 bg-[#0F172A] border-b border-[#1E293B] flex items-center justify-between px-8 shrink-0 z-10">
+        <header className="h-16 bg-[var(--header-bg)] border-b border-[var(--border-subtle)] flex items-center justify-between px-8 shrink-0 z-10 transition-colors">
           <button
             onClick={() => setIsCommandMenuOpen(true)}
-            className="flex items-center gap-3 px-3.5 py-1.5 bg-[#1E293B] border border-[#334155] rounded-lg text-sm text-[#94A3B8] hover:text-[#F8FAFC] hover:border-[#0EA5E9] transition-all w-80 shadow-inner"
+            className="flex items-center gap-3 px-3.5 py-1.5 bg-[var(--bg-canvas)] border border-[var(--border-strong)] rounded-lg text-sm text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:border-[var(--accent)] transition-all w-80 shadow-inner"
           >
-            <Search size={16} className="text-[#64748B]" />
+            <Search size={16} className="text-[var(--text-muted)]" />
             <span className="flex-1 text-left text-xs">Buscar faturas, clientes...</span>
-            <kbd className="flex items-center gap-0.5 text-[10px] bg-[#0F172A] px-1.5 py-0.5 rounded border border-[#334155] text-[#94A3B8] font-mono">
+            <kbd className="flex items-center gap-0.5 text-[10px] bg-[var(--bg-surface)] px-1.5 py-0.5 rounded border border-[var(--border-strong)] text-[var(--text-muted)] font-mono">
               <Command size={10} /> K
             </kbd>
           </button>
 
-          {/* User Profile & Notifications */}
-          <div className="flex items-center gap-4">
+          {/* User Profile, Theme Toggle & Notifications */}
+          <div className="flex items-center gap-3">
+            <button
+              onClick={toggleTheme}
+              className="p-2 text-[var(--text-secondary)] hover:text-[var(--text-primary)] bg-[var(--bg-canvas)] hover:bg-[var(--bg-surface-hover)] border border-[var(--border-strong)] rounded-lg transition-all"
+              title={theme === "dark" ? "Alternar para Modo Claro" : "Alternar para Modo Escuro"}
+            >
+              {theme === "dark" ? <Sun size={18} className="text-amber-400" /> : <Moon size={18} className="text-sky-600" />}
+            </button>
+
             <NotificationsPopover />
 
-            <div className="h-6 w-px bg-[#1E293B]"></div>
+            <div className="h-6 w-px bg-[var(--border-subtle)]"></div>
 
             <div className="flex items-center gap-3">
-              <div className="w-8 h-8 rounded-full bg-[#0EA5E9]/15 border border-[#0EA5E9]/40 flex items-center justify-center text-[#38BDF8] font-bold text-xs">
+              <div className="w-8 h-8 rounded-full bg-[var(--accent-light)] border border-[var(--accent)]/40 flex items-center justify-center text-[var(--accent)] font-bold text-xs">
                 {user?.full_name ? user.full_name.charAt(0).toUpperCase() : 'A'}
               </div>
               <div className="text-left hidden sm:block">
-                <p className="text-xs font-semibold text-[#F8FAFC]">{user?.full_name}</p>
-                <p className="text-[10px] text-[#0EA5E9] font-medium uppercase tracking-wider">{getRoleLabel(role)}</p>
+                <p className="text-xs font-semibold text-[var(--text-primary)]">{user?.full_name}</p>
+                <p className="text-[10px] text-[var(--accent)] font-medium uppercase tracking-wider">{getRoleLabel(role)}</p>
               </div>
             </div>
           </div>
         </header>
 
         {/* Page Content */}
-        <main className="flex-1 overflow-y-auto p-8 relative bg-[#090D16]">
+        <main className="flex-1 overflow-y-auto p-8 relative bg-[var(--bg-canvas)] transition-colors">
           <div className="max-w-[1400px] mx-auto w-full">
             {children}
           </div>

@@ -66,59 +66,59 @@ export const CommandMenu: React.FC<CommandMenuProps> = ({ isOpen, onClose }) => 
       onClick={onClose}
     >
       <div
-        className="w-full max-w-xl bg-[#0F172A] border border-[#334155] rounded-xl shadow-2xl overflow-hidden flex flex-col transform transition-all"
+        className="w-full max-w-xl bg-[var(--bg-surface)] border border-[var(--border-strong)] rounded-xl shadow-2xl overflow-hidden flex flex-col transform transition-all"
         onClick={(e) => e.stopPropagation()}
       >
-        <div className="flex items-center px-4 border-b border-[#1E293B]">
-          <Search className="w-5 h-5 text-[#64748B] shrink-0" />
+        <div className="flex items-center px-4 border-b border-[var(--border-subtle)]">
+          <Search className="w-5 h-5 text-[var(--text-muted)] shrink-0" />
           <input
             type="text"
             placeholder="Buscar telas, faturas, produtos... (Esc para fechar)"
             value={query}
             onChange={(e) => setQuery(e.target.value)}
             autoFocus
-            className="w-full h-12 px-3 bg-transparent border-none text-sm text-[#F8FAFC] placeholder-[#64748B] focus:outline-none"
+            className="w-full h-12 px-3 bg-transparent border-none text-sm text-[var(--text-primary)] placeholder-[var(--text-muted)] focus:outline-none"
           />
-          <button onClick={onClose} className="p-1 text-[#64748B] hover:text-[#F8FAFC]">
+          <button onClick={onClose} className="p-1 text-[var(--text-muted)] hover:text-[var(--text-primary)]">
             <X className="w-4 h-4" />
           </button>
         </div>
 
         <div className="max-h-80 overflow-y-auto p-2 space-y-1">
-          <div className="px-3 py-1.5 text-[10px] font-semibold tracking-wider text-[#64748B] uppercase">
+          <div className="px-3 py-1.5 text-[10px] font-semibold tracking-wider text-[var(--text-muted)] uppercase">
             Navegação Rápida
           </div>
           {filteredLinks.length === 0 ? (
-            <div className="p-4 text-center text-sm text-[#64748B]">Nenhum resultado encontrado.</div>
+            <div className="p-4 text-center text-sm text-[var(--text-muted)]">Nenhum resultado encontrado.</div>
           ) : (
             filteredLinks.map((item, idx) => (
               <button
                 key={idx}
                 onClick={() => handleSelect(item.path)}
-                className="w-full flex items-center justify-between px-3 py-2.5 rounded-lg text-sm text-[#F8FAFC] hover:bg-[#1E293B] hover:text-[#0EA5E9] transition-colors group text-left"
+                className="w-full flex items-center justify-between px-3 py-2.5 rounded-lg text-sm text-[var(--text-primary)] hover:bg-[var(--bg-surface-hover)] hover:text-[var(--accent)] transition-colors group text-left"
               >
                 <div className="flex items-center gap-2">
-                  <ArrowRight className="w-4 h-4 text-[#64748B] group-hover:text-[#0EA5E9]" />
+                  <ArrowRight className="w-4 h-4 text-[var(--text-muted)] group-hover:text-[var(--accent)]" />
                   <span>{item.title}</span>
                 </div>
-                <span className="text-xs text-[#64748B] bg-[#1E293B] px-2 py-0.5 rounded">{item.type}</span>
+                <span className="text-xs text-[var(--text-secondary)] bg-[var(--bg-canvas)] px-2 py-0.5 rounded border border-[var(--border-subtle)]">{item.type}</span>
               </button>
             ))
           )}
         </div>
 
-        <div className="flex items-center justify-between px-4 py-2 bg-[#090D16] border-t border-[#1E293B] text-xs text-[#64748B]">
+        <div className="flex items-center justify-between px-4 py-2 bg-[var(--bg-canvas)] border-t border-[var(--border-subtle)] text-xs text-[var(--text-muted)]">
           <div className="flex items-center gap-3">
             <span>
-              <kbd className="px-1.5 py-0.5 bg-[#1E293B] rounded text-[10px]">↑</kbd>{" "}
-              <kbd className="px-1.5 py-0.5 bg-[#1E293B] rounded text-[10px]">↓</kbd> Navegar
+              <kbd className="px-1.5 py-0.5 bg-[var(--bg-surface)] border border-[var(--border-subtle)] rounded text-[10px]">↑</kbd>{" "}
+              <kbd className="px-1.5 py-0.5 bg-[var(--bg-surface)] border border-[var(--border-subtle)] rounded text-[10px]">↓</kbd> Navegar
             </span>
             <span>
-              <kbd className="px-1.5 py-0.5 bg-[#1E293B] rounded text-[10px]">Enter</kbd> Selecionar
+              <kbd className="px-1.5 py-0.5 bg-[var(--bg-surface)] border border-[var(--border-subtle)] rounded text-[10px]">Enter</kbd> Selecionar
             </span>
           </div>
           <span>
-            <kbd className="px-1.5 py-0.5 bg-[#1E293B] rounded text-[10px]">Esc</kbd> Fechar
+            <kbd className="px-1.5 py-0.5 bg-[var(--bg-surface)] border border-[var(--border-subtle)] rounded text-[10px]">Esc</kbd> Fechar
           </span>
         </div>
       </div>
