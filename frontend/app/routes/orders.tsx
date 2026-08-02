@@ -210,11 +210,11 @@ export default function OrdersPage() {
   const getStatusColor = (status: string) => {
     switch (status) {
       case "completed":
-        return "bg-green-100 text-green-700 border-green-200";
+        return "bg-emerald-500/10 text-emerald-500 border-emerald-500/30";
       case "pending":
-        return "bg-yellow-100 text-yellow-700 border-yellow-200";
+        return "bg-amber-500/10 text-amber-500 border-amber-500/30";
       case "canceled":
-        return "bg-red-100 text-red-700 border-red-200";
+        return "bg-rose-500/10 text-rose-500 border-rose-500/30";
       default:
         return "bg-aether-bg text-aether-text-muted border-aether-border";
     }
@@ -249,9 +249,9 @@ export default function OrdersPage() {
               </div>
 
               <div className="flex items-center gap-3">
-                <div className="bg-[#0F172A] px-3 py-1.5 rounded-xl border border-[#1E293B] text-xs flex items-center gap-2">
-                  <span className="text-[#94A3B8]">Total Filtrado:</span>
-                  <span className="font-bold text-[#34D399] tabular-numbers text-sm">
+                <div className="bg-[var(--bg-canvas)] px-3 py-1.5 rounded-xl border border-[var(--border-subtle)] text-xs flex items-center gap-2">
+                  <span className="text-[var(--text-muted)]">Total Filtrado:</span>
+                  <span className="font-bold text-emerald-500 tabular-numbers text-sm">
                     {new Intl.NumberFormat("pt-BR", { style: "currency", currency: "BRL" }).format(totalFilteredSales)}
                   </span>
                 </div>
@@ -267,7 +267,7 @@ export default function OrdersPage() {
             </div>
 
             {/* Filter Bar */}
-            <div className="flex flex-col sm:flex-row items-center justify-between gap-3 bg-[#0F172A] p-3 rounded-xl border border-[#1E293B]">
+            <div className="flex flex-col sm:flex-row items-center justify-between gap-3 bg-[var(--bg-canvas)] p-3 rounded-xl border border-[var(--border-subtle)]">
               <div className="relative w-full sm:w-72">
                 <Search
                   className="absolute left-3 top-1/2 -translate-y-1/2 text-aether-text-muted/70"
@@ -276,14 +276,14 @@ export default function OrdersPage() {
                 <input
                   type="text"
                   placeholder="Buscar por cliente ou ID..."
-                  className="w-full rounded-lg border-[#1E293B] bg-[#090D16] py-2 pl-9 pr-4 text-xs text-[#F8FAFC] focus:border-[#0EA5E9] focus:outline-none transition-all"
+                  className="w-full rounded-lg border border-[var(--border-subtle)] bg-[var(--bg-surface)] py-2 pl-9 pr-4 text-xs text-[var(--text-primary)] focus:border-[var(--accent)] focus:outline-none transition-all"
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
                 />
               </div>
 
               <div className="flex flex-wrap items-center gap-2 w-full sm:w-auto justify-end">
-                <span className="text-xs text-[#64748B] font-medium hidden md:inline">Pagamento:</span>
+                <span className="text-xs text-[var(--text-muted)] font-medium hidden md:inline">Pagamento:</span>
                 {[
                   { id: "all", label: "Todos" },
                   { id: "pix", label: "PIX" },
@@ -296,15 +296,15 @@ export default function OrdersPage() {
                     onClick={() => setPaymentFilter(item.id)}
                     className={`px-2.5 py-1 text-xs font-semibold rounded-md transition-all ${
                       paymentFilter === item.id
-                        ? "bg-[#0EA5E9] text-white shadow-sm"
-                        : "bg-[#1E293B] text-[#94A3B8] hover:text-[#F8FAFC]"
+                        ? "bg-[var(--accent)] text-white shadow-sm"
+                        : "bg-[var(--bg-surface)] text-[var(--text-secondary)] hover:text-[var(--text-primary)] border border-[var(--border-subtle)]"
                     }`}
                   >
                     {item.label}
                   </button>
                 ))}
 
-                <div className="h-4 w-px bg-[#1E293B] mx-1 hidden sm:block"></div>
+                <div className="h-4 w-px bg-[var(--border-subtle)] mx-1 hidden sm:block"></div>
 
                 {[
                   { id: "all", label: "Status" },
@@ -316,8 +316,8 @@ export default function OrdersPage() {
                     onClick={() => setStatusFilter(item.id)}
                     className={`px-2.5 py-1 text-xs font-semibold rounded-md transition-all ${
                       statusFilter === item.id
-                        ? "bg-[#34D399] text-[#090D16] shadow-sm font-bold"
-                        : "bg-[#1E293B] text-[#94A3B8] hover:text-[#F8FAFC]"
+                        ? "bg-emerald-500 text-white shadow-sm font-bold"
+                        : "bg-[var(--bg-surface)] text-[var(--text-secondary)] hover:text-[var(--text-primary)] border border-[var(--border-subtle)]"
                     }`}
                   >
                     {item.label}

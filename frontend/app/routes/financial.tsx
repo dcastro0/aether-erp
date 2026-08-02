@@ -152,8 +152,8 @@ export default function FinancialPage() {
       {/* Header & Main Actions */}
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8">
         <div>
-          <h1 className="text-2xl font-bold text-[#F8FAFC] tracking-tight">Gestão Financeira Avançada</h1>
-          <p className="text-sm text-[#94A3B8] mt-0.5">Controle tático de fluxo de caixa, relatórios e conciliação</p>
+          <h1 className="text-2xl font-bold text-aether-text tracking-tight">Gestão Financeira Avançada</h1>
+          <p className="text-sm text-aether-text-muted mt-0.5">Controle tático de fluxo de caixa, relatórios e conciliação</p>
         </div>
         {(() => {
           const u = typeof window !== "undefined" ? JSON.parse(localStorage.getItem("user") || '{"role": "owner"}') : { role: "owner" };
@@ -167,47 +167,47 @@ export default function FinancialPage() {
 
       {/* KPI Cards */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-        <div className="bg-[#0F172A] p-6 rounded-xl border border-[#1E293B] shadow-lg">
+        <div className="bg-aether-surface p-6 rounded-xl border border-aether-border shadow-md">
           <div className="flex items-center justify-between mb-4">
-            <span className="text-xs font-semibold uppercase tracking-wider text-[#94A3B8]">Receitas Totais</span>
-            <div className="p-2 bg-[rgba(6,78,59,0.4)] text-[#34D399] border border-[#059669]/30 rounded-lg">
+            <span className="text-xs font-semibold uppercase tracking-wider text-aether-text-muted">Receitas Totais</span>
+            <div className="p-2 bg-emerald-500/10 text-emerald-500 border border-emerald-500/30 rounded-lg">
               <TrendingUp className="w-5 h-5" />
             </div>
           </div>
-          <p className="text-3xl font-bold text-[#F8FAFC] tabular-numbers">
+          <p className="text-3xl font-bold text-aether-text tabular-numbers">
             {new Intl.NumberFormat("pt-BR", { style: "currency", currency: "BRL" }).format(totals.income)}
           </p>
         </div>
 
-        <div className="bg-[#0F172A] p-6 rounded-xl border border-[#1E293B] shadow-lg">
+        <div className="bg-aether-surface p-6 rounded-xl border border-aether-border shadow-md">
           <div className="flex items-center justify-between mb-4">
-            <span className="text-xs font-semibold uppercase tracking-wider text-[#94A3B8]">Despesas Totais</span>
-            <div className="p-2 bg-[rgba(127,29,29,0.4)] text-[#F87171] border border-[#DC2626]/30 rounded-lg">
+            <span className="text-xs font-semibold uppercase tracking-wider text-aether-text-muted">Despesas Totais</span>
+            <div className="p-2 bg-rose-500/10 text-rose-500 border border-rose-500/30 rounded-lg">
               <TrendingDown className="w-5 h-5" />
             </div>
           </div>
-          <p className="text-3xl font-bold text-[#F8FAFC] tabular-numbers">
+          <p className="text-3xl font-bold text-aether-text tabular-numbers">
             {new Intl.NumberFormat("pt-BR", { style: "currency", currency: "BRL" }).format(totals.expense)}
           </p>
         </div>
 
-        <div className="bg-[#0F172A] p-6 rounded-xl border border-[#1E293B] shadow-lg">
+        <div className="bg-aether-surface p-6 rounded-xl border border-aether-border shadow-md">
           <div className="flex items-center justify-between mb-4">
-            <span className="text-xs font-semibold uppercase tracking-wider text-[#94A3B8]">Saldo Líquido</span>
-            <div className="p-2 bg-[rgba(14,165,233,0.15)] text-[#38BDF8] border border-[#0EA5E9]/30 rounded-lg">
+            <span className="text-xs font-semibold uppercase tracking-wider text-aether-text-muted">Saldo Líquido</span>
+            <div className="p-2 bg-sky-500/10 text-sky-500 border border-sky-500/30 rounded-lg">
               <Wallet className="w-5 h-5" />
             </div>
           </div>
-          <p className="text-3xl font-bold text-[#F8FAFC] tabular-numbers">
+          <p className="text-3xl font-bold text-aether-text tabular-numbers">
             {new Intl.NumberFormat("pt-BR", { style: "currency", currency: "BRL" }).format(totals.income - totals.expense)}
           </p>
         </div>
       </div>
 
       {/* Table Workstation */}
-      <div className="bg-[#0F172A] rounded-xl border border-[#1E293B] shadow-xl overflow-hidden mb-8">
+      <div className="bg-aether-surface rounded-xl border border-aether-border shadow-xl overflow-hidden mb-8">
         {/* Filters Bar */}
-        <div className="p-4 border-b border-[#1E293B] flex flex-col gap-4">
+        <div className="p-4 border-b border-aether-border flex flex-col gap-4">
           <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
             <div className="w-full sm:w-72">
               <Input
@@ -222,7 +222,7 @@ export default function FinancialPage() {
               <button
                 onClick={() => setStatusFilter("all")}
                 className={`px-3 py-1.5 text-xs font-medium rounded-md transition-colors ${
-                  statusFilter === "all" ? "bg-[#0EA5E9] text-white" : "bg-[#1E293B] text-[#94A3B8] hover:text-[#F8FAFC]"
+                  statusFilter === "all" ? "bg-[var(--accent)] text-white" : "bg-aether-bg text-aether-text-muted hover:text-aether-text border border-aether-border"
                 }`}
               >
                 Todos Status
@@ -231,8 +231,8 @@ export default function FinancialPage() {
                 onClick={() => setStatusFilter("pending")}
                 className={`px-3 py-1.5 text-xs font-medium rounded-md transition-colors ${
                   statusFilter === "pending"
-                    ? "bg-[#D97706] text-white"
-                    : "bg-[#1E293B] text-[#94A3B8] hover:text-[#F8FAFC]"
+                    ? "bg-amber-500 text-white"
+                    : "bg-aether-bg text-aether-text-muted hover:text-aether-text border border-aether-border"
                 }`}
               >
                 Pendentes
@@ -240,7 +240,7 @@ export default function FinancialPage() {
               <button
                 onClick={() => setStatusFilter("paid")}
                 className={`px-3 py-1.5 text-xs font-medium rounded-md transition-colors ${
-                  statusFilter === "paid" ? "bg-[#059669] text-white" : "bg-[#1E293B] text-[#94A3B8] hover:text-[#F8FAFC]"
+                  statusFilter === "paid" ? "bg-emerald-500 text-white" : "bg-aether-bg text-aether-text-muted hover:text-aether-text border border-aether-border"
                 }`}
               >
                 Quitados
@@ -250,8 +250,8 @@ export default function FinancialPage() {
                 onClick={() => setShowAdvancedFilters(!showAdvancedFilters)}
                 className={`px-3 py-1.5 text-xs font-medium rounded-md border transition-all flex items-center gap-1.5 ${
                   showAdvancedFilters || startDate || endDate || minAmount || maxAmount
-                    ? "bg-[#0EA5E9]/10 text-[#38BDF8] border-[#0EA5E9]/40"
-                    : "bg-[#1E293B] text-[#94A3B8] border-[#334155] hover:text-[#F8FAFC]"
+                    ? "bg-[var(--accent-light)] text-[var(--accent)] border-[var(--accent)]/40"
+                    : "bg-aether-bg text-aether-text-muted border-aether-border hover:text-aether-text"
                 }`}
               >
                 <Filter className="w-3.5 h-3.5" />
@@ -332,10 +332,10 @@ export default function FinancialPage() {
         <div className="overflow-x-auto">
           <table className="w-full text-left border-collapse">
             <thead>
-              <tr className="bg-[#1E293B]/50 border-b border-[#1E293B] text-[11px] uppercase tracking-wider text-[#94A3B8] font-semibold">
+              <tr className="bg-aether-bg border-b border-aether-border text-[11px] uppercase tracking-wider text-aether-text-muted font-semibold">
                 <th
                   onClick={() => handleSort("description")}
-                  className="px-6 py-3.5 cursor-pointer hover:text-[#F8FAFC] transition-colors"
+                  className="px-6 py-3.5 cursor-pointer hover:text-aether-text transition-colors"
                 >
                   <div className="flex items-center gap-1.5">
                     <span>Descrição</span>
@@ -345,7 +345,7 @@ export default function FinancialPage() {
                 <th className="px-6 py-3.5">Tipo</th>
                 <th
                   onClick={() => handleSort("due_date")}
-                  className="px-6 py-3.5 cursor-pointer hover:text-[#F8FAFC] transition-colors"
+                  className="px-6 py-3.5 cursor-pointer hover:text-aether-text transition-colors"
                 >
                   <div className="flex items-center gap-1.5">
                     <span>Vencimento</span>
@@ -354,7 +354,7 @@ export default function FinancialPage() {
                 </th>
                 <th
                   onClick={() => handleSort("amount")}
-                  className="px-6 py-3.5 text-right cursor-pointer hover:text-[#F8FAFC] transition-colors"
+                  className="px-6 py-3.5 text-right cursor-pointer hover:text-aether-text transition-colors"
                 >
                   <div className="flex items-center justify-end gap-1.5">
                     <span>Valor</span>
@@ -365,29 +365,29 @@ export default function FinancialPage() {
                 <th className="px-6 py-3.5 text-right">Ação</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-[#1E293B]">
+            <tbody className="divide-y divide-[var(--border-subtle)]">
               {isLoading ? (
                 <tr>
-                  <td colSpan={6} className="px-6 py-12 text-center text-[#64748B]">
+                  <td colSpan={6} className="px-6 py-12 text-center text-aether-text-muted">
                     Carregando lançamentos táticos...
                   </td>
                 </tr>
               ) : isError ? (
                 <tr>
-                  <td colSpan={6} className="px-6 py-12 text-center text-[#F87171]">
+                  <td colSpan={6} className="px-6 py-12 text-center text-rose-500">
                     {(error as Error)?.message || "Erro ao conectar ao servidor backend."}
                   </td>
                 </tr>
               ) : filteredTransactions.length === 0 ? (
                 <tr>
-                  <td colSpan={6} className="px-6 py-12 text-center text-[#64748B]">
+                  <td colSpan={6} className="px-6 py-12 text-center text-aether-text-muted">
                     Nenhum lançamento encontrado para os filtros selecionados.
                   </td>
                 </tr>
               ) : (
                 filteredTransactions.map((tx: any) => (
-                  <tr key={tx.id} className="hover:bg-[#1E293B]/40 transition-colors group">
-                    <td className="px-6 py-4 text-sm font-medium text-[#F8FAFC]">{tx.description}</td>
+                  <tr key={tx.id} className="hover:bg-[var(--bg-surface-hover)] transition-colors group">
+                    <td className="px-6 py-4 text-sm font-medium text-aether-text">{tx.description}</td>
                     <td className="px-6 py-4">
                       {tx.type === "income" ? (
                         <Badge status="success" icon={false}>Receita</Badge>
@@ -395,10 +395,10 @@ export default function FinancialPage() {
                         <Badge status="danger" icon={false}>Despesa</Badge>
                       )}
                     </td>
-                    <td className="px-6 py-4 text-sm text-[#94A3B8] tabular-numbers">
+                    <td className="px-6 py-4 text-sm text-aether-text-muted tabular-numbers">
                       {tx.due_date.split("-").reverse().join("/")}
                     </td>
-                    <td className="px-6 py-4 text-sm font-semibold text-[#F8FAFC] text-right tabular-numbers">
+                    <td className="px-6 py-4 text-sm font-semibold text-aether-text text-right tabular-numbers">
                       {new Intl.NumberFormat("pt-BR", { style: "currency", currency: "BRL" }).format(tx.amount)}
                     </td>
                     <td className="px-6 py-4 text-center">

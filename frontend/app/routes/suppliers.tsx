@@ -134,17 +134,17 @@ export default function SuppliersPage() {
         {/* Header */}
         <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
           <div>
-            <h1 className="text-2xl font-bold tracking-tight text-slate-100 flex items-center gap-2.5">
-              <Truck className="w-6 h-6 text-cyan-400" />
+            <h1 className="text-2xl font-bold text-aether-text flex items-center gap-2.5">
+              <Truck className="w-7 h-7 text-aether-accent" />
               Gestão de Fornecedores
             </h1>
-            <p className="text-sm text-slate-400 mt-1">
+            <p className="text-sm text-aether-text-muted mt-1">
               Cadastre e acompanhe empresas parceiras para emissão de compras e reposição de estoque
             </p>
           </div>
           <button
             onClick={() => handleOpenModal()}
-            className="flex items-center gap-2 px-4 py-2.5 bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 text-slate-950 font-semibold rounded-lg shadow-lg shadow-cyan-500/20 transition-all text-sm"
+            className="flex items-center gap-2 px-4 py-2.5 bg-aether-accent hover:bg-aether-accent-hover text-white font-semibold rounded-lg shadow-md transition-all text-sm cursor-pointer"
           >
             <Plus className="w-4 h-4" />
             Novo Fornecedor
@@ -153,33 +153,33 @@ export default function SuppliersPage() {
 
         {/* Metrics Cards */}
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-          <div className="bg-slate-900/60 border border-slate-800 rounded-xl p-4 flex items-center gap-4">
-            <div className="p-3 bg-cyan-500/10 border border-cyan-500/20 rounded-lg text-cyan-400">
+          <div className="bg-aether-surface border border-aether-border rounded-xl p-4 flex items-center gap-4">
+            <div className="p-3 bg-[var(--accent-light)] border border-[var(--accent)]/20 rounded-lg text-[var(--accent)]">
               <Building2 className="w-5 h-5" />
             </div>
             <div>
-              <p className="text-xs text-slate-400 uppercase font-medium tracking-wider">Total Registrado</p>
-              <p className="text-xl font-bold text-slate-100">{suppliers.length}</p>
+              <p className="text-xs text-aether-text-muted uppercase font-medium tracking-wider">Total Registrado</p>
+              <p className="text-xl font-bold text-aether-text">{suppliers.length}</p>
             </div>
           </div>
-          <div className="bg-slate-900/60 border border-slate-800 rounded-xl p-4 flex items-center gap-4">
-            <div className="p-3 bg-emerald-500/10 border border-emerald-500/20 rounded-lg text-emerald-400">
+          <div className="bg-aether-surface border border-aether-border rounded-xl p-4 flex items-center gap-4">
+            <div className="p-3 bg-emerald-500/10 border border-emerald-500/20 rounded-lg text-emerald-500">
               <Mail className="w-5 h-5" />
             </div>
             <div>
-              <p className="text-xs text-slate-400 uppercase font-medium tracking-wider">Com E-mail</p>
-              <p className="text-xl font-bold text-slate-100">
+              <p className="text-xs text-aether-text-muted uppercase font-medium tracking-wider">Com E-mail</p>
+              <p className="text-xl font-bold text-aether-text">
                 {suppliers.filter((s) => s.email && s.email.length > 0).length}
               </p>
             </div>
           </div>
-          <div className="bg-slate-900/60 border border-slate-800 rounded-xl p-4 flex items-center gap-4">
-            <div className="p-3 bg-indigo-500/10 border border-indigo-500/20 rounded-lg text-indigo-400">
+          <div className="bg-aether-surface border border-aether-border rounded-xl p-4 flex items-center gap-4">
+            <div className="p-3 bg-indigo-500/10 border border-indigo-500/20 rounded-lg text-indigo-500">
               <Phone className="w-5 h-5" />
             </div>
             <div>
-              <p className="text-xs text-slate-400 uppercase font-medium tracking-wider">Com Telefone</p>
-              <p className="text-xl font-bold text-slate-100">
+              <p className="text-xs text-aether-text-muted uppercase font-medium tracking-wider">Com Telefone</p>
+              <p className="text-xl font-bold text-aether-text">
                 {suppliers.filter((s) => s.phone && s.phone.length > 0).length}
               </p>
             </div>
@@ -188,38 +188,38 @@ export default function SuppliersPage() {
 
         {/* Filter / Search Bar */}
         <div className="relative">
-          <Search className="w-4 h-4 absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400" />
+          <Search className="w-4 h-4 absolute left-3.5 top-1/2 -translate-y-1/2 text-aether-text-muted" />
           <input
             type="text"
             placeholder="Buscar por razão social, nome fantasia, CNPJ/CPF ou e-mail..."
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            className="w-full bg-slate-900/60 border border-slate-800 rounded-lg pl-10 pr-4 py-2.5 text-sm text-slate-200 placeholder-slate-500 focus:outline-none focus:border-cyan-500/50"
+            className="w-full bg-aether-surface border border-aether-border rounded-lg pl-10 pr-4 py-2.5 text-sm text-aether-text placeholder-aether-text-muted/70 focus:outline-none focus:border-aether-accent"
           />
         </div>
 
         {/* Content Table */}
         {loading ? (
-          <div className="flex items-center justify-center py-12 text-slate-400 gap-3">
-            <Loader2 className="w-6 h-6 animate-spin text-cyan-400" />
+          <div className="flex items-center justify-center py-12 text-aether-text-muted gap-3">
+            <Loader2 className="w-6 h-6 animate-spin text-aether-accent" />
             <span>Carregando fornecedores...</span>
           </div>
         ) : error ? (
-          <div className="bg-rose-500/10 border border-rose-500/20 rounded-xl p-4 text-rose-400 text-sm flex items-center gap-2">
+          <div className="bg-rose-500/10 border border-rose-500/20 rounded-xl p-4 text-rose-500 text-sm flex items-center gap-2">
             <AlertCircle className="w-5 h-5 flex-shrink-0" />
             <span>{error}</span>
           </div>
         ) : filteredSuppliers.length === 0 ? (
-          <div className="bg-slate-900/60 border border-slate-800 rounded-xl py-12 text-center text-slate-500">
-            <Truck className="w-10 h-10 mx-auto mb-3 text-slate-600 stroke-[1.5]" />
-            <p className="text-base font-medium text-slate-300">Nenhum fornecedor encontrado</p>
-            <p className="text-xs text-slate-500 mt-1">Cadastre o primeiro parceiro para poder emitir ordens de compra.</p>
+          <div className="bg-aether-surface border border-aether-border rounded-xl py-12 text-center text-aether-text-muted">
+            <Truck className="w-10 h-10 mx-auto mb-3 opacity-50 stroke-[1.5]" />
+            <p className="text-base font-medium text-aether-text">Nenhum fornecedor encontrado</p>
+            <p className="text-xs text-aether-text-muted mt-1">Cadastre o primeiro parceiro para poder emitir ordens de compra.</p>
           </div>
         ) : (
-          <div className="bg-slate-900/60 border border-slate-800 rounded-xl overflow-hidden shadow-xl">
+          <div className="bg-aether-surface border border-aether-border rounded-xl overflow-hidden shadow-xl">
             <div className="overflow-x-auto">
               <table className="w-full text-left text-sm">
-                <thead className="bg-slate-950/80 text-slate-400 uppercase text-[11px] font-semibold tracking-wider border-b border-slate-800">
+                <thead className="bg-aether-bg text-aether-text-muted uppercase text-[11px] font-semibold tracking-wider border-b border-aether-border">
                   <tr>
                     <th className="px-5 py-3.5">Razão Social / Nome</th>
                     <th className="px-5 py-3.5">Nome Fantasia</th>
@@ -229,37 +229,37 @@ export default function SuppliersPage() {
                     <th className="px-5 py-3.5 text-right">Ações</th>
                   </tr>
                 </thead>
-                <tbody className="divide-y divide-slate-800/60 text-slate-300">
+                <tbody className="divide-y divide-[var(--border-subtle)] text-aether-text">
                   {filteredSuppliers.map((sup) => (
-                    <tr key={sup.id} className="hover:bg-slate-800/40 transition-colors">
-                      <td className="px-5 py-3.5 font-medium text-slate-200">
+                    <tr key={sup.id} className="hover:bg-[var(--bg-surface-hover)] transition-colors">
+                      <td className="px-5 py-3.5 font-medium text-aether-text">
                         {sup.name}
                       </td>
-                      <td className="px-5 py-3.5 text-slate-400">
+                      <td className="px-5 py-3.5 text-aether-text-muted">
                         {sup.trade_name || "—"}
                       </td>
-                      <td className="px-5 py-3.5 font-mono text-xs text-slate-300">
+                      <td className="px-5 py-3.5 font-mono text-xs text-aether-text">
                         {sup.document || "—"}
                       </td>
-                      <td className="px-5 py-3.5 text-xs text-slate-400 space-y-0.5">
+                      <td className="px-5 py-3.5 text-xs text-aether-text-muted space-y-0.5">
                         {sup.email && (
-                          <div className="flex items-center gap-1.5 text-slate-300">
-                            <Mail className="w-3.5 h-3.5 text-slate-500" />
+                          <div className="flex items-center gap-1.5 text-aether-text">
+                            <Mail className="w-3.5 h-3.5 text-aether-text-muted" />
                             <span>{sup.email}</span>
                           </div>
                         )}
                         {sup.phone && (
-                          <div className="flex items-center gap-1.5 text-slate-400">
-                            <Phone className="w-3.5 h-3.5 text-slate-500" />
+                          <div className="flex items-center gap-1.5 text-aether-text-muted">
+                            <Phone className="w-3.5 h-3.5 text-aether-text-muted" />
                             <span>{sup.phone}</span>
                           </div>
                         )}
                         {!sup.email && !sup.phone && "—"}
                       </td>
-                      <td className="px-5 py-3.5 text-xs text-slate-400 max-w-xs truncate">
+                      <td className="px-5 py-3.5 text-xs text-aether-text-muted max-w-xs truncate">
                         {sup.address ? (
                           <div className="flex items-center gap-1.5">
-                            <MapPin className="w-3.5 h-3.5 text-slate-500 flex-shrink-0" />
+                            <MapPin className="w-3.5 h-3.5 text-aether-text-muted flex-shrink-0" />
                             <span className="truncate">{sup.address}</span>
                           </div>
                         ) : (
@@ -269,14 +269,14 @@ export default function SuppliersPage() {
                       <td className="px-5 py-3.5 text-right space-x-2">
                         <button
                           onClick={() => handleOpenModal(sup)}
-                          className="p-1.5 text-slate-400 hover:text-cyan-400 bg-slate-800/60 hover:bg-slate-800 rounded-lg transition-colors"
+                          className="p-1.5 text-aether-text-muted hover:text-aether-accent bg-aether-bg hover:bg-aether-surface rounded-lg transition-colors border border-aether-border cursor-pointer"
                           title="Editar Fornecedor"
                         >
                           <Pencil className="w-4 h-4" />
                         </button>
                         <button
                           onClick={() => handleDelete(sup.id, sup.name)}
-                          className="p-1.5 text-slate-400 hover:text-rose-400 bg-slate-800/60 hover:bg-slate-800 rounded-lg transition-colors"
+                          className="p-1.5 text-aether-text-muted hover:text-rose-500 bg-aether-bg hover:bg-aether-surface rounded-lg transition-colors border border-aether-border cursor-pointer"
                           title="Remover Fornecedor"
                         >
                           <Trash2 className="w-4 h-4" />

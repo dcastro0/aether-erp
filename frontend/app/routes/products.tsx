@@ -273,7 +273,7 @@ export default function ProductsPage() {
           </div>
 
           <div className="flex flex-wrap items-center gap-2">
-            <span className="text-xs text-[#64748B] font-medium hidden sm:inline">Nível de Estoque:</span>
+            <span className="text-xs text-[var(--text-muted)] font-medium hidden sm:inline">Nível de Estoque:</span>
             {[
               { id: "all", label: "Todos" },
               { id: "low", label: "Crítico (< 5)" },
@@ -286,9 +286,9 @@ export default function ProductsPage() {
                 className={`px-3 py-1.5 text-xs font-semibold rounded-md transition-all ${
                   stockStatusFilter === status.id
                     ? status.id === "low" || status.id === "out"
-                      ? "bg-[#F87171] text-white shadow-sm"
-                      : "bg-[#0EA5E9] text-white shadow-sm"
-                    : "bg-[#1E293B] text-[#94A3B8] hover:text-[#F8FAFC]"
+                      ? "bg-rose-500 text-white shadow-sm"
+                      : "bg-[var(--accent)] text-white shadow-sm"
+                    : "bg-[var(--bg-canvas)] text-[var(--text-secondary)] hover:text-[var(--text-primary)] border border-[var(--border-subtle)]"
                 }`}
               >
                 {status.label}
@@ -346,15 +346,15 @@ export default function ProductsPage() {
                     </th>
                   </tr>
                 </thead>
-                <tbody className="divide-y divide-slate-100">
+                <tbody className="divide-y divide-[var(--border-subtle)]">
                   {filteredProducts?.map((product) => (
                     <tr
                       key={product.id}
-                      className="group hover:bg-aether-bg/80 transition-colors duration-200"
+                      className="group hover:bg-[var(--bg-surface-hover)] transition-colors duration-200"
                     >
                       <td className="px-6 py-4">
                         <div className="flex items-center gap-4">
-                          <div className="h-10 w-10 rounded-lg bg-linear-to-br from-blue-100 to-indigo-100 flex items-center justify-center text-aether-accent font-bold shrink-0 shadow-sm border border-blue-200/50">
+                          <div className="h-10 w-10 rounded-lg bg-[var(--accent-light)] flex items-center justify-center text-[var(--accent)] font-bold shrink-0 shadow-sm border border-[var(--accent)]/20">
                             {product.name.charAt(0).toUpperCase()}
                           </div>
                           <div>
@@ -383,14 +383,14 @@ export default function ProductsPage() {
                           <div
                             className={`h-2 w-2 rounded-full ${
                               product.stock_quantity < 5
-                                ? "bg-red-500 shadow-[0_0_8px_rgba(239,68,68,0.5)]"
+                                ? "bg-rose-500 shadow-[0_0_8px_rgba(244,63,94,0.5)]"
                                 : "bg-emerald-500 shadow-[0_0_8px_rgba(16,185,129,0.5)]"
                             }`}
                           />
                           <span
                             className={
                               product.stock_quantity < 5
-                                ? "text-red-600 font-semibold"
+                                ? "text-rose-500 font-semibold"
                                 : "text-aether-text-muted font-medium"
                             }
                           >
@@ -402,7 +402,7 @@ export default function ProductsPage() {
                         <span
                           className={`inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 text-xs font-medium border ${
                             product.is_active
-                              ? "bg-emerald-50 text-emerald-700 border-emerald-200"
+                              ? "bg-emerald-500/10 text-emerald-500 border-emerald-500/30"
                               : "bg-aether-bg text-aether-text-muted border-aether-border"
                           }`}
                         >
@@ -413,7 +413,7 @@ export default function ProductsPage() {
                       <td className="px-6 py-4 text-right">
                         <button
                           onClick={() => openEditModal(product)}
-                          className="inline-flex items-center gap-2 px-3 py-1.5 text-sm font-medium text-aether-accent hover:bg-aether-accent-muted hover:text-blue-700 rounded-lg transition-colors border border-transparent hover:border-blue-200"
+                          className="inline-flex items-center gap-2 px-3 py-1.5 text-sm font-medium text-aether-accent hover:bg-aether-accent-muted rounded-lg transition-colors border border-transparent hover:border-[var(--accent)]/30"
                         >
                           <Edit2 size={16} />
                           Editar

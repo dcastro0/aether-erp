@@ -194,11 +194,11 @@ export default function CustomersPage() {
                     <th className="px-6 py-4 text-right"></th>
                   </tr>
                 </thead>
-                <tbody className="divide-y divide-slate-100">
+                <tbody className="divide-y divide-[var(--border-subtle)]">
                   {filteredCustomers?.map((customer) => (
                     <tr
                       key={customer.id}
-                      className="group hover:bg-aether-bg/80 transition-all"
+                      className="group hover:bg-[var(--bg-surface-hover)] transition-all"
                     >
                       <td className="px-6 py-4">
                         <div className="flex items-center gap-3">
@@ -206,7 +206,7 @@ export default function CustomersPage() {
                             className={`h-10 w-10 rounded-full flex items-center justify-center text-white font-bold shrink-0 ${
                               customer.type === "company"
                                 ? "bg-indigo-500"
-                                : "bg-blue-500"
+                                : "bg-sky-500"
                             }`}
                           >
                             {customer.type === "company" ? (
@@ -251,8 +251,8 @@ export default function CustomersPage() {
                         <span
                           className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium border ${
                             customer.type === "company"
-                              ? "bg-indigo-50 text-indigo-700 border-indigo-100"
-                              : "bg-aether-accent-muted text-blue-700 border-blue-100"
+                              ? "bg-indigo-500/10 text-indigo-500 border-indigo-500/30"
+                              : "bg-sky-500/10 text-sky-500 border-sky-500/30"
                           }`}
                         >
                           {customer.type === "company"
