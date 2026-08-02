@@ -19,6 +19,7 @@ import {
   ShieldAlert,
 } from "lucide-react";
 import { DashboardLayout } from "../components/DashboardLayout";
+import { PixModal } from "../components/PixModal";
 import {
   api,
   type Product,
@@ -56,6 +57,7 @@ export default function SalesPage() {
   const [selectedCustomerId, setSelectedCustomerId] = useState<string>("");
   const [paymentMethod, setPaymentMethod] = useState<string>("dinheiro");
   const [cart, setCart] = useState<CartItem[]>([]);
+  const [isPixModalOpen, setIsPixModalOpen] = useState(false);
   const queryClient = useQueryClient();
 
   const { data: products, isLoading: loadingProducts } = useQuery({
@@ -74,6 +76,7 @@ export default function SalesPage() {
       setCart([]);
       setSelectedCustomerId("");
       setPaymentMethod("dinheiro");
+      setIsPixModalOpen(false);
       queryClient.invalidateQueries({ queryKey: ["products"] });
       alert("Venda realizada com sucesso!");
     },
@@ -124,10 +127,7 @@ export default function SalesPage() {
     );
   }, [cart]);
 
-  const handleCheckout = () => {
-    if (!selectedCustomerId) return alert("Selecione um cliente");
-    if (cart.length === 0) return alert("Carrinho vazio");
-
+  const executeOrderCreation = () => {
     const payload: CreateOrderDTO = {
       customer_id: selectedCustomerId,
       payment_method: paymentMethod,
@@ -139,6 +139,18 @@ export default function SalesPage() {
     };
 
     createOrderMutation.mutate(payload);
+  };
+
+  const handleCheckout = () => {
+    if (!selectedCustomerId) return alert("Selecione um cliente");
+    if (cart.length === 0) return alert("Carrinho vazio");
+
+    if (paymentMethod === "pix") {
+      setIsPixModalOpen(true);
+      return;
+    }
+
+    executeOrderCreation();
   };
 
   const filteredProducts = products?.filter(
@@ -407,6 +419,15 @@ export default function SalesPage() {
           </div>
         </div>
       </div>
+
+      <PixModal
+        isOpen={isPixModalOpen}
+        onClose={() => setIsPixModalOpen(false)}
+        onConfirm={executeOrderCreation}
+        amount={cartTotal}
+        customerName={customers?.find((c) => c.id === selectedCustomerId)?.name}
+        isPending={createOrderMutation.isPending}
+      />
     </DashboardLayout>
   );
 }
