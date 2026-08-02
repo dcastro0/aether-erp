@@ -15,3 +15,41 @@ WHERE organization_id = $1::uuid
   AND created_at >= NOW() - INTERVAL '7 days'
 GROUP BY DATE(created_at)
 ORDER BY DATE(created_at) ASC;
+
+-- name: GetRecentActivity :many
+SELECT
+    id, action, user_name, status, created_at
+FROM activity_logs
+WHERE organization_id = $1::uuid
+ORDER BY created_at DESC
+LIMIT 5;
+
+-- name: GetTotalProductsCount :one
+SELECT COUNT(*)::INT AS total_products
+FROM products
+WHERE organization_id = $1::uuid;
+
+-- name: GetSalesByPaymentMethod :many
+SELECT
+    COALESCE(payment_method, 'unknown')::TEXT AS payment_method,
+    COUNT(*)::INT AS total_orders,
+    SUM(total_amount)::FLOAT AS total_amount
+FROM orders
+WHERE organization_id = $1::uuid
+  AND status = 'completed'
+GROUP BY COALESCE(payment_method, 'unknown')
+ORDER BY total_amount DESC;
+
+-- name: GetTopSellingProducts :many
+SELECT
+    p.name::TEXT AS product_name,
+    SUM(oi.quantity)::INT AS total_quantity_sold,
+    SUM(oi.total_price)::FLOAT AS total_revenue
+FROM order_items oi
+JOIN orders o ON oi.order_id = o.id
+JOIN products p ON oi.product_id = p.id
+WHERE o.organization_id = $1::uuid
+  AND o.status = 'completed'
+GROUP BY p.id, p.name
+ORDER BY total_quantity_sold DESC
+LIMIT 5;

@@ -38,6 +38,87 @@ func (q *Queries) GetDashboardMetrics(ctx context.Context, dollar_1 pgtype.UUID)
 	return i, err
 }
 
+const getRecentActivity = `-- name: GetRecentActivity :many
+SELECT
+    id, action, user_name, status, created_at
+FROM activity_logs
+WHERE organization_id = $1::uuid
+ORDER BY created_at DESC
+LIMIT 5
+`
+
+type GetRecentActivityRow struct {
+	ID        pgtype.UUID        `json:"id"`
+	Action    string             `json:"action"`
+	UserName  string             `json:"user_name"`
+	Status    string             `json:"status"`
+	CreatedAt pgtype.Timestamptz `json:"created_at"`
+}
+
+func (q *Queries) GetRecentActivity(ctx context.Context, dollar_1 pgtype.UUID) ([]GetRecentActivityRow, error) {
+	rows, err := q.db.Query(ctx, getRecentActivity, dollar_1)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	var items []GetRecentActivityRow
+	for rows.Next() {
+		var i GetRecentActivityRow
+		if err := rows.Scan(
+			&i.ID,
+			&i.Action,
+			&i.UserName,
+			&i.Status,
+			&i.CreatedAt,
+		); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}
+
+const getSalesByPaymentMethod = `-- name: GetSalesByPaymentMethod :many
+SELECT
+    COALESCE(payment_method, 'unknown')::TEXT AS payment_method,
+    COUNT(*)::INT AS total_orders,
+    SUM(total_amount)::FLOAT AS total_amount
+FROM orders
+WHERE organization_id = $1::uuid
+  AND status = 'completed'
+GROUP BY COALESCE(payment_method, 'unknown')
+ORDER BY total_amount DESC
+`
+
+type GetSalesByPaymentMethodRow struct {
+	PaymentMethod string  `json:"payment_method"`
+	TotalOrders   int32   `json:"total_orders"`
+	TotalAmount   float64 `json:"total_amount"`
+}
+
+func (q *Queries) GetSalesByPaymentMethod(ctx context.Context, dollar_1 pgtype.UUID) ([]GetSalesByPaymentMethodRow, error) {
+	rows, err := q.db.Query(ctx, getSalesByPaymentMethod, dollar_1)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	var items []GetSalesByPaymentMethodRow
+	for rows.Next() {
+		var i GetSalesByPaymentMethodRow
+		if err := rows.Scan(&i.PaymentMethod, &i.TotalOrders, &i.TotalAmount); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}
+
 const getSalesOverTime = `-- name: GetSalesOverTime :many
 SELECT
     DATE(created_at)::TEXT AS sale_date,
@@ -73,4 +154,58 @@ func (q *Queries) GetSalesOverTime(ctx context.Context, dollar_1 pgtype.UUID) ([
 		return nil, err
 	}
 	return items, nil
+}
+
+const getTopSellingProducts = `-- name: GetTopSellingProducts :many
+SELECT
+    p.name::TEXT AS product_name,
+    SUM(oi.quantity)::INT AS total_quantity_sold,
+    SUM(oi.total_price)::FLOAT AS total_revenue
+FROM order_items oi
+JOIN orders o ON oi.order_id = o.id
+JOIN products p ON oi.product_id = p.id
+WHERE o.organization_id = $1::uuid
+  AND o.status = 'completed'
+GROUP BY p.id, p.name
+ORDER BY total_quantity_sold DESC
+LIMIT 5
+`
+
+type GetTopSellingProductsRow struct {
+	ProductName       string  `json:"product_name"`
+	TotalQuantitySold int32   `json:"total_quantity_sold"`
+	TotalRevenue      float64 `json:"total_revenue"`
+}
+
+func (q *Queries) GetTopSellingProducts(ctx context.Context, dollar_1 pgtype.UUID) ([]GetTopSellingProductsRow, error) {
+	rows, err := q.db.Query(ctx, getTopSellingProducts, dollar_1)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	var items []GetTopSellingProductsRow
+	for rows.Next() {
+		var i GetTopSellingProductsRow
+		if err := rows.Scan(&i.ProductName, &i.TotalQuantitySold, &i.TotalRevenue); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}
+
+const getTotalProductsCount = `-- name: GetTotalProductsCount :one
+SELECT COUNT(*)::INT AS total_products
+FROM products
+WHERE organization_id = $1::uuid
+`
+
+func (q *Queries) GetTotalProductsCount(ctx context.Context, dollar_1 pgtype.UUID) (int32, error) {
+	row := q.db.QueryRow(ctx, getTotalProductsCount, dollar_1)
+	var total_products int32
+	err := row.Scan(&total_products)
+	return total_products, err
 }

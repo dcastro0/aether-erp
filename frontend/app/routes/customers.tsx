@@ -109,55 +109,60 @@ export default function CustomersPage() {
       <div className="space-y-8">
         <div className="flex flex-col justify-between gap-4 md:flex-row md:items-center">
           <div>
-            <h1 className="text-2xl font-bold tracking-tight text-slate-900">
+            <h1 className="text-2xl font-bold tracking-tight text-aether-text">
               Clientes
             </h1>
-            <p className="text-sm text-slate-500">
+            <p className="text-sm text-aether-text-muted">
               Gerencie sua base de contatos e parceiros.
             </p>
           </div>
           <div className="flex gap-3">
             <button
               onClick={handleExport}
-              className="flex items-center gap-2 rounded-lg border border-slate-200 bg-white px-4 py-2 text-sm font-medium text-slate-700 hover:bg-slate-50 shadow-sm transition-all"
+              className="flex items-center gap-2 rounded-lg border border-aether-border bg-aether-surface px-4 py-2 text-sm font-medium text-aether-text-muted hover:bg-aether-bg shadow-sm transition-all"
             >
               <Download size={16} />
               Exportar
             </button>
-            <button
-              onClick={() => setIsModalOpen(true)}
-              className="flex items-center gap-2 rounded-lg bg-blue-600 px-4 py-2 text-sm font-medium text-white hover:bg-blue-700 shadow-md shadow-blue-600/20 transition-all"
-            >
-              <Plus size={16} />
-              Novo Cliente
-            </button>
+            {(() => {
+              const u = typeof window !== "undefined" ? JSON.parse(localStorage.getItem("user") || '{"role": "owner"}') : { role: "owner" };
+              return u?.role !== "viewer" ? (
+                <button
+                  onClick={() => setIsModalOpen(true)}
+                  className="flex items-center gap-2 rounded-lg bg-aether-accent px-4 py-2 text-sm font-medium text-white hover:bg-aether-accent-hover shadow-md shadow-blue-600/20 transition-all"
+                >
+                  <Plus size={16} />
+                  Novo Cliente
+                </button>
+              ) : null;
+            })()}
           </div>
         </div>
 
-        <div className="flex flex-col gap-4 sm:flex-row sm:items-center justify-between bg-white p-4 rounded-xl border border-slate-200 shadow-sm">
+        <div className="flex flex-col gap-4 sm:flex-row sm:items-center justify-between bg-aether-surface p-4 rounded-xl border border-aether-border shadow-sm">
           <div className="relative flex-1 max-w-md">
             <Search
-              className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400"
+              className="absolute left-3 top-1/2 -translate-y-1/2 text-aether-text-muted/70"
               size={18}
             />
             <input
               type="text"
               placeholder="Buscar por nome ou email..."
-              className="w-full rounded-lg border-slate-200 bg-slate-50 py-2 pl-10 pr-4 text-sm text-slate-900 focus:border-blue-500 focus:bg-white focus:ring-blue-500 transition-all"
+              className="w-full rounded-lg border-aether-border bg-aether-bg py-2 pl-10 pr-4 text-sm text-aether-text focus:border-aether-accent focus:bg-aether-surface focus:ring-aether-accent transition-all"
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
             />
           </div>
-          <button className="flex items-center gap-2 text-sm font-medium text-slate-600 hover:text-slate-900">
+          <button className="flex items-center gap-2 text-sm font-medium text-aether-text-muted hover:text-aether-text">
             <Filter size={16} />
             Filtrar
           </button>
         </div>
 
-        <div className="rounded-xl border border-slate-200 bg-white shadow-sm overflow-hidden">
+        <div className="rounded-xl border border-aether-border bg-aether-surface shadow-sm overflow-hidden">
           {isLoading ? (
             <div className="flex h-64 items-center justify-center">
-              <Loader2 className="animate-spin text-blue-600" size={32} />
+              <Loader2 className="animate-spin text-aether-accent" size={32} />
             </div>
           ) : isError ? (
             <div className="flex h-64 flex-col items-center justify-center text-red-500 gap-2">
@@ -165,25 +170,25 @@ export default function CustomersPage() {
               <p>Erro ao carregar clientes.</p>
             </div>
           ) : filteredCustomers?.length === 0 ? (
-            <div className="flex h-64 flex-col items-center justify-center text-slate-400 gap-4">
+            <div className="flex h-64 flex-col items-center justify-center text-aether-text-muted/70 gap-4">
               <Users size={48} className="opacity-20" />
               <p>Nenhum cliente encontrado.</p>
             </div>
           ) : (
             <div className="overflow-x-auto">
               <table className="w-full text-left text-sm">
-                <thead className="bg-slate-50/50 border-b border-slate-100">
+                <thead className="bg-aether-bg/50 border-b border-aether-border">
                   <tr>
-                    <th className="px-6 py-4 font-semibold text-slate-600">
+                    <th className="px-6 py-4 font-semibold text-aether-text-muted">
                       Cliente
                     </th>
-                    <th className="px-6 py-4 font-semibold text-slate-600">
+                    <th className="px-6 py-4 font-semibold text-aether-text-muted">
                       Contato
                     </th>
-                    <th className="px-6 py-4 font-semibold text-slate-600">
+                    <th className="px-6 py-4 font-semibold text-aether-text-muted">
                       Documento
                     </th>
-                    <th className="px-6 py-4 font-semibold text-slate-600">
+                    <th className="px-6 py-4 font-semibold text-aether-text-muted">
                       Tipo
                     </th>
                     <th className="px-6 py-4 text-right"></th>
@@ -193,7 +198,7 @@ export default function CustomersPage() {
                   {filteredCustomers?.map((customer) => (
                     <tr
                       key={customer.id}
-                      className="group hover:bg-slate-50/80 transition-all"
+                      className="group hover:bg-aether-bg/80 transition-all"
                     >
                       <td className="px-6 py-4">
                         <div className="flex items-center gap-3">
@@ -211,10 +216,10 @@ export default function CustomersPage() {
                             )}
                           </div>
                           <div>
-                            <p className="font-medium text-slate-900">
+                            <p className="font-medium text-aether-text">
                               {customer.name}
                             </p>
-                            <p className="text-xs text-slate-500">
+                            <p className="text-xs text-aether-text-muted">
                               Cadastrado em{" "}
                               {new Date(
                                 customer.created_at,
@@ -224,22 +229,22 @@ export default function CustomersPage() {
                         </div>
                       </td>
                       <td className="px-6 py-4">
-                        <div className="flex flex-col gap-1 text-slate-600">
+                        <div className="flex flex-col gap-1 text-aether-text-muted">
                           {customer.email && (
                             <div className="flex items-center gap-2 text-xs">
-                              <Mail size={14} className="text-slate-400" />{" "}
+                              <Mail size={14} className="text-aether-text-muted/70" />{" "}
                               {customer.email}
                             </div>
                           )}
                           {customer.phone && (
                             <div className="flex items-center gap-2 text-xs">
-                              <Phone size={14} className="text-slate-400" />{" "}
+                              <Phone size={14} className="text-aether-text-muted/70" />{" "}
                               {customer.phone}
                             </div>
                           )}
                         </div>
                       </td>
-                      <td className="px-6 py-4 font-mono text-xs text-slate-500">
+                      <td className="px-6 py-4 font-mono text-xs text-aether-text-muted">
                         {customer.document || "—"}
                       </td>
                       <td className="px-6 py-4">
@@ -247,7 +252,7 @@ export default function CustomersPage() {
                           className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium border ${
                             customer.type === "company"
                               ? "bg-indigo-50 text-indigo-700 border-indigo-100"
-                              : "bg-blue-50 text-blue-700 border-blue-100"
+                              : "bg-aether-accent-muted text-blue-700 border-blue-100"
                           }`}
                         >
                           {customer.type === "company"
@@ -256,7 +261,7 @@ export default function CustomersPage() {
                         </span>
                       </td>
                       <td className="px-6 py-4 text-right">
-                        <button className="opacity-0 group-hover:opacity-100 p-2 text-slate-400 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-all">
+                        <button className="opacity-0 group-hover:opacity-100 p-2 text-aether-text-muted/70 hover:text-aether-accent hover:bg-aether-accent-muted rounded-lg transition-all">
                           <MoreHorizontal size={18} />
                         </button>
                       </td>
@@ -270,16 +275,16 @@ export default function CustomersPage() {
       </div>
 
       {isModalOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/40 backdrop-blur-sm p-4 animate-in fade-in duration-200">
-          <div className="w-full max-w-lg rounded-xl bg-white p-8 shadow-2xl animate-in zoom-in-95 duration-200 border border-slate-100">
-            <h2 className="text-xl font-bold text-slate-900 mb-6">
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-aether-surface/40 backdrop-blur-sm p-4 animate-in fade-in duration-200">
+          <div className="w-full max-w-lg rounded-xl bg-aether-surface p-8 shadow-2xl animate-in zoom-in-95 duration-200 border border-aether-border">
+            <h2 className="text-xl font-bold text-aether-text mb-6">
               Novo Cliente
             </h2>
 
             <form onSubmit={handleSubmit(onSubmit)} className="space-y-5">
               <div className="grid grid-cols-2 gap-4">
                 <label
-                  className={`cursor-pointer border rounded-lg p-3 flex items-center gap-3 transition-all ${watch("type") === "individual" ? "border-blue-500 bg-blue-50 ring-1 ring-blue-500" : "border-slate-200 hover:bg-slate-50"}`}
+                  className={`cursor-pointer border rounded-lg p-3 flex items-center gap-3 transition-all ${watch("type") === "individual" ? "border-aether-accent bg-aether-accent-muted ring-1 ring-aether-accent" : "border-aether-border hover:bg-aether-bg"}`}
                 >
                   <input
                     type="radio"
@@ -290,18 +295,18 @@ export default function CustomersPage() {
                   <Users
                     className={
                       watch("type") === "individual"
-                        ? "text-blue-600"
-                        : "text-slate-400"
+                        ? "text-aether-accent"
+                        : "text-aether-text-muted/70"
                     }
                   />
                   <span
-                    className={`text-sm font-medium ${watch("type") === "individual" ? "text-blue-700" : "text-slate-600"}`}
+                    className={`text-sm font-medium ${watch("type") === "individual" ? "text-blue-700" : "text-aether-text-muted"}`}
                   >
                     Pessoa Física
                   </span>
                 </label>
                 <label
-                  className={`cursor-pointer border rounded-lg p-3 flex items-center gap-3 transition-all ${watch("type") === "company" ? "border-indigo-500 bg-indigo-50 ring-1 ring-indigo-500" : "border-slate-200 hover:bg-slate-50"}`}
+                  className={`cursor-pointer border rounded-lg p-3 flex items-center gap-3 transition-all ${watch("type") === "company" ? "border-indigo-500 bg-indigo-50 ring-1 ring-indigo-500" : "border-aether-border hover:bg-aether-bg"}`}
                 >
                   <input
                     type="radio"
@@ -313,11 +318,11 @@ export default function CustomersPage() {
                     className={
                       watch("type") === "company"
                         ? "text-indigo-600"
-                        : "text-slate-400"
+                        : "text-aether-text-muted/70"
                     }
                   />
                   <span
-                    className={`text-sm font-medium ${watch("type") === "company" ? "text-indigo-700" : "text-slate-600"}`}
+                    className={`text-sm font-medium ${watch("type") === "company" ? "text-indigo-700" : "text-aether-text-muted"}`}
                   >
                     Empresa
                   </span>
@@ -326,12 +331,12 @@ export default function CustomersPage() {
 
               <div className="space-y-4">
                 <div>
-                  <label className="block text-sm font-medium text-slate-700 mb-1">
+                  <label className="block text-sm font-medium text-aether-text-muted mb-1">
                     Nome Completo / Razão Social
                   </label>
                   <input
                     {...register("name")}
-                    className="block w-full rounded-lg border-slate-200 bg-slate-50 px-4 py-2.5 text-sm text-slate-900 focus:border-blue-500 focus:bg-white focus:ring-blue-500 transition-all"
+                    className="block w-full rounded-lg border-aether-border bg-aether-bg px-4 py-2.5 text-sm text-aether-text focus:border-aether-accent focus:bg-aether-surface focus:ring-aether-accent transition-all"
                   />
                   {errors.name && (
                     <p className="text-xs text-red-500 mt-1">
@@ -342,13 +347,13 @@ export default function CustomersPage() {
 
                 <div className="grid grid-cols-2 gap-5">
                   <div>
-                    <label className="block text-sm font-medium text-slate-700 mb-1">
+                    <label className="block text-sm font-medium text-aether-text-muted mb-1">
                       Email
                     </label>
                     <input
                       type="email"
                       {...register("email")}
-                      className="block w-full rounded-lg border-slate-200 bg-slate-50 px-4 py-2.5 text-sm text-slate-900 focus:border-blue-500 focus:bg-white focus:ring-blue-500 transition-all"
+                      className="block w-full rounded-lg border-aether-border bg-aether-bg px-4 py-2.5 text-sm text-aether-text focus:border-aether-accent focus:bg-aether-surface focus:ring-aether-accent transition-all"
                     />
                     {errors.email && (
                       <p className="text-xs text-red-500 mt-1">
@@ -357,39 +362,39 @@ export default function CustomersPage() {
                     )}
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-slate-700 mb-1">
+                    <label className="block text-sm font-medium text-aether-text-muted mb-1">
                       Telefone
                     </label>
                     <input
                       {...register("phone")}
-                      className="block w-full rounded-lg border-slate-200 bg-slate-50 px-4 py-2.5 text-sm text-slate-900 focus:border-blue-500 focus:bg-white focus:ring-blue-500 transition-all"
+                      className="block w-full rounded-lg border-aether-border bg-aether-bg px-4 py-2.5 text-sm text-aether-text focus:border-aether-accent focus:bg-aether-surface focus:ring-aether-accent transition-all"
                     />
                   </div>
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-slate-700 mb-1">
+                  <label className="block text-sm font-medium text-aether-text-muted mb-1">
                     {watch("type") === "company" ? "CNPJ" : "CPF"}
                   </label>
                   <input
                     {...register("document")}
-                    className="block w-full rounded-lg border-slate-200 bg-slate-50 px-4 py-2.5 text-sm text-slate-900 focus:border-blue-500 focus:bg-white focus:ring-blue-500 transition-all"
+                    className="block w-full rounded-lg border-aether-border bg-aether-bg px-4 py-2.5 text-sm text-aether-text focus:border-aether-accent focus:bg-aether-surface focus:ring-aether-accent transition-all"
                   />
                 </div>
               </div>
 
-              <div className="flex gap-3 pt-4 border-t border-slate-100">
+              <div className="flex gap-3 pt-4 border-t border-aether-border">
                 <button
                   type="button"
                   onClick={() => setIsModalOpen(false)}
-                  className="flex-1 rounded-lg border border-slate-200 bg-white px-4 py-2.5 text-sm font-semibold text-slate-700 hover:bg-slate-50"
+                  className="flex-1 rounded-lg border border-aether-border bg-aether-surface px-4 py-2.5 text-sm font-semibold text-aether-text-muted hover:bg-aether-bg"
                 >
                   Cancelar
                 </button>
                 <button
                   type="submit"
                   disabled={createMutation.isPending}
-                  className="flex-1 rounded-lg bg-slate-900 px-4 py-2.5 text-sm font-semibold text-white hover:bg-slate-800 disabled:opacity-70"
+                  className="flex-1 rounded-lg bg-aether-surface px-4 py-2.5 text-sm font-semibold text-white hover:bg-aether-bg disabled:opacity-70"
                 >
                   {createMutation.isPending ? "Salvando..." : "Criar Cliente"}
                 </button>

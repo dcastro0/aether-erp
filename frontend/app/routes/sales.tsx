@@ -16,6 +16,7 @@ import {
   Wallet,
   AlertCircle,
   CheckCircle2,
+  ShieldAlert,
 } from "lucide-react";
 import { DashboardLayout } from "../components/DashboardLayout";
 import {
@@ -30,6 +31,27 @@ interface CartItem extends Product {
 }
 
 export default function SalesPage() {
+  const user = typeof window !== "undefined"
+    ? JSON.parse(localStorage.getItem("user") || '{"role": "owner"}')
+    : { role: "owner" };
+  const role = user?.role || "owner";
+
+  if (role === "viewer") {
+    return (
+      <DashboardLayout>
+        <div className="flex flex-col items-center justify-center min-h-[60vh] text-center space-y-4">
+          <div className="p-4 rounded-2xl bg-amber-500/10 border border-amber-500/20 text-amber-400">
+            <ShieldAlert size={48} />
+          </div>
+          <h2 className="text-xl font-bold text-[#F8FAFC]">Acesso Restrito ao PDV</h2>
+          <p className="text-sm text-[#94A3B8] max-w-md leading-relaxed">
+            Visualizadores possuem acesso de leitura a relatórios e pedidos. Apenas Administradores e Operadores de Venda podem realizar novas vendas no Ponto de Venda.
+          </p>
+        </div>
+      </DashboardLayout>
+    );
+  }
+
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedCustomerId, setSelectedCustomerId] = useState<string>("");
   const [paymentMethod, setPaymentMethod] = useState<string>("dinheiro");
@@ -137,27 +159,27 @@ export default function SalesPage() {
     <DashboardLayout>
       <div className="flex flex-col h-[calc(100vh-8rem)] gap-6 lg:flex-row overflow-hidden">
         <div className="flex flex-1 flex-col gap-6 overflow-hidden">
-          <div className="flex flex-col gap-4 rounded-2xl bg-white p-5 shadow-sm border border-slate-200 shrink-0">
+          <div className="flex flex-col gap-4 rounded-2xl bg-aether-surface p-5 shadow-sm border border-aether-border shrink-0">
             <div className="flex items-center justify-between">
               <div>
-                <h1 className="text-2xl font-bold text-slate-900 tracking-tight">
+                <h1 className="text-2xl font-bold text-aether-text tracking-tight">
                   Ponto de Venda
                 </h1>
-                <p className="text-sm text-slate-500">
+                <p className="text-sm text-aether-text-muted">
                   Busque e selecione produtos para adicionar ao pedido.
                 </p>
               </div>
-              <div className="hidden sm:flex items-center justify-center h-12 w-12 rounded-xl bg-blue-50 text-blue-600">
+              <div className="hidden sm:flex items-center justify-center h-12 w-12 rounded-xl bg-aether-accent-muted text-aether-accent">
                 <ScanBarcode size={24} />
               </div>
             </div>
             <div className="relative group">
               <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-                <Search className="h-5 w-5 text-slate-400 group-focus-within:text-blue-500 transition-colors" />
+                <Search className="h-5 w-5 text-aether-text-muted/70 group-focus-within:text-aether-accent transition-colors" />
               </div>
               <input
                 type="text"
-                className="block w-full pl-11 pr-4 py-3.5 rounded-xl border border-slate-200 bg-slate-50 text-sm text-slate-900 focus:bg-white focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 transition-all outline-none placeholder:text-slate-400"
+                className="block w-full pl-11 pr-4 py-3.5 rounded-xl border border-aether-border bg-aether-bg text-sm text-aether-text focus:bg-aether-surface focus:border-aether-accent focus:ring-4 focus:ring-aether-accent-muted transition-all outline-none placeholder:text-aether-text-muted/70"
                 placeholder="Buscar por nome ou código SKU..."
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
@@ -168,15 +190,15 @@ export default function SalesPage() {
           <div className="flex-1 overflow-y-auto pr-2 custom-scrollbar">
             {loadingProducts ? (
               <div className="flex h-full items-center justify-center">
-                <Loader2 className="h-8 w-8 animate-spin text-blue-600" />
+                <Loader2 className="h-8 w-8 animate-spin text-aether-accent" />
               </div>
             ) : filteredProducts?.length === 0 ? (
-              <div className="flex h-full flex-col items-center justify-center text-slate-400 gap-4">
-                <div className="h-16 w-16 bg-slate-50 rounded-full flex items-center justify-center">
+              <div className="flex h-full flex-col items-center justify-center text-aether-text-muted/70 gap-4">
+                <div className="h-16 w-16 bg-aether-bg rounded-full flex items-center justify-center">
                   <Package size={32} className="opacity-50" />
                 </div>
                 <div className="text-center">
-                  <p className="text-lg font-medium text-slate-900">
+                  <p className="text-lg font-medium text-aether-text">
                     Nenhum produto encontrado
                   </p>
                   <p className="text-sm">Tente buscar com outros termos.</p>
@@ -199,27 +221,27 @@ export default function SalesPage() {
                       disabled={!inStock || isMaxReached}
                       className={`group relative flex flex-col justify-between rounded-2xl border p-5 text-left transition-all duration-200 ${
                         inStock && !isMaxReached
-                          ? "bg-white border-slate-200 hover:border-blue-400 hover:shadow-md hover:-translate-y-0.5"
-                          : "bg-slate-50 border-slate-100 opacity-75 cursor-not-allowed"
+                          ? "bg-aether-surface border-aether-border hover:border-aether-accent hover:shadow-md hover:-translate-y-0.5"
+                          : "bg-aether-bg border-aether-border opacity-75 cursor-not-allowed"
                       }`}
                     >
                       <div className="flex justify-between items-start gap-2">
                         <div>
-                          <h3 className="font-bold text-slate-900 line-clamp-2 leading-tight">
+                          <h3 className="font-bold text-aether-text line-clamp-2 leading-tight">
                             {product.name}
                           </h3>
-                          <span className="inline-block mt-1.5 px-2 py-0.5 rounded-md bg-slate-100 text-[10px] font-mono font-medium text-slate-500 border border-slate-200">
+                          <span className="inline-block mt-1.5 px-2 py-0.5 rounded-md bg-aether-bg text-[10px] font-mono font-medium text-aether-text-muted border border-aether-border">
                             {product.sku || "SEM SKU"}
                           </span>
                         </div>
                         {cartItem && (
-                          <span className="flex items-center justify-center h-6 w-6 rounded-full bg-blue-600 text-white text-xs font-bold shadow-sm">
+                          <span className="flex items-center justify-center h-6 w-6 rounded-full bg-aether-accent text-white text-xs font-bold shadow-sm">
                             {cartItem.cartQuantity}
                           </span>
                         )}
                       </div>
                       <div className="mt-6 flex justify-between items-end">
-                        <p className="text-xl font-black text-slate-900">
+                        <p className="text-xl font-black text-aether-text">
                           {new Intl.NumberFormat("pt-BR", {
                             style: "currency",
                             currency: "BRL",
@@ -228,7 +250,7 @@ export default function SalesPage() {
                         <div className="flex flex-col items-end">
                           <span
                             className={`text-xs font-semibold flex items-center gap-1 ${
-                              inStock ? "text-emerald-600" : "text-red-500"
+                              inStock ? "text-emerald-500" : "text-aether-error"
                             }`}
                           >
                             {inStock ? (
@@ -252,18 +274,18 @@ export default function SalesPage() {
           </div>
         </div>
 
-        <div className="flex w-full lg:w-[420px] shrink-0 flex-col rounded-2xl border border-slate-200 bg-white shadow-xl overflow-hidden h-full">
-          <div className="bg-slate-900 p-5 text-white">
+        <div className="flex w-full lg:w-[420px] shrink-0 flex-col rounded-2xl border border-aether-border bg-aether-surface shadow-xl overflow-hidden h-full">
+          <div className="bg-aether-bg p-5 text-aether-text border-b border-aether-border">
             <h2 className="text-lg font-bold flex items-center gap-2 mb-4">
-              <ShoppingCart size={20} className="text-blue-400" />
+              <ShoppingCart size={20} className="text-aether-accent" />
               Resumo do Pedido
             </h2>
             <div className="relative">
               <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                <User className="h-4 w-4 text-slate-400" />
+                <User className="h-4 w-4 text-aether-text-muted/70" />
               </div>
               <select
-                className="w-full bg-slate-800 border border-slate-700 text-white py-2.5 pl-9 pr-4 rounded-xl text-sm focus:ring-2 focus:ring-blue-500 outline-none appearance-none cursor-pointer"
+                className="w-full bg-aether-surface border border-aether-border text-aether-text py-2.5 pl-9 pr-4 rounded-xl text-sm focus:ring-2 focus:ring-aether-accent outline-none appearance-none cursor-pointer"
                 value={selectedCustomerId}
                 onChange={(e) => setSelectedCustomerId(e.target.value)}
               >
@@ -279,9 +301,9 @@ export default function SalesPage() {
             </div>
           </div>
 
-          <div className="flex-1 overflow-y-auto p-4 bg-slate-50/50">
+          <div className="flex-1 overflow-y-auto p-4 bg-aether-bg/50">
             {cart.length === 0 ? (
-              <div className="h-full flex flex-col items-center justify-center text-slate-400 gap-3">
+              <div className="h-full flex flex-col items-center justify-center text-aether-text-muted/70 gap-3">
                 <ShoppingCart size={48} className="opacity-20" />
                 <p className="text-sm font-medium">O carrinho está vazio</p>
               </div>
@@ -290,40 +312,40 @@ export default function SalesPage() {
                 {cart.map((item) => (
                   <div
                     key={item.id}
-                    className="flex flex-col gap-3 p-4 rounded-xl border border-slate-200 bg-white shadow-sm"
+                    className="flex flex-col gap-3 p-4 rounded-xl border border-aether-border bg-aether-surface shadow-sm"
                   >
                     <div className="flex justify-between items-start gap-2">
-                      <p className="text-sm font-bold text-slate-900 leading-tight">
+                      <p className="text-sm font-bold text-aether-text leading-tight">
                         {item.name}
                       </p>
                       <button
                         onClick={() => removeFromCart(item.id)}
-                        className="text-slate-400 hover:text-red-500 transition-colors p-1"
+                        className="text-aether-text-muted hover:text-aether-error transition-colors p-1"
                       >
                         <Trash2 size={16} />
                       </button>
                     </div>
                     <div className="flex justify-between items-center">
-                      <p className="text-sm font-bold text-blue-600">
+                      <p className="text-sm font-bold text-aether-accent">
                         {new Intl.NumberFormat("pt-BR", {
                           style: "currency",
                           currency: "BRL",
                         }).format(Number(item.price) * item.cartQuantity)}
                       </p>
-                      <div className="flex items-center gap-3 bg-slate-50 border border-slate-200 rounded-lg p-1">
+                      <div className="flex items-center gap-3 bg-aether-bg border border-aether-border rounded-lg p-1">
                         <button
                           onClick={() => updateQuantity(item.id, -1)}
-                          className="p-1 rounded-md text-slate-500 hover:bg-white hover:text-slate-900 hover:shadow-sm transition-all"
+                          className="p-1 rounded-md text-aether-text-muted hover:bg-aether-surface hover:text-aether-text hover:shadow-sm transition-all"
                         >
                           <Minus size={14} />
                         </button>
-                        <span className="text-sm font-bold w-6 text-center text-slate-900">
+                        <span className="text-sm font-bold w-6 text-center text-aether-text">
                           {item.cartQuantity}
                         </span>
                         <button
                           onClick={() => updateQuantity(item.id, 1)}
                           disabled={item.cartQuantity >= item.stock_quantity}
-                          className="p-1 rounded-md text-slate-500 hover:bg-white hover:text-slate-900 hover:shadow-sm transition-all disabled:opacity-50 disabled:hover:bg-transparent"
+                          className="p-1 rounded-md text-aether-text-muted hover:bg-aether-surface hover:text-aether-text hover:shadow-sm transition-all disabled:opacity-50 disabled:hover:bg-transparent"
                         >
                           <Plus size={14} />
                         </button>
@@ -335,9 +357,9 @@ export default function SalesPage() {
             )}
           </div>
 
-          <div className="bg-white p-5 border-t border-slate-200 shadow-[0_-4px_6px_-1px_rgb(0,0,0,0.05)]">
+          <div className="bg-aether-surface p-5 border-t border-aether-border shadow-[0_-4px_6px_-1px_rgb(0,0,0,0.05)]">
             <div className="space-y-3 mb-6">
-              <p className="text-xs font-bold text-slate-400 uppercase tracking-wider">
+              <p className="text-xs font-bold text-aether-text-muted uppercase tracking-wider">
                 Método de Pagamento
               </p>
               <div className="grid grid-cols-2 gap-2">
@@ -347,8 +369,8 @@ export default function SalesPage() {
                     onClick={() => setPaymentMethod(m.id)}
                     className={`flex items-center justify-center gap-2 py-2.5 rounded-xl border text-sm font-medium transition-all ${
                       paymentMethod === m.id
-                        ? "border-blue-600 bg-blue-50 text-blue-700 ring-1 ring-blue-600"
-                        : "border-slate-200 bg-white text-slate-600 hover:bg-slate-50 hover:border-slate-300"
+                        ? "border-aether-accent bg-aether-accent-muted text-aether-accent ring-1 ring-aether-accent"
+                        : "border-aether-border bg-aether-surface text-aether-text-muted hover:bg-aether-bg"
                     }`}
                   >
                     <m.icon size={16} /> {m.label}
@@ -358,8 +380,8 @@ export default function SalesPage() {
             </div>
 
             <div className="flex justify-between items-center mb-6">
-              <span className="text-slate-500 font-medium">Total a pagar</span>
-              <span className="text-3xl font-black text-slate-900">
+              <span className="text-aether-text-muted font-medium">Total a pagar</span>
+              <span className="text-3xl font-black text-aether-text">
                 {new Intl.NumberFormat("pt-BR", {
                   style: "currency",
                   currency: "BRL",
@@ -374,7 +396,7 @@ export default function SalesPage() {
                 cart.length === 0 ||
                 !selectedCustomerId
               }
-              className="w-full flex items-center justify-center gap-2 rounded-xl bg-blue-600 py-4 text-white font-bold text-lg hover:bg-blue-700 disabled:bg-slate-300 disabled:text-slate-500 transition-all shadow-md shadow-blue-600/20 disabled:shadow-none"
+              className="w-full flex items-center justify-center gap-2 rounded-xl bg-aether-accent py-4 text-white font-bold text-lg hover:bg-aether-accent-hover disabled:bg-aether-bg disabled:text-aether-text-muted transition-all shadow-md shadow-aether-accent/20 disabled:shadow-none"
             >
               {createOrderMutation.isPending ? (
                 <Loader2 className="animate-spin" size={20} />

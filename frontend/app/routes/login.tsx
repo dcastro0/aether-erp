@@ -40,19 +40,19 @@ export default function Login() {
   };
 
   return (
-    <div className="flex min-h-screen w-full bg-white">
+    <div className="flex min-h-screen w-full bg-aether-surface">
       {/* LADO ESQUERDO: Formulário */}
       <div className="flex w-full flex-col justify-center px-8 lg:w-1/2 lg:px-24">
         <div className="mx-auto w-full max-w-sm">
           {/* Cabeçalho Mobile/Form */}
           <div className="mb-8">
-            <div className="mb-6 flex h-12 w-12 items-center justify-center rounded-xl bg-blue-600 text-white shadow-lg shadow-blue-600/20">
+            <div className="mb-6 flex h-12 w-12 items-center justify-center rounded-xl bg-aether-accent text-white shadow-lg shadow-blue-600/20">
               <LayoutDashboard size={24} />
             </div>
-            <h1 className="text-3xl font-bold tracking-tight text-slate-900">
+            <h1 className="text-3xl font-bold tracking-tight text-aether-text">
               Bem-vindo de volta
             </h1>
-            <p className="mt-2 text-sm text-slate-500">
+            <p className="mt-2 text-sm text-aether-text-muted">
               Entre com suas credenciais para acessar o Aether.
             </p>
           </div>
@@ -62,20 +62,20 @@ export default function Login() {
             <div className="space-y-1">
               <label
                 htmlFor="email"
-                className="block text-sm font-medium text-slate-700"
+                className="block text-sm font-medium text-aether-text-muted"
               >
                 Email Corporativo
               </label>
               <div className="relative">
                 <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
-                  <Mail className="h-5 w-5 text-slate-400" />
+                  <Mail className="h-5 w-5 text-aether-text-muted/70" />
                 </div>
                 <input
                   id="email"
                   type="email"
                   placeholder="voce@empresa.com"
                   {...register("email")}
-                  className="block w-full rounded-lg border border-slate-200 bg-slate-50 py-2.5 pl-10 pr-3 text-slate-900 placeholder:text-slate-400 focus:border-blue-500 focus:bg-white focus:outline-none focus:ring-1 focus:ring-blue-500 sm:text-sm transition-all duration-200"
+                  className="block w-full rounded-lg border border-aether-border bg-aether-bg py-2.5 pl-10 pr-3 text-aether-text placeholder:text-aether-text-muted/70 focus:border-aether-accent focus:bg-aether-surface focus:outline-none focus:ring-1 focus:ring-aether-accent sm:text-sm transition-all duration-200"
                 />
               </div>
               {errors.email && (
@@ -90,27 +90,27 @@ export default function Login() {
               <div className="flex items-center justify-between">
                 <label
                   htmlFor="password"
-                  className="block text-sm font-medium text-slate-700"
+                  className="block text-sm font-medium text-aether-text-muted"
                 >
                   Senha
                 </label>
                 <a
                   href="#"
-                  className="text-xs font-semibold text-blue-600 hover:text-blue-500"
+                  className="text-xs font-semibold text-aether-accent hover:text-aether-accent"
                 >
                   Esqueceu?
                 </a>
               </div>
               <div className="relative">
                 <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
-                  <Lock className="h-5 w-5 text-slate-400" />
+                  <Lock className="h-5 w-5 text-aether-text-muted/70" />
                 </div>
                 <input
                   id="password"
                   type="password"
                   placeholder="••••••••"
                   {...register("password")}
-                  className="block w-full rounded-lg border border-slate-200 bg-slate-50 py-2.5 pl-10 pr-3 text-slate-900 placeholder:text-slate-400 focus:border-blue-500 focus:bg-white focus:outline-none focus:ring-1 focus:ring-blue-500 sm:text-sm transition-all duration-200"
+                  className="block w-full rounded-lg border border-aether-border bg-aether-bg py-2.5 pl-10 pr-3 text-aether-text placeholder:text-aether-text-muted/70 focus:border-aether-accent focus:bg-aether-surface focus:outline-none focus:ring-1 focus:ring-aether-accent sm:text-sm transition-all duration-200"
                 />
               </div>
               {errors.password && (
@@ -134,7 +134,7 @@ export default function Login() {
             <button
               type="submit"
               disabled={loginMutation.isPending}
-              className="group flex w-full items-center justify-center rounded-lg bg-slate-900 py-2.5 text-sm font-semibold text-white transition-all hover:bg-slate-800 focus:outline-none focus:ring-2 focus:ring-slate-400 focus:ring-offset-2 disabled:opacity-70 disabled:cursor-not-allowed shadow-lg shadow-slate-900/20"
+              className="group flex w-full items-center justify-center rounded-lg bg-aether-surface py-2.5 text-sm font-semibold text-white transition-all hover:bg-aether-bg focus:outline-none focus:ring-2 focus:ring-slate-400 focus:ring-offset-2 disabled:opacity-70 disabled:cursor-not-allowed shadow-lg shadow-slate-900/20"
             >
               {loginMutation.isPending ? (
                 <Loader2 className="mr-2 h-4 w-4 animate-spin" />
@@ -147,11 +147,11 @@ export default function Login() {
             </button>
           </form>
 
-          <div className="mt-8 text-center text-sm text-slate-500">
+          <div className="mt-8 text-center text-sm text-aether-text-muted">
             Ainda não tem conta?{" "}
             <a
               href="#"
-              className="font-semibold text-blue-600 hover:text-blue-500"
+              className="font-semibold text-aether-accent hover:text-aether-accent"
             >
               Fale com o suporte
             </a>
@@ -160,9 +160,9 @@ export default function Login() {
       </div>
 
       {/* LADO DIREITO: Branding / Art */}
-      <div className="hidden w-1/2 bg-slate-900 lg:flex flex-col justify-between p-12 relative overflow-hidden">
+      <div className="hidden w-1/2 bg-aether-surface lg:flex flex-col justify-between p-12 relative overflow-hidden">
         {/* Background Effects */}
-        <div className="absolute top-0 right-0 -mr-20 -mt-20 h-125 w-125 rounded-full bg-blue-600/20 blur-3xl"></div>
+        <div className="absolute top-0 right-0 -mr-20 -mt-20 h-125 w-125 rounded-full bg-aether-accent/20 blur-3xl"></div>
         <div className="absolute bottom-0 left-0 -ml-20 -mb-20 h-125 w-125 rounded-full bg-indigo-600/20 blur-3xl"></div>
 
         {/* Logo Area */}
@@ -175,13 +175,13 @@ export default function Login() {
         {/* Content Area */}
         <div className="relative z-10 max-w-md">
           <blockquote className="space-y-6">
-            <div className="rounded-2xl border border-white/10 bg-white/5 p-6 backdrop-blur-sm">
+            <div className="rounded-2xl border border-white/10 bg-aether-surface/5 p-6 backdrop-blur-sm">
               <p className="text-xl font-medium leading-relaxed text-white">
                 "A gestão da sua empresa nunca foi tão fluida. Controle
                 financeiro, estoque e vendas em uma única atmosfera."
               </p>
             </div>
-            <footer className="text-sm text-slate-400">
+            <footer className="text-sm text-aether-text-muted/70">
               &copy; 2026 Aether Systems. Todos os direitos reservados.
             </footer>
           </blockquote>

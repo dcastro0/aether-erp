@@ -16,6 +16,7 @@ import {
   QrCode,
   CreditCard,
   Wallet,
+  User,
 } from "lucide-react";
 import { DashboardLayout } from "../components/DashboardLayout";
 import { api, type Order, type OrderDetails } from "../lib/api";
@@ -23,6 +24,8 @@ import { exportToCSV } from "../lib/export";
 
 export default function OrdersPage() {
   const [searchTerm, setSearchTerm] = useState("");
+  const [paymentFilter, setPaymentFilter] = useState<string>("all");
+  const [statusFilter, setStatusFilter] = useState<string>("all");
   const [selectedOrder, setSelectedOrder] = useState<Order | null>(null);
 
   const { data: orders, isLoading } = useQuery({
@@ -51,6 +54,23 @@ export default function OrdersPage() {
     }
   };
 
+  const filteredOrders = orders?.filter((o) => {
+    const matchesSearch =
+      o.customer_name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      (o.seller_name && o.seller_name.toLowerCase().includes(searchTerm.toLowerCase())) ||
+      o.id.toLowerCase().includes(searchTerm.toLowerCase());
+    const matchesPayment =
+      paymentFilter === "all" ? true : o.payment_method === paymentFilter;
+    const matchesStatus =
+      statusFilter === "all" ? true : o.status === statusFilter;
+    return matchesSearch && matchesPayment && matchesStatus;
+  });
+
+  const totalFilteredSales = filteredOrders?.reduce(
+    (sum, o) => sum + Number(o.total_amount || 0),
+    0,
+  ) || 0;
+
   const handleExport = () => {
     if (!orders) return;
 
@@ -59,6 +79,7 @@ export default function OrdersPage() {
       [
         { header: "ID do Pedido", accessor: (o) => o.id },
         { header: "Cliente", accessor: (o) => o.customer_name },
+        { header: "Vendedor / Responsável", accessor: (o) => o.seller_name || "Sistema" },
         {
           header: "Data",
           accessor: (o) => new Date(o.created_at).toLocaleDateString(),
@@ -95,6 +116,8 @@ export default function OrdersPage() {
       <html>
         <head>
           <title>Recibo #${selectedOrder.id.slice(0, 8)}</title>
+          <meta name="description" content="Recibo de Venda Aether ERP" />
+          <meta property="og:title" content="Recibo Aether ERP" />
           <style>
             @page { margin: 0; }
             body { 
@@ -184,12 +207,6 @@ export default function OrdersPage() {
     }, 250);
   };
 
-  const filteredOrders = orders?.filter(
-    (o) =>
-      o.customer_name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      o.id.toLowerCase().includes(searchTerm.toLowerCase()),
-  );
-
   const getStatusColor = (status: string) => {
     switch (status) {
       case "completed":
@@ -199,7 +216,7 @@ export default function OrdersPage() {
       case "canceled":
         return "bg-red-100 text-red-700 border-red-200";
       default:
-        return "bg-slate-100 text-slate-700 border-slate-200";
+        return "bg-aether-bg text-aether-text-muted border-aether-border";
     }
   };
 
@@ -220,57 +237,117 @@ export default function OrdersPage() {
     <DashboardLayout>
       <div className="flex h-[calc(100vh-6rem)] gap-6 relative">
         <div className="flex-1 flex flex-col gap-6 overflow-hidden">
-          <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between shrink-0">
-            <div>
-              <h1 className="text-2xl font-bold text-slate-900">
-                Histórico de Vendas
-              </h1>
-              <p className="text-sm text-slate-500">
-                Consulte todas as transações realizadas.
-              </p>
+          <div className="flex flex-col gap-4 shrink-0">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+              <div>
+                <h1 className="text-2xl font-bold text-aether-text">
+                  Histórico de Vendas
+                </h1>
+                <p className="text-sm text-aether-text-muted">
+                  Consulte e filtre todas as transações da empresa.
+                </p>
+              </div>
+
+              <div className="flex items-center gap-3">
+                <div className="bg-[#0F172A] px-3 py-1.5 rounded-xl border border-[#1E293B] text-xs flex items-center gap-2">
+                  <span className="text-[#94A3B8]">Total Filtrado:</span>
+                  <span className="font-bold text-[#34D399] tabular-numbers text-sm">
+                    {new Intl.NumberFormat("pt-BR", { style: "currency", currency: "BRL" }).format(totalFilteredSales)}
+                  </span>
+                </div>
+
+                <button
+                  onClick={handleExport}
+                  className="flex items-center justify-center gap-2 rounded-xl border border-aether-border bg-aether-surface px-4 py-2.5 text-sm font-medium text-aether-text-muted hover:bg-aether-bg shadow-sm transition-all shrink-0"
+                >
+                  <Download size={16} />
+                  <span className="hidden sm:inline">Exportar CSV</span>
+                </button>
+              </div>
             </div>
-            <div className="flex gap-3 w-full sm:w-auto">
-              <div className="relative flex-1 sm:w-72">
+
+            {/* Filter Bar */}
+            <div className="flex flex-col sm:flex-row items-center justify-between gap-3 bg-[#0F172A] p-3 rounded-xl border border-[#1E293B]">
+              <div className="relative w-full sm:w-72">
                 <Search
-                  className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400"
-                  size={18}
+                  className="absolute left-3 top-1/2 -translate-y-1/2 text-aether-text-muted/70"
+                  size={16}
                 />
                 <input
                   type="text"
                   placeholder="Buscar por cliente ou ID..."
-                  className="w-full rounded-xl border-slate-200 bg-white py-2.5 pl-10 pr-4 text-sm focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500/20 transition-all shadow-sm"
+                  className="w-full rounded-lg border-[#1E293B] bg-[#090D16] py-2 pl-9 pr-4 text-xs text-[#F8FAFC] focus:border-[#0EA5E9] focus:outline-none transition-all"
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
                 />
               </div>
-              <button
-                onClick={handleExport}
-                className="flex items-center justify-center gap-2 rounded-xl border border-slate-200 bg-white px-4 py-2.5 text-sm font-medium text-slate-700 hover:bg-slate-50 shadow-sm transition-all shrink-0"
-              >
-                <Download size={16} />
-                <span className="hidden sm:inline">Exportar</span>
-              </button>
+
+              <div className="flex flex-wrap items-center gap-2 w-full sm:w-auto justify-end">
+                <span className="text-xs text-[#64748B] font-medium hidden md:inline">Pagamento:</span>
+                {[
+                  { id: "all", label: "Todos" },
+                  { id: "pix", label: "PIX" },
+                  { id: "credito", label: "Crédito" },
+                  { id: "debito", label: "Débito" },
+                  { id: "dinheiro", label: "Dinheiro" },
+                ].map((item) => (
+                  <button
+                    key={item.id}
+                    onClick={() => setPaymentFilter(item.id)}
+                    className={`px-2.5 py-1 text-xs font-semibold rounded-md transition-all ${
+                      paymentFilter === item.id
+                        ? "bg-[#0EA5E9] text-white shadow-sm"
+                        : "bg-[#1E293B] text-[#94A3B8] hover:text-[#F8FAFC]"
+                    }`}
+                  >
+                    {item.label}
+                  </button>
+                ))}
+
+                <div className="h-4 w-px bg-[#1E293B] mx-1 hidden sm:block"></div>
+
+                {[
+                  { id: "all", label: "Status" },
+                  { id: "completed", label: "Concluído" },
+                  { id: "pending", label: "Pendente" },
+                ].map((item) => (
+                  <button
+                    key={item.id}
+                    onClick={() => setStatusFilter(item.id)}
+                    className={`px-2.5 py-1 text-xs font-semibold rounded-md transition-all ${
+                      statusFilter === item.id
+                        ? "bg-[#34D399] text-[#090D16] shadow-sm font-bold"
+                        : "bg-[#1E293B] text-[#94A3B8] hover:text-[#F8FAFC]"
+                    }`}
+                  >
+                    {item.label}
+                  </button>
+                ))}
+              </div>
             </div>
           </div>
 
-          <div className="flex-1 overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm flex flex-col">
+          <div className="flex-1 overflow-hidden rounded-2xl border border-aether-border bg-aether-surface shadow-sm flex flex-col">
             <div className="overflow-y-auto flex-1">
               <table className="w-full text-left text-sm">
-                <thead className="bg-slate-50 border-b border-slate-200 sticky top-0 z-10">
+                <thead className="bg-aether-bg border-b border-aether-border sticky top-0 z-10">
                   <tr>
-                    <th className="px-6 py-4 font-semibold text-slate-600">
+                    <th className="px-6 py-4 font-semibold text-aether-text-muted">
                       ID / Data
                     </th>
-                    <th className="px-6 py-4 font-semibold text-slate-600">
+                    <th className="px-6 py-4 font-semibold text-aether-text-muted">
                       Cliente
                     </th>
-                    <th className="px-6 py-4 font-semibold text-slate-600">
+                    <th className="px-6 py-4 font-semibold text-aether-text-muted">
+                      Vendedor / Operador
+                    </th>
+                    <th className="px-6 py-4 font-semibold text-aether-text-muted">
                       Pagamento
                     </th>
-                    <th className="px-6 py-4 font-semibold text-slate-600">
+                    <th className="px-6 py-4 font-semibold text-aether-text-muted">
                       Status
                     </th>
-                    <th className="px-6 py-4 font-semibold text-slate-600 text-right">
+                    <th className="px-6 py-4 font-semibold text-aether-text-muted text-right">
                       Total
                     </th>
                     <th className="px-6 py-4"></th>
@@ -280,8 +357,8 @@ export default function OrdersPage() {
                   {isLoading ? (
                     <tr>
                       <td
-                        colSpan={6}
-                        className="p-8 text-center text-slate-500"
+                        colSpan={7}
+                        className="p-8 text-center text-aether-text-muted"
                       >
                         Carregando...
                       </td>
@@ -289,8 +366,8 @@ export default function OrdersPage() {
                   ) : filteredOrders?.length === 0 ? (
                     <tr>
                       <td
-                        colSpan={6}
-                        className="p-12 text-center text-slate-400"
+                        colSpan={7}
+                        className="p-12 text-center text-aether-text-muted/70"
                       >
                         Nenhuma venda encontrada.
                       </td>
@@ -305,18 +382,18 @@ export default function OrdersPage() {
                       return (
                         <tr
                           key={order.id}
-                          className={`group transition-all hover:bg-blue-50/50 cursor-pointer ${selectedOrder?.id === order.id ? "bg-blue-50" : ""}`}
+                          className={`group transition-all hover:bg-aether-accent-muted/50 cursor-pointer ${selectedOrder?.id === order.id ? "bg-aether-accent-muted" : ""}`}
                           onClick={() => setSelectedOrder(order)}
                         >
                           <td className="px-6 py-4">
                             <div className="flex flex-col">
-                              <span className="font-mono text-xs text-slate-400">
+                              <span className="font-mono text-xs text-aether-text-muted/70">
                                 #{order.id.slice(0, 8)}
                               </span>
-                              <div className="flex items-center gap-1 text-slate-700 mt-1">
+                              <div className="flex items-center gap-1 text-aether-text-muted mt-1">
                                 <Calendar
                                   size={12}
-                                  className="text-slate-400"
+                                  className="text-aether-text-muted/70"
                                 />
                                 <span>
                                   {new Date(
@@ -336,15 +413,21 @@ export default function OrdersPage() {
                             </div>
                           </td>
                           <td className="px-6 py-4">
-                            <span className="font-medium text-slate-900">
+                            <span className="font-medium text-aether-text">
                               {order.customer_name}
                             </span>
                           </td>
                           <td className="px-6 py-4">
-                            <div className="flex items-center gap-2 text-slate-600">
+                            <span className="inline-flex items-center gap-1 text-xs font-medium text-[#0EA5E9] bg-[#0EA5E9]/10 px-2.5 py-1 rounded-full border border-[#0EA5E9]/20">
+                              <User size={12} />
+                              {order.seller_name || "Sistema"}
+                            </span>
+                          </td>
+                          <td className="px-6 py-4">
+                            <div className="flex items-center gap-2 text-aether-text-muted">
                               <PaymentIcon
                                 size={16}
-                                className="text-slate-400"
+                                className="text-aether-text-muted/70"
                               />
                               <span>{paymentMethod.label}</span>
                             </div>
@@ -360,7 +443,7 @@ export default function OrdersPage() {
                             </span>
                           </td>
                           <td className="px-6 py-4 text-right">
-                            <span className="font-bold text-slate-900 text-base">
+                            <span className="font-bold text-aether-text text-base">
                               {new Intl.NumberFormat("pt-BR", {
                                 style: "currency",
                                 currency: "BRL",
@@ -369,7 +452,7 @@ export default function OrdersPage() {
                           </td>
                           <td className="px-6 py-4 text-right">
                             <ChevronRight
-                              className={`text-slate-300 transition-transform ${selectedOrder?.id === order.id ? "text-blue-500 translate-x-1" : "group-hover:text-blue-400"}`}
+                              className={`text-slate-300 transition-transform ${selectedOrder?.id === order.id ? "text-aether-accent translate-x-1" : "group-hover:text-aether-accent-hover"}`}
                               size={20}
                             />
                           </td>
@@ -384,17 +467,17 @@ export default function OrdersPage() {
         </div>
 
         {selectedOrder && (
-          <div className="w-96 bg-white border-l border-slate-200 shadow-2xl flex flex-col animate-in slide-in-from-right duration-300 absolute right-0 top-0 bottom-0 z-20 lg:relative lg:shadow-none lg:border lg:rounded-2xl lg:h-full">
-            <div className="p-5 border-b border-slate-100 flex items-center justify-between bg-slate-50/50">
+          <div className="w-96 bg-aether-surface border-l border-aether-border shadow-2xl flex flex-col animate-in slide-in-from-right duration-300 absolute right-0 top-0 bottom-0 z-20 lg:relative lg:shadow-none lg:border lg:rounded-2xl lg:h-full">
+            <div className="p-5 border-b border-aether-border flex items-center justify-between bg-aether-bg/50">
               <div>
-                <h2 className="font-bold text-slate-900">Detalhes do Pedido</h2>
-                <p className="text-xs text-slate-500 font-mono">
+                <h2 className="font-bold text-aether-text">Detalhes do Pedido</h2>
+                <p className="text-xs text-aether-text-muted font-mono">
                   #{selectedOrder.id}
                 </p>
               </div>
               <button
                 onClick={() => setSelectedOrder(null)}
-                className="p-2 hover:bg-slate-100 rounded-full text-slate-400 hover:text-slate-700 transition-colors"
+                className="p-2 hover:bg-aether-bg rounded-full text-aether-text-muted/70 hover:text-aether-text-muted transition-colors"
               >
                 <X size={18} />
               </button>
@@ -402,15 +485,15 @@ export default function OrdersPage() {
 
             <div className="flex-1 overflow-y-auto p-5 space-y-6">
               <div className="space-y-4">
-                <div className="flex items-center gap-3 p-3 bg-blue-50 rounded-xl border border-blue-100">
-                  <div className="h-10 w-10 bg-white rounded-full flex items-center justify-center text-blue-600 shadow-sm">
+                <div className="flex items-center gap-3 p-3 bg-aether-accent-muted rounded-xl border border-blue-100">
+                  <div className="h-10 w-10 bg-aether-surface rounded-full flex items-center justify-center text-aether-accent shadow-sm">
                     <ShoppingBag size={20} />
                   </div>
                   <div>
-                    <p className="text-xs text-blue-600 font-bold uppercase tracking-wider">
+                    <p className="text-xs text-aether-accent font-bold uppercase tracking-wider">
                       Valor Total
                     </p>
-                    <p className="text-xl font-black text-slate-900">
+                    <p className="text-xl font-black text-aether-text">
                       {new Intl.NumberFormat("pt-BR", {
                         style: "currency",
                         currency: "BRL",
@@ -420,23 +503,32 @@ export default function OrdersPage() {
                 </div>
 
                 <div className="grid grid-cols-2 gap-3 text-sm">
-                  <div className="p-3 border border-slate-100 rounded-lg">
-                    <p className="text-xs text-slate-500 mb-1">Cliente</p>
+                  <div className="p-3 border border-aether-border rounded-lg">
+                    <p className="text-xs text-aether-text-muted mb-1">Cliente</p>
                     <p
-                      className="font-medium text-slate-900 truncate"
+                      className="font-medium text-aether-text truncate"
                       title={selectedOrder.customer_name}
                     >
                       {selectedOrder.customer_name}
                     </p>
                   </div>
-                  <div className="p-3 border border-slate-100 rounded-lg">
-                    <p className="text-xs text-slate-500 mb-1">Data</p>
-                    <p className="font-medium text-slate-900">
+                  <div className="p-3 border border-aether-border rounded-lg">
+                    <p className="text-xs text-aether-text-muted mb-1">Vendedor</p>
+                    <p
+                      className="font-medium text-[#0EA5E9] truncate"
+                      title={selectedOrder.seller_name || "Sistema"}
+                    >
+                      {selectedOrder.seller_name || "Sistema"}
+                    </p>
+                  </div>
+                  <div className="p-3 border border-aether-border rounded-lg">
+                    <p className="text-xs text-aether-text-muted mb-1">Data</p>
+                    <p className="font-medium text-aether-text">
                       {new Date(selectedOrder.created_at).toLocaleDateString()}
                     </p>
                   </div>
-                  <div className="p-3 border border-slate-100 rounded-lg col-span-2 flex items-center gap-3">
-                    <div className="h-8 w-8 rounded bg-slate-50 flex items-center justify-center text-slate-500 shrink-0">
+                  <div className="p-3 border border-aether-border rounded-lg col-span-2 flex items-center gap-3">
+                    <div className="h-8 w-8 rounded bg-aether-bg flex items-center justify-center text-aether-text-muted shrink-0">
                       {(() => {
                         const Icon = getPaymentInfo(
                           selectedOrder.payment_method,
@@ -445,10 +537,10 @@ export default function OrdersPage() {
                       })()}
                     </div>
                     <div>
-                      <p className="text-xs text-slate-500 mb-0.5">
+                      <p className="text-xs text-aether-text-muted mb-0.5">
                         Método de Pagamento
                       </p>
-                      <p className="font-medium text-slate-900">
+                      <p className="font-medium text-aether-text">
                         {getPaymentInfo(selectedOrder.payment_method).label}
                       </p>
                     </div>
@@ -457,12 +549,12 @@ export default function OrdersPage() {
               </div>
 
               <div>
-                <h3 className="text-xs font-bold text-slate-500 uppercase tracking-wider mb-3 flex items-center gap-2">
+                <h3 className="text-xs font-bold text-aether-text-muted uppercase tracking-wider mb-3 flex items-center gap-2">
                   <Receipt size={14} /> Itens do Pedido
                 </h3>
 
                 {loadingDetails ? (
-                  <div className="py-8 text-center text-slate-400 text-sm">
+                  <div className="py-8 text-center text-aether-text-muted/70 text-sm">
                     Carregando itens...
                   </div>
                 ) : (
@@ -473,10 +565,10 @@ export default function OrdersPage() {
                         className="flex justify-between items-start py-3 border-b border-slate-50 last:border-0"
                       >
                         <div>
-                          <p className="font-medium text-slate-800 text-sm">
+                          <p className="font-medium text-aether-text text-sm">
                             {item.product_name}
                           </p>
-                          <p className="text-xs text-slate-500 mt-0.5">
+                          <p className="text-xs text-aether-text-muted mt-0.5">
                             {item.quantity}x{" "}
                             {new Intl.NumberFormat("pt-BR", {
                               style: "currency",
@@ -484,7 +576,7 @@ export default function OrdersPage() {
                             }).format(item.unit_price)}
                           </p>
                         </div>
-                        <p className="font-bold text-slate-900 text-sm">
+                        <p className="font-bold text-aether-text text-sm">
                           {new Intl.NumberFormat("pt-BR", {
                             style: "currency",
                             currency: "BRL",
@@ -497,11 +589,11 @@ export default function OrdersPage() {
               </div>
             </div>
 
-            <div className="p-4 border-t border-slate-100 bg-slate-50 rounded-b-2xl">
+            <div className="p-4 border-t border-aether-border bg-aether-bg rounded-b-2xl">
               <button
                 onClick={handlePrintReceipt}
                 disabled={loadingDetails}
-                className="w-full py-2.5 bg-white border border-slate-200 text-slate-700 font-medium text-sm rounded-lg hover:bg-slate-100 hover:text-slate-900 transition-colors flex items-center justify-center gap-2 shadow-sm disabled:opacity-50 disabled:cursor-not-allowed"
+                className="w-full py-2.5 bg-aether-surface border border-aether-border text-aether-text-muted font-medium text-sm rounded-lg hover:bg-aether-bg hover:text-aether-text transition-colors flex items-center justify-center gap-2 shadow-sm disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 <FileText size={16} /> Imprimir Recibo
               </button>

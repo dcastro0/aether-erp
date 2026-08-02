@@ -41,6 +41,7 @@ type ProductForm = z.infer<typeof productSchema>;
 export default function ProductsPage() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
+  const [stockStatusFilter, setStockStatusFilter] = useState<"all" | "low" | "out" | "ok">("all");
   const [editingId, setEditingId] = useState<string | null>(null);
   const queryClient = useQueryClient();
 
@@ -147,70 +148,86 @@ export default function ProductsPage() {
     };
   }, [products]);
 
-  const filteredProducts = products?.filter(
-    (p) =>
+  const filteredProducts = products?.filter((p) => {
+    const matchesSearch =
       p.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      p.sku?.toLowerCase().includes(searchTerm.toLowerCase()),
-  );
+      p.sku?.toLowerCase().includes(searchTerm.toLowerCase());
+
+    const matchesStock =
+      stockStatusFilter === "all"
+        ? true
+        : stockStatusFilter === "low"
+        ? p.stock_quantity > 0 && p.stock_quantity < 5
+        : stockStatusFilter === "out"
+        ? p.stock_quantity === 0
+        : p.stock_quantity >= 5;
+
+    return matchesSearch && matchesStock;
+  });
 
   return (
     <DashboardLayout>
       <div className="space-y-8">
         <div className="flex flex-col justify-between gap-4 md:flex-row md:items-center">
           <div>
-            <h1 className="text-2xl font-bold tracking-tight text-slate-900">
+            <h1 className="text-2xl font-bold tracking-tight text-aether-text">
               Inventário
             </h1>
-            <p className="text-sm text-slate-500">
+            <p className="text-sm text-aether-text-muted">
               Gerencie seu catálogo de produtos e controle de estoque.
             </p>
           </div>
           <div className="flex gap-3">
             <button
               onClick={handleExport}
-              className="flex items-center gap-2 rounded-lg border border-slate-200 bg-white px-4 py-2 text-sm font-medium text-slate-700 hover:bg-slate-50 shadow-sm transition-all"
+              className="flex items-center gap-2 rounded-lg border border-aether-border bg-aether-surface px-4 py-2 text-sm font-medium text-aether-text-muted hover:bg-aether-bg shadow-sm transition-all"
             >
               <Download size={16} />
               Exportar
             </button>
-            <button
-              onClick={() => setIsModalOpen(true)}
-              className="flex items-center gap-2 rounded-lg bg-blue-600 px-4 py-2 text-sm font-medium text-white hover:bg-blue-700 shadow-md shadow-blue-600/20 transition-all"
-            >
-              <Plus size={16} />
-              Novo Produto
-            </button>
+            {(() => {
+              const u = typeof window !== "undefined" ? JSON.parse(localStorage.getItem("user") || '{"role": "owner"}') : { role: "owner" };
+              return u?.role !== "viewer" ? (
+                <button
+                  onClick={() => setIsModalOpen(true)}
+                  className="flex items-center gap-2 rounded-lg bg-aether-accent px-4 py-2 text-sm font-medium text-white hover:bg-aether-accent-hover shadow-md shadow-blue-600/20 transition-all"
+                >
+                  <Plus size={16} />
+                  Novo Produto
+                </button>
+              ) : null;
+            })()}
           </div>
         </div>
 
         {!isLoading && !isError && (
           <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
-            <div className="rounded-xl border border-slate-200 bg-white p-6 shadow-[0_2px_10px_-3px_rgba(6,81,237,0.1)] transition-all hover:shadow-md">
+            <div className="rounded-xl border border-aether-border bg-aether-surface p-6 shadow-[0_2px_10px_-3px_rgba(6,81,237,0.1)] transition-all hover:shadow-md">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm font-medium text-slate-500">
+                  <p className="text-sm font-medium text-aether-text-muted">
                     Valor em Estoque
                   </p>
-                  <p className="mt-1 text-2xl font-bold text-slate-900">
+                  <p className="mt-1 text-2xl font-bold text-aether-text">
                     {new Intl.NumberFormat("pt-BR", {
                       style: "currency",
                       currency: "BRL",
                     }).format(metrics.totalValue)}
                   </p>
                 </div>
-                <div className="rounded-lg bg-blue-50 p-3 text-blue-600">
+                <div className="rounded-lg bg-aether-accent-muted p-3 text-aether-accent">
                   <TrendingUp size={24} />
                 </div>
               </div>
             </div>
 
-            <div className="rounded-xl border border-slate-200 bg-white p-6 shadow-sm transition-all hover:shadow-md">
+            <div className="rounded-xl border border-aether-border bg-aether-surface p-6 shadow-sm transition-all hover:shadow-md">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm font-medium text-slate-500">
+                  <p className="text-sm font-medium text-aether-text-muted">
                     Total de Produtos
                   </p>
-                  <p className="mt-1 text-2xl font-bold text-slate-900">
+                  <p className="mt-1 text-2xl font-bold text-aether-text">
                     {metrics.totalItems}
                   </p>
                 </div>
@@ -220,13 +237,13 @@ export default function ProductsPage() {
               </div>
             </div>
 
-            <div className="rounded-xl border border-slate-200 bg-white p-6 shadow-sm transition-all hover:shadow-md">
+            <div className="rounded-xl border border-aether-border bg-aether-surface p-6 shadow-sm transition-all hover:shadow-md">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm font-medium text-slate-500">
+                  <p className="text-sm font-medium text-aether-text-muted">
                     Estoque Crítico
                   </p>
-                  <p className="mt-1 text-2xl font-bold text-slate-900">
+                  <p className="mt-1 text-2xl font-bold text-aether-text">
                     {metrics.lowStock}
                   </p>
                 </div>
@@ -240,30 +257,50 @@ export default function ProductsPage() {
           </div>
         )}
 
-        <div className="flex flex-col gap-4 sm:flex-row sm:items-center justify-between bg-white p-4 rounded-xl border border-slate-200 shadow-sm">
+        <div className="flex flex-col gap-4 sm:flex-row sm:items-center justify-between bg-aether-surface p-4 rounded-xl border border-aether-border shadow-sm">
           <div className="relative flex-1 max-w-md">
             <Search
-              className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400"
+              className="absolute left-3 top-1/2 -translate-y-1/2 text-aether-text-muted/70"
               size={18}
             />
             <input
               type="text"
               placeholder="Buscar por nome ou SKU..."
-              className="w-full rounded-lg border border-slate-200 bg-slate-50 py-2.5 pl-10 pr-4 text-sm text-slate-900 focus:border-blue-500 focus:bg-white focus:ring-4 focus:ring-blue-500/10 transition-all outline-none"
+              className="w-full rounded-lg border border-aether-border bg-aether-bg py-2 pl-10 pr-4 text-xs text-aether-text focus:border-aether-accent focus:bg-aether-surface transition-all outline-none"
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
             />
           </div>
-          <button className="flex items-center gap-2 text-sm font-medium text-slate-600 hover:text-slate-900 bg-slate-50 px-4 py-2.5 rounded-lg border border-slate-200 transition-all hover:bg-slate-100">
-            <Filter size={16} />
-            Filtros
-          </button>
+
+          <div className="flex flex-wrap items-center gap-2">
+            <span className="text-xs text-[#64748B] font-medium hidden sm:inline">Nível de Estoque:</span>
+            {[
+              { id: "all", label: "Todos" },
+              { id: "low", label: "Crítico (< 5)" },
+              { id: "out", label: "Esgotados" },
+              { id: "ok", label: "Estoque OK" },
+            ].map((status) => (
+              <button
+                key={status.id}
+                onClick={() => setStockStatusFilter(status.id as any)}
+                className={`px-3 py-1.5 text-xs font-semibold rounded-md transition-all ${
+                  stockStatusFilter === status.id
+                    ? status.id === "low" || status.id === "out"
+                      ? "bg-[#F87171] text-white shadow-sm"
+                      : "bg-[#0EA5E9] text-white shadow-sm"
+                    : "bg-[#1E293B] text-[#94A3B8] hover:text-[#F8FAFC]"
+                }`}
+              >
+                {status.label}
+              </button>
+            ))}
+          </div>
         </div>
 
-        <div className="rounded-xl border border-slate-200 bg-white shadow-sm overflow-hidden">
+        <div className="rounded-xl border border-aether-border bg-aether-surface shadow-sm overflow-hidden">
           {isLoading ? (
             <div className="flex h-64 items-center justify-center">
-              <Loader2 className="animate-spin text-blue-600" size={32} />
+              <Loader2 className="animate-spin text-aether-accent" size={32} />
             </div>
           ) : isError ? (
             <div className="flex h-64 flex-col items-center justify-center text-red-500 gap-2">
@@ -271,12 +308,12 @@ export default function ProductsPage() {
               <p>Não foi possível carregar os dados.</p>
             </div>
           ) : filteredProducts?.length === 0 ? (
-            <div className="flex h-80 flex-col items-center justify-center text-slate-400 gap-4">
-              <div className="h-16 w-16 bg-slate-50 rounded-full flex items-center justify-center">
+            <div className="flex h-80 flex-col items-center justify-center text-aether-text-muted/70 gap-4">
+              <div className="h-16 w-16 bg-aether-bg rounded-full flex items-center justify-center">
                 <Package size={32} className="opacity-50" />
               </div>
               <div className="text-center">
-                <p className="text-lg font-medium text-slate-900">
+                <p className="text-lg font-medium text-aether-text">
                   Nenhum produto encontrado
                 </p>
                 <p className="text-sm">
@@ -287,24 +324,24 @@ export default function ProductsPage() {
           ) : (
             <div className="overflow-x-auto">
               <table className="w-full text-left text-sm whitespace-nowrap">
-                <thead className="bg-slate-50 border-b border-slate-100">
+                <thead className="bg-aether-bg border-b border-aether-border">
                   <tr>
-                    <th className="px-6 py-4 font-semibold text-slate-600">
+                    <th className="px-6 py-4 font-semibold text-aether-text-muted">
                       Produto
                     </th>
-                    <th className="px-6 py-4 font-semibold text-slate-600">
+                    <th className="px-6 py-4 font-semibold text-aether-text-muted">
                       SKU
                     </th>
-                    <th className="px-6 py-4 font-semibold text-slate-600">
+                    <th className="px-6 py-4 font-semibold text-aether-text-muted">
                       Preço
                     </th>
-                    <th className="px-6 py-4 font-semibold text-slate-600">
+                    <th className="px-6 py-4 font-semibold text-aether-text-muted">
                       Estoque
                     </th>
-                    <th className="px-6 py-4 font-semibold text-slate-600">
+                    <th className="px-6 py-4 font-semibold text-aether-text-muted">
                       Status
                     </th>
-                    <th className="px-6 py-4 text-right font-semibold text-slate-600">
+                    <th className="px-6 py-4 text-right font-semibold text-aether-text-muted">
                       Ações
                     </th>
                   </tr>
@@ -313,29 +350,29 @@ export default function ProductsPage() {
                   {filteredProducts?.map((product) => (
                     <tr
                       key={product.id}
-                      className="group hover:bg-slate-50/80 transition-colors duration-200"
+                      className="group hover:bg-aether-bg/80 transition-colors duration-200"
                     >
                       <td className="px-6 py-4">
                         <div className="flex items-center gap-4">
-                          <div className="h-10 w-10 rounded-lg bg-linear-to-br from-blue-100 to-indigo-100 flex items-center justify-center text-blue-600 font-bold shrink-0 shadow-sm border border-blue-200/50">
+                          <div className="h-10 w-10 rounded-lg bg-linear-to-br from-blue-100 to-indigo-100 flex items-center justify-center text-aether-accent font-bold shrink-0 shadow-sm border border-blue-200/50">
                             {product.name.charAt(0).toUpperCase()}
                           </div>
                           <div>
-                            <p className="font-medium text-slate-900">
+                            <p className="font-medium text-aether-text">
                               {product.name}
                             </p>
-                            <p className="text-xs text-slate-500 truncate max-w-[200px]">
+                            <p className="text-xs text-aether-text-muted truncate max-w-[200px]">
                               {product.description || "Sem descrição"}
                             </p>
                           </div>
                         </div>
                       </td>
                       <td className="px-6 py-4">
-                        <span className="font-mono text-xs text-slate-600 bg-slate-100 border border-slate-200 px-2.5 py-1 rounded-md">
+                        <span className="font-mono text-xs text-aether-text-muted bg-aether-bg border border-aether-border px-2.5 py-1 rounded-md">
                           {product.sku || "N/A"}
                         </span>
                       </td>
-                      <td className="px-6 py-4 text-slate-900 font-medium">
+                      <td className="px-6 py-4 text-aether-text font-medium">
                         {new Intl.NumberFormat("pt-BR", {
                           style: "currency",
                           currency: "BRL",
@@ -354,7 +391,7 @@ export default function ProductsPage() {
                             className={
                               product.stock_quantity < 5
                                 ? "text-red-600 font-semibold"
-                                : "text-slate-600 font-medium"
+                                : "text-aether-text-muted font-medium"
                             }
                           >
                             {product.stock_quantity} un
@@ -366,7 +403,7 @@ export default function ProductsPage() {
                           className={`inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 text-xs font-medium border ${
                             product.is_active
                               ? "bg-emerald-50 text-emerald-700 border-emerald-200"
-                              : "bg-slate-100 text-slate-600 border-slate-200"
+                              : "bg-aether-bg text-aether-text-muted border-aether-border"
                           }`}
                         >
                           <Power size={12} />
@@ -376,7 +413,7 @@ export default function ProductsPage() {
                       <td className="px-6 py-4 text-right">
                         <button
                           onClick={() => openEditModal(product)}
-                          className="inline-flex items-center gap-2 px-3 py-1.5 text-sm font-medium text-blue-600 hover:bg-blue-50 hover:text-blue-700 rounded-lg transition-colors border border-transparent hover:border-blue-200"
+                          className="inline-flex items-center gap-2 px-3 py-1.5 text-sm font-medium text-aether-accent hover:bg-aether-accent-muted hover:text-blue-700 rounded-lg transition-colors border border-transparent hover:border-blue-200"
                         >
                           <Edit2 size={16} />
                           Editar
@@ -392,15 +429,15 @@ export default function ProductsPage() {
       </div>
 
       {isModalOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/50 backdrop-blur-sm p-4 animate-in fade-in duration-200">
-          <div className="w-full max-w-lg rounded-2xl bg-white p-8 shadow-2xl animate-in zoom-in-95 duration-200 border border-slate-100">
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-aether-surface/50 backdrop-blur-sm p-4 animate-in fade-in duration-200">
+          <div className="w-full max-w-lg rounded-2xl bg-aether-surface p-8 shadow-2xl animate-in zoom-in-95 duration-200 border border-aether-border">
             <div className="flex items-center justify-between mb-6">
-              <h2 className="text-xl font-bold text-slate-900">
+              <h2 className="text-xl font-bold text-aether-text">
                 {editingId ? "Editar Produto" : "Novo Produto"}
               </h2>
               <button
                 onClick={closeModal}
-                className="text-slate-400 hover:text-slate-600 transition-colors bg-slate-50 hover:bg-slate-100 p-2 rounded-full"
+                className="text-aether-text-muted/70 hover:text-aether-text-muted transition-colors bg-aether-bg hover:bg-aether-bg p-2 rounded-full"
               >
                 <span className="sr-only">Fechar</span>
                 <svg
@@ -422,12 +459,12 @@ export default function ProductsPage() {
             <form onSubmit={handleSubmit(onSubmit)} className="space-y-5">
               <div className="space-y-4">
                 <div>
-                  <label className="block text-sm font-medium text-slate-700 mb-1">
+                  <label className="block text-sm font-medium text-aether-text-muted mb-1">
                     Nome do Produto
                   </label>
                   <input
                     {...register("name")}
-                    className="block w-full rounded-lg border border-slate-200 bg-slate-50 px-4 py-2.5 text-sm text-slate-900 focus:border-blue-500 focus:bg-white focus:ring-4 focus:ring-blue-500/10 transition-all placeholder:text-slate-400 outline-none"
+                    className="block w-full rounded-lg border border-aether-border bg-aether-bg px-4 py-2.5 text-sm text-aether-text focus:border-aether-accent focus:bg-aether-surface focus:ring-4 focus:ring-aether-accent-muted transition-all placeholder:text-aether-text-muted/70 outline-none"
                     placeholder="Ex: Cadeira Ergonômica"
                   />
                   {errors.name && (
@@ -439,18 +476,18 @@ export default function ProductsPage() {
 
                 <div className="grid grid-cols-2 gap-5">
                   <div>
-                    <label className="block text-sm font-medium text-slate-700 mb-1">
+                    <label className="block text-sm font-medium text-aether-text-muted mb-1">
                       Preço (R$)
                     </label>
                     <div className="relative">
-                      <span className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-sm">
+                      <span className="absolute left-3 top-1/2 -translate-y-1/2 text-aether-text-muted/70 text-sm">
                         R$
                       </span>
                       <input
                         type="number"
                         step="0.01"
                         {...register("price")}
-                        className="block w-full rounded-lg border border-slate-200 bg-slate-50 pl-9 pr-4 py-2.5 text-sm text-slate-900 focus:border-blue-500 focus:bg-white focus:ring-4 focus:ring-blue-500/10 transition-all outline-none"
+                        className="block w-full rounded-lg border border-aether-border bg-aether-bg pl-9 pr-4 py-2.5 text-sm text-aether-text focus:border-aether-accent focus:bg-aether-surface focus:ring-4 focus:ring-aether-accent-muted transition-all outline-none"
                         placeholder="0.00"
                       />
                     </div>
@@ -461,55 +498,55 @@ export default function ProductsPage() {
                     )}
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-slate-700 mb-1">
+                    <label className="block text-sm font-medium text-aether-text-muted mb-1">
                       Estoque Atual
                     </label>
                     <input
                       type="number"
                       {...register("stock_quantity")}
-                      className="block w-full rounded-lg border border-slate-200 bg-slate-50 px-4 py-2.5 text-sm text-slate-900 focus:border-blue-500 focus:bg-white focus:ring-4 focus:ring-blue-500/10 transition-all outline-none"
+                      className="block w-full rounded-lg border border-aether-border bg-aether-bg px-4 py-2.5 text-sm text-aether-text focus:border-aether-accent focus:bg-aether-surface focus:ring-4 focus:ring-aether-accent-muted transition-all outline-none"
                       placeholder="0"
                     />
                   </div>
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-slate-700 mb-1">
+                  <label className="block text-sm font-medium text-aether-text-muted mb-1">
                     SKU / Código
                   </label>
                   <input
                     {...register("sku")}
-                    className="block w-full rounded-lg border border-slate-200 bg-slate-50 px-4 py-2.5 text-sm text-slate-900 focus:border-blue-500 focus:bg-white focus:ring-4 focus:ring-blue-500/10 transition-all font-mono uppercase outline-none"
+                    className="block w-full rounded-lg border border-aether-border bg-aether-bg px-4 py-2.5 text-sm text-aether-text focus:border-aether-accent focus:bg-aether-surface focus:ring-4 focus:ring-aether-accent-muted transition-all font-mono uppercase outline-none"
                     placeholder="PROD-001"
                   />
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-slate-700 mb-1">
+                  <label className="block text-sm font-medium text-aether-text-muted mb-1">
                     Descrição
                   </label>
                   <textarea
                     {...register("description")}
                     rows={3}
-                    className="block w-full rounded-lg border border-slate-200 bg-slate-50 px-4 py-2.5 text-sm text-slate-900 focus:border-blue-500 focus:bg-white focus:ring-4 focus:ring-blue-500/10 transition-all resize-none outline-none"
+                    className="block w-full rounded-lg border border-aether-border bg-aether-bg px-4 py-2.5 text-sm text-aether-text focus:border-aether-accent focus:bg-aether-surface focus:ring-4 focus:ring-aether-accent-muted transition-all resize-none outline-none"
                     placeholder="Detalhes opcionais sobre o produto..."
                   />
                 </div>
 
                 {editingId && (
-                  <div className="flex items-center gap-3 p-4 bg-slate-50 rounded-xl border border-slate-200">
+                  <div className="flex items-center gap-3 p-4 bg-aether-bg rounded-xl border border-aether-border">
                     <div className="flex h-6 items-center">
                       <input
                         type="checkbox"
                         {...register("is_active")}
-                        className="h-4 w-4 rounded border-slate-300 text-blue-600 focus:ring-blue-600 transition-all"
+                        className="h-4 w-4 rounded border-aether-border-light text-aether-accent focus:ring-aether-accent transition-all"
                       />
                     </div>
                     <div className="flex flex-col">
-                      <label className="text-sm font-medium text-slate-900">
+                      <label className="text-sm font-medium text-aether-text">
                         Produto Ativo
                       </label>
-                      <span className="text-xs text-slate-500">
+                      <span className="text-xs text-aether-text-muted">
                         {isActiveWatch
                           ? "Este produto está disponível para venda."
                           : "Este produto está arquivado/inativo."}
@@ -519,11 +556,11 @@ export default function ProductsPage() {
                 )}
               </div>
 
-              <div className="flex gap-3 pt-4 border-t border-slate-100">
+              <div className="flex gap-3 pt-4 border-t border-aether-border">
                 <button
                   type="button"
                   onClick={closeModal}
-                  className="flex-1 rounded-xl border border-slate-200 bg-white px-4 py-2.5 text-sm font-semibold text-slate-700 hover:bg-slate-50 hover:text-slate-900 transition-colors"
+                  className="flex-1 rounded-xl border border-aether-border bg-aether-surface px-4 py-2.5 text-sm font-semibold text-aether-text-muted hover:bg-aether-bg hover:text-aether-text transition-colors"
                 >
                   Cancelar
                 </button>
@@ -532,7 +569,7 @@ export default function ProductsPage() {
                   disabled={
                     createMutation.isPending || updateMutation.isPending
                   }
-                  className="flex-1 rounded-xl bg-slate-900 px-4 py-2.5 text-sm font-semibold text-white hover:bg-slate-800 disabled:opacity-70 shadow-lg shadow-slate-900/10 transition-all"
+                  className="flex-1 rounded-xl bg-aether-surface px-4 py-2.5 text-sm font-semibold text-white hover:bg-aether-bg disabled:opacity-70 shadow-lg shadow-slate-900/10 transition-all"
                 >
                   {createMutation.isPending || updateMutation.isPending ? (
                     <span className="flex items-center justify-center gap-2">

@@ -55,6 +55,15 @@ func (ns NullUserRole) Value() (driver.Value, error) {
 	return string(ns.UserRole), nil
 }
 
+type ActivityLog struct {
+	ID             pgtype.UUID        `json:"id"`
+	OrganizationID pgtype.UUID        `json:"organization_id"`
+	Action         string             `json:"action"`
+	UserName       string             `json:"user_name"`
+	Status         string             `json:"status"`
+	CreatedAt      pgtype.Timestamptz `json:"created_at"`
+}
+
 type Customer struct {
 	ID             pgtype.UUID        `json:"id"`
 	OrganizationID pgtype.UUID        `json:"organization_id"`
@@ -65,6 +74,20 @@ type Customer struct {
 	Type           pgtype.Text        `json:"type"`
 	CreatedAt      pgtype.Timestamptz `json:"created_at"`
 	UpdatedAt      pgtype.Timestamptz `json:"updated_at"`
+}
+
+type FinancialTransaction struct {
+	ID             pgtype.UUID        `json:"id"`
+	OrganizationID pgtype.UUID        `json:"organization_id"`
+	Type           string             `json:"type"`
+	Amount         pgtype.Numeric     `json:"amount"`
+	Description    string             `json:"description"`
+	Status         string             `json:"status"`
+	PaymentMethod  pgtype.Text        `json:"payment_method"`
+	OrderID        pgtype.UUID        `json:"order_id"`
+	DueDate        pgtype.Date        `json:"due_date"`
+	PaidAt         pgtype.Timestamptz `json:"paid_at"`
+	CreatedAt      pgtype.Timestamptz `json:"created_at"`
 }
 
 type Order struct {

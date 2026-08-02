@@ -6,10 +6,8 @@ import {
   Scripts,
   ScrollRestoration,
 } from "react-router";
-// 1. Importes do Query
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { useState } from "react";
-
 import type { Route } from "./+types/root";
 import "./app.css";
 
@@ -32,8 +30,25 @@ export function Layout({ children }: { children: React.ReactNode }) {
       <head>
         <meta charSet="utf-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <title>Aether ERP - Tactical Suite</title>
+        <meta name="description" content="Aether Enterprise Resource Planning - Tactical management suite for financial, product, and inventory control." />
+        <meta property="og:title" content="Aether ERP - Tactical Suite" />
+        <meta property="og:description" content="Aether Enterprise Resource Planning - Tactical management suite." />
+        <meta property="og:type" content="website" />
         <Meta />
         <Links />
+        <script suppressHydrationWarning>
+          {`
+            (function() {
+              try {
+                var theme = localStorage.getItem("theme");
+                var isDark = theme === "Dark" || (theme !== "Light" && window.matchMedia("(prefers-color-scheme: dark)").matches);
+                if (isDark) document.documentElement.classList.add("dark");
+                else document.documentElement.classList.remove("dark");
+              } catch (e) {}
+            })();
+          `}
+        </script>
       </head>
       <body>
         {children}
@@ -45,12 +60,8 @@ export function Layout({ children }: { children: React.ReactNode }) {
 }
 
 export default function App() {
-  // 2. Criar o cliente do Query
-  // Usamos useState para garantir que o cliente seja único por sessão
   const [queryClient] = useState(() => new QueryClient());
-
   return (
-    // 3. Envolver a aplicação (Outlet) com o Provider
     <QueryClientProvider client={queryClient}>
       <Outlet />
     </QueryClientProvider>
@@ -64,10 +75,7 @@ export function ErrorBoundary({ error }: Route.ErrorBoundaryProps) {
 
   if (isRouteErrorResponse(error)) {
     message = error.status === 404 ? "404" : "Error";
-    details =
-      error.status === 404
-        ? "The requested page could not be found."
-        : error.statusText || details;
+    details = error.status === 404 ? "The requested page could not be found." : error.statusText || details;
   } else if (import.meta.env.DEV && error && error instanceof Error) {
     details = error.message;
     stack = error.stack;

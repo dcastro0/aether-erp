@@ -14,6 +14,7 @@ type Querier interface {
 	AddProductStock(ctx context.Context, arg AddProductStockParams) error
 	AddUserToOrganization(ctx context.Context, arg AddUserToOrganizationParams) (OrganizationMember, error)
 	CreateCustomer(ctx context.Context, arg CreateCustomerParams) (Customer, error)
+	CreateFinancialTransaction(ctx context.Context, arg CreateFinancialTransactionParams) (FinancialTransaction, error)
 	CreateOrder(ctx context.Context, arg CreateOrderParams) (pgtype.UUID, error)
 	CreateOrderItem(ctx context.Context, arg CreateOrderItemParams) (OrderItem, error)
 	CreateOrganization(ctx context.Context, arg CreateOrganizationParams) (Organization, error)
@@ -25,14 +26,20 @@ type Querier interface {
 	GetOrderItems(ctx context.Context, orderID pgtype.UUID) ([]GetOrderItemsRow, error)
 	GetOrganizationBySlug(ctx context.Context, slug string) (Organization, error)
 	GetProductMetrics(ctx context.Context, organizationID pgtype.UUID) (GetProductMetricsRow, error)
+	GetRecentActivity(ctx context.Context, dollar_1 pgtype.UUID) ([]GetRecentActivityRow, error)
+	GetSalesByPaymentMethod(ctx context.Context, dollar_1 pgtype.UUID) ([]GetSalesByPaymentMethodRow, error)
 	GetSalesOverTime(ctx context.Context, dollar_1 pgtype.UUID) ([]GetSalesOverTimeRow, error)
+	GetTopSellingProducts(ctx context.Context, dollar_1 pgtype.UUID) ([]GetTopSellingProductsRow, error)
+	GetTotalProductsCount(ctx context.Context, dollar_1 pgtype.UUID) (int32, error)
 	GetUserByEmail(ctx context.Context, email string) (User, error)
 	GetUserByID(ctx context.Context, id pgtype.UUID) (User, error)
 	GetUserOrganizations(ctx context.Context, userID pgtype.UUID) ([]GetUserOrganizationsRow, error)
 	ListCustomers(ctx context.Context, organizationID pgtype.UUID) ([]Customer, error)
+	ListFinancialTransactions(ctx context.Context, organizationID pgtype.UUID) ([]FinancialTransaction, error)
 	ListOrders(ctx context.Context, organizationID pgtype.UUID) ([]ListOrdersRow, error)
 	ListProducts(ctx context.Context, organizationID pgtype.UUID) ([]Product, error)
 	UpdateCustomer(ctx context.Context, arg UpdateCustomerParams) (Customer, error)
+	UpdateFinancialTransactionStatus(ctx context.Context, arg UpdateFinancialTransactionStatusParams) error
 	UpdateProduct(ctx context.Context, arg UpdateProductParams) (Product, error)
 	UpdateProductStock(ctx context.Context, arg UpdateProductStockParams) error
 	UpdateUserName(ctx context.Context, arg UpdateUserNameParams) (UpdateUserNameRow, error)

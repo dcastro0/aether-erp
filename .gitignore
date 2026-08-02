@@ -12,9 +12,17 @@ backend/coverage.out
 # Frontend
 frontend/node_modules/
 frontend/dist/
+frontend/build/
 frontend/.env
 frontend/.env.local
 frontend/npm-debug.log*
 frontend/yarn-debug.log*
 frontend/yarn-error.log*
 frontend/pnpm-debug.log*
+
+# Agent Workspace & Internal Tooling
+.agent/
+.agents/
+workspace/
+skills-lock.json
+backend/aether-backend
