@@ -16,6 +16,8 @@ import (
 	"github.com/dcastro0/aether-backend/internal/middleware"
 	"github.com/dcastro0/aether-backend/internal/orders"
 	"github.com/dcastro0/aether-backend/internal/products"
+	"github.com/dcastro0/aether-backend/internal/purchases"
+	"github.com/dcastro0/aether-backend/internal/suppliers"
 	jwtware "github.com/gofiber/contrib/jwt"
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/fiber/v2/middleware/cors"
@@ -64,6 +66,8 @@ func main() {
 	dashboardHandler := dashboard.NewHandler(dashboard.NewService(dbPool))
 	financialHandler := financial.NewHandler(financial.NewService(dbPool, auditService))
 	employeeHandler := employees.NewHandler(employees.NewService(dbPool, auditService))
+	supplierHandler := suppliers.NewHandler(suppliers.NewService(dbPool, auditService))
+	purchaseHandler := purchases.NewHandler(purchases.NewService(dbPool, auditService))
 
 	app := fiber.New(fiber.Config{
 		AppName:       "Aether ERP",
@@ -148,6 +152,17 @@ func main() {
 	employeesGroup.Patch("/:id/toggle-active", employeeHandler.ToggleActive)
 	employeesGroup.Delete("/:id", employeeHandler.Delete)
 	employeesGroup.Post("/:id/reset-password", employeeHandler.ResetPassword)
+
+	suppliersGroup := protected.Group("/suppliers")
+	suppliersGroup.Get("/", supplierHandler.List)
+	suppliersGroup.Post("/", middleware.RequireRole("admin", "editor"), supplierHandler.Create)
+	suppliersGroup.Put("/:id", middleware.RequireRole("admin", "editor"), supplierHandler.Update)
+	suppliersGroup.Delete("/:id", middleware.RequireRole("admin", "editor"), supplierHandler.Delete)
+
+	purchasesGroup := protected.Group("/purchases")
+	purchasesGroup.Get("/", purchaseHandler.List)
+	purchasesGroup.Post("/", middleware.RequireRole("admin", "editor"), purchaseHandler.Create)
+	purchasesGroup.Post("/:id/receive", middleware.RequireRole("admin", "editor"), purchaseHandler.Receive)
 
 	auditGroup := protected.Group("/audit-logs", middleware.RequireRole("admin"))
 	auditGroup.Get("/", auditHandler.List)

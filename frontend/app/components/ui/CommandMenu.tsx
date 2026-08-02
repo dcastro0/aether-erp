@@ -38,6 +38,8 @@ export const CommandMenu: React.FC<CommandMenuProps> = ({ isOpen, onClose }) => 
     { title: "Dashboard Overview", path: "/dashboard", type: "Painel", roles: ["owner", "admin", "editor", "viewer"] },
     { title: "Lançamentos Financeiros", path: "/dashboard/financial", type: "Financeiro", roles: ["owner", "admin", "editor", "viewer"] },
     { title: "Catálogo de Produtos", path: "/dashboard/products", type: "Estoque", roles: ["owner", "admin", "editor", "viewer"] },
+    { title: "Gestão de Fornecedores", path: "/dashboard/suppliers", type: "Compras", roles: ["owner", "admin", "editor"] },
+    { title: "Ordens de Compra & Estoque", path: "/dashboard/purchases", type: "Compras", roles: ["owner", "admin", "editor"] },
     { title: "Lista de Clientes", path: "/dashboard/customers", type: "CRM", roles: ["owner", "admin", "editor", "viewer"] },
     { title: "Equipe & Controle de Acessos", path: "/dashboard/employees", type: "Gestão", roles: ["owner", "admin"] },
     { title: "Logs de Auditoria & Rastreabilidade", path: "/dashboard/audit-logs", type: "Segurança", roles: ["owner", "admin"] },

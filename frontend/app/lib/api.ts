@@ -127,6 +127,65 @@ export interface UpdateEmployeeDTO {
   role: "admin" | "editor" | "viewer";
 }
 
+export interface Supplier {
+  id: string;
+  name: string;
+  trade_name?: string;
+  document?: string;
+  email?: string;
+  phone?: string;
+  address?: string;
+  notes?: string;
+  is_active: boolean;
+  created_at: string;
+}
+
+export interface CreateSupplierDTO {
+  name: string;
+  trade_name?: string;
+  document?: string;
+  email?: string;
+  phone?: string;
+  address?: string;
+  notes?: string;
+}
+
+export interface PurchaseOrderItem {
+  id: string;
+  purchase_order_id: string;
+  product_id: string;
+  product_name?: string;
+  quantity: number;
+  unit_cost: number;
+  total_cost: number;
+}
+
+export interface PurchaseOrder {
+  id: string;
+  supplier_id: string;
+  supplier_name?: string;
+  total_amount: number;
+  status: "pending" | "received" | "cancelled";
+  notes?: string;
+  expected_delivery?: string;
+  received_at?: string;
+  created_at: string;
+  items?: PurchaseOrderItem[];
+}
+
+export interface CreatePurchaseOrderItemDTO {
+  product_id: string;
+  quantity: number;
+  unit_cost: number;
+}
+
+export interface CreatePurchaseOrderDTO {
+  supplier_id: string;
+  notes?: string;
+  expected_delivery?: string;
+  items: CreatePurchaseOrderItemDTO[];
+}
+
 export const api = {
   baseUrl: "http://localhost:3000/api",
 

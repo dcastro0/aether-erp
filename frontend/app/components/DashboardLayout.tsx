@@ -18,7 +18,9 @@ import {
   ShieldAlert,
   ShieldCheck,
   Loader2,
-  AlertCircle
+  AlertCircle,
+  Truck,
+  ShoppingBag
 } from "lucide-react";
 import { CommandMenu } from "./ui/CommandMenu";
 import { api } from "../lib/api";
@@ -50,6 +52,8 @@ export function DashboardLayout({ children }: { children: React.ReactNode }) {
     { icon: LayoutDashboard, label: "Dashboard", path: "/dashboard", roles: ["owner", "admin", "editor", "viewer"] },
     { icon: Wallet, label: "Financeiro", path: "/dashboard/financial", roles: ["owner", "admin", "editor", "viewer"] },
     { icon: Package, label: "Produtos", path: "/dashboard/products", roles: ["owner", "admin", "editor", "viewer"] },
+    { icon: Truck, label: "Fornecedores", path: "/dashboard/suppliers", roles: ["owner", "admin", "editor"] },
+    { icon: ShoppingBag, label: "Ordens de Compra", path: "/dashboard/purchases", roles: ["owner", "admin", "editor"] },
     { icon: Users, label: "Clientes", path: "/dashboard/customers", roles: ["owner", "admin", "editor", "viewer"] },
     { icon: UserCheck, label: "Equipe & Acessos", path: "/dashboard/employees", roles: ["owner", "admin"] },
     { icon: ShieldCheck, label: "Logs de Auditoria", path: "/dashboard/audit-logs", roles: ["owner", "admin"] },
