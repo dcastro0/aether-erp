@@ -20,7 +20,8 @@ import {
   Loader2,
   AlertCircle,
   Truck,
-  ShoppingBag
+  ShoppingBag,
+  BarChart3
 } from "lucide-react";
 import { CommandMenu } from "./ui/CommandMenu";
 import { api } from "../lib/api";
@@ -51,6 +52,7 @@ export function DashboardLayout({ children }: { children: React.ReactNode }) {
   const allMenuItems = [
     { icon: LayoutDashboard, label: "Dashboard", path: "/dashboard", roles: ["owner", "admin", "editor", "viewer"] },
     { icon: Wallet, label: "Financeiro", path: "/dashboard/financial", roles: ["owner", "admin", "editor", "viewer"] },
+    { icon: BarChart3, label: "Relatórios & DRE", path: "/dashboard/reports", roles: ["owner", "admin"] },
     { icon: Package, label: "Produtos", path: "/dashboard/products", roles: ["owner", "admin", "editor", "viewer"] },
     { icon: Truck, label: "Fornecedores", path: "/dashboard/suppliers", roles: ["owner", "admin", "editor"] },
     { icon: ShoppingBag, label: "Ordens de Compra", path: "/dashboard/purchases", roles: ["owner", "admin", "editor"] },

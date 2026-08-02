@@ -16,4 +16,5 @@ export default [
   route("dashboard/audit-logs", "routes/audit-logs.tsx"),
   route("dashboard/suppliers", "routes/suppliers.tsx"),
   route("dashboard/purchases", "routes/purchases.tsx"),
+  route("dashboard/reports", "routes/reports.tsx"),
 ] satisfies RouteConfig;

@@ -17,6 +17,7 @@ import (
 	"github.com/dcastro0/aether-backend/internal/orders"
 	"github.com/dcastro0/aether-backend/internal/products"
 	"github.com/dcastro0/aether-backend/internal/purchases"
+	"github.com/dcastro0/aether-backend/internal/reports"
 	"github.com/dcastro0/aether-backend/internal/suppliers"
 	jwtware "github.com/gofiber/contrib/jwt"
 	"github.com/gofiber/fiber/v2"
@@ -68,6 +69,7 @@ func main() {
 	employeeHandler := employees.NewHandler(employees.NewService(dbPool, auditService))
 	supplierHandler := suppliers.NewHandler(suppliers.NewService(dbPool, auditService))
 	purchaseHandler := purchases.NewHandler(purchases.NewService(dbPool, auditService))
+	reportsHandler := reports.NewHandler(reports.NewService(dbPool))
 
 	app := fiber.New(fiber.Config{
 		AppName:       "Aether ERP",
@@ -163,6 +165,11 @@ func main() {
 	purchasesGroup.Get("/", purchaseHandler.List)
 	purchasesGroup.Post("/", middleware.RequireRole("admin", "editor"), purchaseHandler.Create)
 	purchasesGroup.Post("/:id/receive", middleware.RequireRole("admin", "editor"), purchaseHandler.Receive)
+
+	reportsGroup := protected.Group("/reports", middleware.RequireRole("admin"))
+	reportsGroup.Get("/dre", reportsHandler.GetDRE)
+	reportsGroup.Get("/abc-curve", reportsHandler.GetABC)
+	reportsGroup.Get("/sellers", reportsHandler.GetSellers)
 
 	auditGroup := protected.Group("/audit-logs", middleware.RequireRole("admin"))
 	auditGroup.Get("/", auditHandler.List)

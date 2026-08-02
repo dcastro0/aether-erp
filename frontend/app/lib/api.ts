@@ -186,6 +186,38 @@ export interface CreatePurchaseOrderDTO {
   items: CreatePurchaseOrderItemDTO[];
 }
 
+export interface DREReport {
+  gross_revenue: number;
+  deductions: number;
+  net_revenue: number;
+  cost_of_goods_sold: number;
+  gross_profit: number;
+  operating_expenses: number;
+  net_profit: number;
+  gross_margin_percent: number;
+  net_margin_percent: number;
+  start_date: string;
+  end_date: string;
+}
+
+export interface ABCItem {
+  product_id: string;
+  product_name: string;
+  total_quantity: number;
+  total_revenue: number;
+  share_percent: number;
+  cumulated_share: number;
+  class: "A" | "B" | "C";
+}
+
+export interface SellerPerformance {
+  seller_id: string;
+  seller_name: string;
+  total_sales: number;
+  total_revenue: number;
+  avg_ticket: number;
+}
+
 export const api = {
   baseUrl: "http://localhost:3000/api",
 
