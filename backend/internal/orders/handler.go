@@ -22,8 +22,16 @@ func (h *Handler) Create(c *fiber.Ctx) error {
 		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{"error": "invalid body"})
 	}
 
-	if err := h.service.Create(c.Context(), claims.OrgID, req); err != nil {
+	if err := h.service.Create(c.Context(), claims.OrgID, claims.UserID, req); err != nil {
 		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{"error": err.Error()})
+	}
+
+	if h.service.audit != nil {
+		h.service.audit.LogFromCtx(c, "ORDER_CREATE", "order", "", map[string]interface{}{
+			"payment_method": req.PaymentMethod,
+			"items_count":    len(req.Items),
+			"customer_id":    req.CustomerID.String(),
+		})
 	}
 
 	return c.Status(fiber.StatusCreated).JSON(fiber.Map{"message": "order created"})

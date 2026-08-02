@@ -27,6 +27,17 @@ func (h *Handler) Create(c *fiber.Ctx) error {
 		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{"error": err.Error()})
 	}
 
+	if h.service.audit != nil {
+		cID := ""
+		if customer.ID.Valid {
+			cID = customer.ID.String()
+		}
+		h.service.audit.LogFromCtx(c, "CUSTOMER_CREATE", "customer", cID, map[string]interface{}{
+			"name": req.Name,
+			"type": req.Type,
+		})
+	}
+
 	return c.Status(fiber.StatusCreated).JSON(customer)
 }
 
@@ -59,6 +70,13 @@ func (h *Handler) Update(c *fiber.Ctx) error {
 		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{"error": err.Error()})
 	}
 
+	if h.service.audit != nil {
+		h.service.audit.LogFromCtx(c, "CUSTOMER_UPDATE", "customer", customerID.String(), map[string]interface{}{
+			"name": req.Name,
+			"type": req.Type,
+		})
+	}
+
 	return c.JSON(customer)
 }
 
@@ -72,6 +90,10 @@ func (h *Handler) Delete(c *fiber.Ctx) error {
 
 	if err := h.service.Delete(c.Context(), claims.OrgID, customerID); err != nil {
 		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{"error": err.Error()})
+	}
+
+	if h.service.audit != nil {
+		h.service.audit.LogFromCtx(c, "CUSTOMER_DELETE", "customer", customerID.String(), nil)
 	}
 
 	return c.SendStatus(fiber.StatusNoContent)

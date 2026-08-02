@@ -4,7 +4,9 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	"time"
 
+	"github.com/dcastro0/aether-backend/internal/audit"
 	"github.com/dcastro0/aether-backend/internal/db"
 	"github.com/google/uuid"
 	"github.com/jackc/pgx/v5/pgtype"
@@ -26,6 +28,7 @@ type CreateOrderRequest struct {
 type OrderResponse struct {
 	ID            uuid.UUID `json:"id"`
 	CustomerName  string    `json:"customer_name"`
+	SellerName    string    `json:"seller_name"`
 	TotalAmount   string    `json:"total_amount"`
 	Status        string    `json:"status"`
 	PaymentMethod string    `json:"payment_method"`
@@ -45,16 +48,18 @@ type OrderDetailsResponse struct {
 }
 
 type Service struct {
-	db *pgxpool.Pool
+	db    *pgxpool.Pool
+	audit *audit.Service
 }
 
-func NewService(pool *pgxpool.Pool) *Service {
+func NewService(pool *pgxpool.Pool, auditService *audit.Service) *Service {
 	return &Service{
-		db: pool,
+		db:    pool,
+		audit: auditService,
 	}
 }
 
-func (s *Service) Create(ctx context.Context, orgID uuid.UUID, req CreateOrderRequest) error {
+func (s *Service) Create(ctx context.Context, orgID uuid.UUID, userID uuid.UUID, req CreateOrderRequest) error {
 	tx, err := s.db.Begin(ctx)
 	if err != nil {
 		return err
@@ -78,6 +83,13 @@ func (s *Service) Create(ctx context.Context, orgID uuid.UUID, req CreateOrderRe
 		Status:         "completed",
 		PaymentMethod:  req.PaymentMethod,
 	})
+	if err != nil {
+		return err
+	}
+
+	// Update order with seller user_id
+	updateUserQuery := `UPDATE orders SET user_id = $1 WHERE id = $2`
+	_, err = tx.Exec(ctx, updateUserQuery, userID, orderID.Bytes)
 	if err != nil {
 		return err
 	}
@@ -110,27 +122,66 @@ func (s *Service) Create(ctx context.Context, orgID uuid.UUID, req CreateOrderRe
 		}
 	}
 
+	status := "pending"
+	var paidAt pgtype.Timestamptz
+	if req.PaymentMethod == "dinheiro" || req.PaymentMethod == "pix" || req.PaymentMethod == "debito" {
+		status = "paid"
+		paidAt = pgtype.Timestamptz{Time: time.Now(), Valid: true}
+	}
+
+	orderUUID := uuid.UUID(orderID.Bytes)
+	_, err = qtx.CreateFinancialTransaction(ctx, db.CreateFinancialTransactionParams{
+		OrganizationID: pgtype.UUID{Bytes: orgID, Valid: true},
+		Type:           "income",
+		Amount:         totalNumeric,
+		Description:    fmt.Sprintf("Venda PDV - Pedido %s", orderUUID.String()),
+		Status:         status,
+		PaymentMethod:  pgtype.Text{String: req.PaymentMethod, Valid: req.PaymentMethod != ""},
+		OrderID:        pgtype.UUID{Bytes: orderID.Bytes, Valid: true},
+		DueDate:        pgtype.Date{Time: time.Now(), Valid: true},
+		PaidAt:         paidAt,
+	})
+	if err != nil {
+		return err
+	}
+
 	return tx.Commit(ctx)
 }
 
 func (s *Service) List(ctx context.Context, orgID uuid.UUID) ([]OrderResponse, error) {
-	q := db.New(s.db)
-	rows, err := q.ListOrders(ctx, pgtype.UUID{Bytes: orgID, Valid: true})
+	query := `
+		SELECT 
+			o.id, 
+			c.name as customer_name, 
+			COALESCE(u.full_name, 'Sistema / Não informado') as seller_name,
+			o.total_amount, 
+			o.status, 
+			o.payment_method, 
+			o.created_at
+		FROM orders o
+		JOIN customers c ON o.customer_id = c.id
+		LEFT JOIN users u ON o.user_id = u.id
+		WHERE o.organization_id = $1
+		ORDER BY o.created_at DESC
+	`
+
+	rows, err := s.db.Query(ctx, query, orgID)
 	if err != nil {
 		return nil, err
 	}
+	defer rows.Close()
 
 	var orders []OrderResponse
-	for _, r := range rows {
-		val, _ := r.TotalAmount.Float64Value()
-		orders = append(orders, OrderResponse{
-			ID:            uuid.UUID(r.ID.Bytes),
-			CustomerName:  r.CustomerName,
-			TotalAmount:   fmt.Sprintf("%.2f", val.Float64),
-			Status:        r.Status,
-			PaymentMethod: r.PaymentMethod,
-			CreatedAt:     r.CreatedAt.Time.Format("2006-01-02"),
-		})
+	for rows.Next() {
+		var o OrderResponse
+		var totalNum pgtype.Numeric
+		var createdAt time.Time
+		if scanErr := rows.Scan(&o.ID, &o.CustomerName, &o.SellerName, &totalNum, &o.Status, &o.PaymentMethod, &createdAt); scanErr == nil {
+			val, _ := totalNum.Float64Value()
+			o.TotalAmount = fmt.Sprintf("%.2f", val.Float64)
+			o.CreatedAt = createdAt.Format("2006-01-02 15:04")
+			orders = append(orders, o)
+		}
 	}
 
 	return orders, nil

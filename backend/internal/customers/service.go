@@ -3,6 +3,7 @@ package customers
 import (
 	"context"
 
+	"github.com/dcastro0/aether-backend/internal/audit"
 	"github.com/dcastro0/aether-backend/internal/db"
 	"github.com/google/uuid"
 	"github.com/jackc/pgx/v5/pgtype"
@@ -18,14 +19,16 @@ type CreateCustomerRequest struct {
 }
 
 type Service struct {
-	q  *db.Queries
-	db *pgxpool.Pool
+	q     *db.Queries
+	db    *pgxpool.Pool
+	audit *audit.Service
 }
 
-func NewService(pool *pgxpool.Pool) *Service {
+func NewService(pool *pgxpool.Pool, auditService *audit.Service) *Service {
 	return &Service{
-		q:  db.New(pool),
-		db: pool,
+		q:     db.New(pool),
+		db:    pool,
+		audit: auditService,
 	}
 }
 

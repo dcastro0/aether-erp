@@ -90,5 +90,9 @@ func (h *Handler) UpdatePassword(c *fiber.Ctx) error {
 		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{"error": err.Error()})
 	}
 
-	return c.SendStatus(fiber.StatusOK)
+	if h.service.audit != nil {
+		h.service.audit.LogFromCtx(c, "PASSWORD_CHANGE", "auth", claims.UserID.String(), nil)
+	}
+
+	return c.JSON(fiber.Map{"message": "senha atualizada com sucesso"})
 }

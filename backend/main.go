@@ -7,15 +7,20 @@ import (
 	"syscall"
 	"time"
 
+	"github.com/dcastro0/aether-backend/internal/audit"
 	"github.com/dcastro0/aether-backend/internal/auth"
 	"github.com/dcastro0/aether-backend/internal/customers"
 	"github.com/dcastro0/aether-backend/internal/dashboard"
+	"github.com/dcastro0/aether-backend/internal/employees"
+	"github.com/dcastro0/aether-backend/internal/financial"
 	"github.com/dcastro0/aether-backend/internal/middleware"
 	"github.com/dcastro0/aether-backend/internal/orders"
 	"github.com/dcastro0/aether-backend/internal/products"
 	jwtware "github.com/gofiber/contrib/jwt"
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/fiber/v2/middleware/cors"
+	"github.com/gofiber/fiber/v2/middleware/helmet"
+	"github.com/gofiber/fiber/v2/middleware/limiter"
 	"github.com/gofiber/fiber/v2/middleware/logger"
 	"github.com/gofiber/fiber/v2/middleware/recover"
 	"github.com/jackc/pgx/v5/pgxpool"
@@ -26,12 +31,16 @@ import (
 
 func main() {
 	log.Logger = log.Output(zerolog.ConsoleWriter{Out: os.Stderr})
-
 	_ = godotenv.Load()
 
 	dbURL := os.Getenv("DATABASE_URL")
 	if dbURL == "" {
 		log.Fatal().Msg("DATABASE_URL is required")
+	}
+
+	jwtSecret := os.Getenv("JWT_SECRET")
+	if len(jwtSecret) < 32 {
+		log.Fatal().Msg("JWT_SECRET is missing or lacks sufficient cryptographic strength (min 32 chars)")
 	}
 
 	ctx := context.Background()
@@ -44,28 +53,47 @@ func main() {
 	if err := dbPool.Ping(ctx); err != nil {
 		log.Fatal().Err(err).Msg("Unable to ping database")
 	}
-	log.Info().Msg("Connected to PostgreSQL")
 
-	authHandler := auth.NewHandler(auth.NewService(dbPool))
-	productHandler := products.NewHandler(products.NewService(dbPool))
-	customerHandler := customers.NewHandler(customers.NewService(dbPool))
-	orderHandler := orders.NewHandler(orders.NewService(dbPool))
+	auditService := audit.NewService(dbPool)
+	auditHandler := audit.NewHandler(auditService)
+
+	authHandler := auth.NewHandler(auth.NewService(dbPool, jwtSecret, auditService))
+	productHandler := products.NewHandler(products.NewService(dbPool, auditService))
+	customerHandler := customers.NewHandler(customers.NewService(dbPool, auditService))
+	orderHandler := orders.NewHandler(orders.NewService(dbPool, auditService))
 	dashboardHandler := dashboard.NewHandler(dashboard.NewService(dbPool))
+	financialHandler := financial.NewHandler(financial.NewService(dbPool, auditService))
+	employeeHandler := employees.NewHandler(employees.NewService(dbPool, auditService))
 
 	app := fiber.New(fiber.Config{
 		AppName:       "Aether ERP",
 		CaseSensitive: true,
 	})
 
+	app.Use(helmet.New())
 	app.Use(logger.New())
 	app.Use(recover.New())
 	app.Use(cors.New(cors.Config{
-		AllowOrigins: "http://localhost:5173",
-		AllowHeaders: "Origin, Content-Type, Accept, Authorization",
+		AllowOrigins:     "http://localhost:5173, http://localhost:5174, http://localhost:5175, http://localhost:3000, http://127.0.0.1:5173, http://127.0.0.1:5174, http://127.0.0.1:3000",
+		AllowHeaders:     "Origin, Content-Type, Accept, Authorization",
+		AllowMethods:     "GET, POST, PUT, PATCH, DELETE, OPTIONS",
+		AllowCredentials: true,
 	}))
 
-	api := app.Group("/api")
+	loginLimiter := limiter.New(limiter.Config{
+		Max:        5,
+		Expiration: 1 * time.Minute,
+		KeyGenerator: func(c *fiber.Ctx) string {
+			return c.IP()
+		},
+		LimitReached: func(c *fiber.Ctx) error {
+			return c.Status(fiber.StatusTooManyRequests).JSON(fiber.Map{
+				"error": "Muitas tentativas de requisição. Tente novamente em 1 minuto.",
+			})
+		},
+	})
 
+	api := app.Group("/api")
 	api.Get("/health", func(c *fiber.Ctx) error {
 		return c.JSON(fiber.Map{
 			"status":    "ok",
@@ -74,11 +102,11 @@ func main() {
 	})
 
 	authGroup := api.Group("/auth")
-	authGroup.Post("/register", authHandler.Register)
-	authGroup.Post("/login", authHandler.Login)
+	authGroup.Post("/register", loginLimiter, authHandler.Register)
+	authGroup.Post("/login", loginLimiter, authHandler.Login)
 
 	jwtMiddleware := jwtware.New(jwtware.Config{
-		SigningKey: jwtware.SigningKey{Key: []byte(os.Getenv("JWT_SECRET"))},
+		SigningKey: jwtware.SigningKey{Key: []byte(jwtSecret)},
 	})
 
 	protected := api.Group("/protected", jwtMiddleware, middleware.ExtractOrgClaims)
@@ -88,23 +116,41 @@ func main() {
 	profileGroup.Put("/password", authHandler.UpdatePassword)
 
 	productsGroup := protected.Group("/products")
-	productsGroup.Post("/", productHandler.Create)
+	productsGroup.Post("/", middleware.RequireRole("admin", "editor"), productHandler.Create)
 	productsGroup.Get("/", productHandler.List)
+	productsGroup.Put("/:id", middleware.RequireRole("admin", "editor"), productHandler.Update)
 	productsGroup.Get("/metrics", productHandler.GetMetrics)
 
 	customersGroup := protected.Group("/customers")
-	customersGroup.Post("/", customerHandler.Create)
+	customersGroup.Post("/", middleware.RequireRole("admin", "editor"), customerHandler.Create)
 	customersGroup.Get("/", customerHandler.List)
-	customersGroup.Put("/:id", customerHandler.Update)
-	customersGroup.Delete("/:id", customerHandler.Delete)
+	customersGroup.Put("/:id", middleware.RequireRole("admin", "editor"), customerHandler.Update)
+	customersGroup.Delete("/:id", middleware.RequireRole("admin", "editor"), customerHandler.Delete)
 
 	ordersGroup := protected.Group("/orders")
-	ordersGroup.Post("/", orderHandler.Create)
+	ordersGroup.Post("/", middleware.RequireRole("admin", "editor"), orderHandler.Create)
 	ordersGroup.Get("/", orderHandler.List)
 	ordersGroup.Get("/:id", orderHandler.GetDetails)
 
 	dashboardGroup := protected.Group("/dashboard")
 	dashboardGroup.Get("/metrics", dashboardHandler.GetMetrics)
+
+	financialGroup := protected.Group("/financial")
+	financialGroup.Post("/", middleware.RequireRole("admin", "editor"), financialHandler.Create)
+	financialGroup.Get("/", financialHandler.List)
+	financialGroup.Patch("/:id/pay", middleware.RequireRole("admin", "editor"), financialHandler.MarkAsPaid)
+
+	employeesGroup := protected.Group("/employees", middleware.RequireRole("admin"))
+	employeesGroup.Get("/", employeeHandler.List)
+	employeesGroup.Post("/", employeeHandler.Create)
+	employeesGroup.Put("/:id", employeeHandler.UpdateDetails)
+	employeesGroup.Put("/:id/role", employeeHandler.UpdateRole)
+	employeesGroup.Patch("/:id/toggle-active", employeeHandler.ToggleActive)
+	employeesGroup.Delete("/:id", employeeHandler.Delete)
+	employeesGroup.Post("/:id/reset-password", employeeHandler.ResetPassword)
+
+	auditGroup := protected.Group("/audit-logs", middleware.RequireRole("admin"))
+	auditGroup.Get("/", auditHandler.List)
 
 	go func() {
 		port := os.Getenv("PORT")
@@ -120,7 +166,5 @@ func main() {
 	signal.Notify(c, os.Interrupt, syscall.SIGTERM)
 	<-c
 
-	log.Info().Msg("Shutting down server...")
 	_ = app.Shutdown()
-	log.Info().Msg("Server shutdown complete")
 }

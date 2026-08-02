@@ -4,10 +4,10 @@ import (
 	"context"
 	"errors"
 	"fmt"
-	"os"
 	"strings"
 	"time"
 
+	"github.com/dcastro0/aether-backend/internal/audit"
 	"github.com/dcastro0/aether-backend/internal/db"
 	"github.com/golang-jwt/jwt/v5"
 	"github.com/google/uuid"
@@ -19,14 +19,18 @@ import (
 )
 
 type Service struct {
-	q  *db.Queries
-	db *pgxpool.Pool
+	q         *db.Queries
+	db        *pgxpool.Pool
+	jwtSecret string
+	audit     *audit.Service
 }
 
-func NewService(pool *pgxpool.Pool) *Service {
+func NewService(pool *pgxpool.Pool, jwtSecret string, auditService *audit.Service) *Service {
 	return &Service{
-		q:  db.New(pool),
-		db: pool,
+		q:         db.New(pool),
+		db:        pool,
+		jwtSecret: jwtSecret,
+		audit:     auditService,
 	}
 }
 
@@ -115,19 +119,39 @@ func (s *Service) Login(ctx context.Context, req LoginRequest) (LoginResponse, e
 		"exp":    time.Now().Add(time.Hour * 24).Unix(),
 	})
 
-	tokenString, err := token.SignedString([]byte(os.Getenv("JWT_SECRET")))
+	tokenString, err := token.SignedString([]byte(s.jwtSecret))
 	if err != nil {
 		log.Error().Err(err).Msg("failed to sign token")
 		return LoginResponse{}, errors.New("could not generate token")
 	}
 
+	var mustChangePassword bool
+	_ = s.db.QueryRow(ctx, "SELECT must_change_password FROM users WHERE id = $1", user.ID.Bytes).Scan(&mustChangePassword)
+
+	if s.audit != nil {
+		uID := uuid.UUID(user.ID.Bytes)
+		s.audit.Log(audit.CreateAuditLogParams{
+			OrganizationID: uuid.UUID(org.ID.Bytes),
+			UserID:         &uID,
+			UserEmail:      user.Email,
+			UserName:       user.FullName,
+			Action:         "LOGIN_SUCCESS",
+			Entity:         "auth",
+			EntityID:       uID.String(),
+			Status:         "SUCCESS",
+			Details:        map[string]interface{}{"role": string(org.Role)},
+		})
+	}
+
 	return LoginResponse{
 		AccessToken: tokenString,
 		User: UserResponse{
-			ID:        uuid.UUID(user.ID.Bytes),
-			Email:     user.Email,
-			FullName:  user.FullName,
-			CreatedAt: user.CreatedAt.Time,
+			ID:                 uuid.UUID(user.ID.Bytes),
+			Email:              user.Email,
+			FullName:           user.FullName,
+			Role:               string(org.Role),
+			MustChangePassword: mustChangePassword,
+			CreatedAt:          user.CreatedAt.Time,
 		},
 	}, nil
 }
@@ -154,10 +178,8 @@ func (s *Service) UpdatePassword(ctx context.Context, userID uuid.UUID, req Upda
 		return err
 	}
 
-	return s.q.UpdateUserPassword(ctx, db.UpdateUserPasswordParams{
-		ID:           pgtype.UUID{Bytes: userID, Valid: true},
-		PasswordHash: string(hashedPassword),
-	})
+	_, err = s.db.Exec(ctx, "UPDATE users SET password_hash = $1, must_change_password = false, updated_at = NOW() WHERE id = $2", string(hashedPassword), userID)
+	return err
 }
 
 func slugify(s string) string {
