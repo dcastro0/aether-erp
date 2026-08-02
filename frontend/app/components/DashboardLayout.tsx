@@ -251,32 +251,32 @@ export function DashboardLayout({ children }: { children: React.ReactNode }) {
 
       {/* Mandatory Password Change Modal for First Login */}
       {mustChangePassword && (
-        <div className="fixed inset-0 bg-slate-950/90 backdrop-blur-md z-50 flex items-center justify-center p-4 animate-in fade-in duration-200">
-          <div className="bg-[#0F172A] border border-amber-500/30 rounded-2xl p-6 max-w-md w-full shadow-2xl space-y-5">
-            <div className="flex items-center gap-3 text-amber-400 border-b border-[#1E293B] pb-4">
+        <div className="fixed inset-0 bg-aether-surface/40 backdrop-blur-md z-50 flex items-center justify-center p-4 animate-in fade-in duration-200">
+          <div className="bg-aether-surface border border-amber-500/30 rounded-2xl p-6 max-w-md w-full shadow-2xl space-y-5">
+            <div className="flex items-center gap-3 text-amber-500 border-b border-aether-border pb-4">
               <div className="p-3 bg-amber-500/10 rounded-xl">
                 <ShieldAlert size={24} />
               </div>
               <div>
-                <h3 className="font-bold text-lg text-[#F8FAFC]">Primeiro Acesso ao Sistema</h3>
-                <p className="text-xs text-[#94A3B8]">Defina uma nova senha de acesso pessoal.</p>
+                <h3 className="font-bold text-lg text-aether-text">Primeiro Acesso ao Sistema</h3>
+                <p className="text-xs text-aether-text-muted">Defina uma nova senha de acesso pessoal.</p>
               </div>
             </div>
 
-            <p className="text-xs text-[#94A3B8] leading-relaxed">
+            <p className="text-xs text-aether-text-muted leading-relaxed">
               Por medida de segurança, contas recém-criadas ou com senha redefinida exigem a criação de uma nova senha pessoal antes do primeiro uso.
             </p>
 
             <form onSubmit={handleForceChangePassword} className="space-y-4">
               {passError && (
-                <div className="p-3 rounded-xl bg-red-500/10 text-red-400 border border-red-500/20 text-xs flex items-center gap-2">
+                <div className="p-3 rounded-xl bg-rose-500/10 text-rose-500 border border-rose-500/20 text-xs flex items-center gap-2">
                   <AlertCircle size={16} />
                   {passError}
                 </div>
               )}
 
               <div>
-                <label className="block text-xs font-medium text-[#94A3B8] mb-1">
+                <label className="block text-xs font-medium text-aether-text-muted mb-1">
                   Senha Provisória Recebida
                 </label>
                 <input
@@ -284,13 +284,13 @@ export function DashboardLayout({ children }: { children: React.ReactNode }) {
                   value={tempPassword}
                   onChange={(e) => setTempPassword(e.target.value)}
                   placeholder="Ex: Aether@1234"
-                  className="w-full rounded-xl border border-[#1E293B] bg-[#090D16] px-3.5 py-2.5 text-xs text-[#F8FAFC] focus:border-amber-500 focus:outline-none"
+                  className="w-full rounded-xl border border-aether-border bg-aether-bg px-3.5 py-2.5 text-xs text-aether-text focus:border-amber-500 focus:outline-none transition-all"
                   required
                 />
               </div>
 
               <div>
-                <label className="block text-xs font-medium text-[#94A3B8] mb-1">
+                <label className="block text-xs font-medium text-aether-text-muted mb-1">
                   Sua Nova Senha Definitiva
                 </label>
                 <input
@@ -298,13 +298,13 @@ export function DashboardLayout({ children }: { children: React.ReactNode }) {
                   value={newPassword}
                   onChange={(e) => setNewPassword(e.target.value)}
                   placeholder="Mínimo 6 caracteres"
-                  className="w-full rounded-xl border border-[#1E293B] bg-[#090D16] px-3.5 py-2.5 text-xs text-[#F8FAFC] focus:border-amber-500 focus:outline-none"
+                  className="w-full rounded-xl border border-aether-border bg-aether-bg px-3.5 py-2.5 text-xs text-aether-text focus:border-amber-500 focus:outline-none transition-all"
                   required
                 />
               </div>
 
               <div>
-                <label className="block text-xs font-medium text-[#94A3B8] mb-1">
+                <label className="block text-xs font-medium text-aether-text-muted mb-1">
                   Confirmar Nova Senha
                 </label>
                 <input
@@ -312,7 +312,7 @@ export function DashboardLayout({ children }: { children: React.ReactNode }) {
                   value={confirmPassword}
                   onChange={(e) => setConfirmPassword(e.target.value)}
                   placeholder="Repita a nova senha"
-                  className="w-full rounded-xl border border-[#1E293B] bg-[#090D16] px-3.5 py-2.5 text-xs text-[#F8FAFC] focus:border-amber-500 focus:outline-none"
+                  className="w-full rounded-xl border border-aether-border bg-aether-bg px-3.5 py-2.5 text-xs text-aether-text focus:border-amber-500 focus:outline-none transition-all"
                   required
                 />
               </div>
@@ -320,7 +320,7 @@ export function DashboardLayout({ children }: { children: React.ReactNode }) {
               <button
                 type="submit"
                 disabled={passLoading}
-                className="w-full rounded-xl bg-amber-500 hover:bg-amber-400 py-3 text-xs font-bold text-slate-950 transition-all flex items-center justify-center gap-2 shadow-lg shadow-amber-500/20"
+                className="w-full rounded-xl bg-amber-500 hover:bg-amber-400 py-3 text-xs font-bold text-slate-950 transition-all flex items-center justify-center gap-2 shadow-sm cursor-pointer"
               >
                 {passLoading ? <Loader2 className="animate-spin" size={16} /> : <KeyRound size={16} />}
                 Cadastrar Senha e Acessar o ERP

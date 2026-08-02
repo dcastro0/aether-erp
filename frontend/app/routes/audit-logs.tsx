@@ -192,11 +192,11 @@ export default function AuditLogsPage() {
     return (
       <DashboardLayout>
         <div className="flex flex-col items-center justify-center min-h-[60vh] text-center space-y-4">
-          <div className="p-4 rounded-2xl bg-rose-500/10 border border-rose-500/20 text-rose-400">
+          <div className="p-4 rounded-2xl bg-rose-500/10 border border-rose-500/20 text-rose-500">
             <Lock size={40} />
           </div>
-          <h2 className="text-xl font-bold text-[#F8FAFC]">Acesso Restrito</h2>
-          <p className="text-sm text-[#94A3B8] max-w-md">
+          <h2 className="text-xl font-bold text-aether-text">Acesso Restrito</h2>
+          <p className="text-sm text-aether-text-muted max-w-md">
             Você não possui permissão para visualizar os logs de auditoria e segurança da empresa. Entre em contato com o proprietário ou administrador.
           </p>
         </div>
@@ -211,14 +211,14 @@ export default function AuditLogsPage() {
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
           <div>
             <div className="flex items-center gap-2">
-              <span className="p-2 rounded-lg bg-[#0EA5E9]/10 border border-[#0EA5E9]/20 text-[#0EA5E9]">
+              <span className="p-2 rounded-xl bg-aether-accent/10 border border-aether-accent/20 text-aether-accent">
                 <ShieldCheck size={20} />
               </span>
-              <h1 className="text-xl font-bold tracking-tight text-[#F8FAFC]">
+              <h1 className="text-xl font-bold tracking-tight text-aether-text">
                 Logs de Auditoria & Rastreabilidade
               </h1>
             </div>
-            <p className="text-xs text-[#94A3B8] mt-1">
+            <p className="text-xs text-aether-text-muted mt-1">
               Registro histórico e imutável de acessos, modificações e operações no sistema
             </p>
           </div>
@@ -226,7 +226,7 @@ export default function AuditLogsPage() {
           <div className="flex items-center gap-3">
             <button
               onClick={fetchAuditLogs}
-              className="flex items-center gap-2 px-3 py-2 rounded-xl bg-[#0F172A] border border-[#1E293B] text-xs font-medium text-[#94A3B8] hover:text-[#F8FAFC] hover:bg-[#1E293B] transition-colors"
+              className="flex items-center gap-2 px-3 py-2 rounded-xl bg-aether-surface border border-aether-border text-xs font-medium text-aether-text-muted hover:text-aether-text hover:bg-aether-bg transition-colors cursor-pointer"
             >
               <RefreshCw size={14} className={loading ? "animate-spin" : ""} />
               Atualizar
@@ -235,7 +235,7 @@ export default function AuditLogsPage() {
             <button
               onClick={handleExportCSV}
               disabled={!logs.length}
-              className="flex items-center gap-2 px-3.5 py-2 rounded-xl bg-[#0EA5E9] hover:bg-[#0284C7] text-xs font-medium text-white transition-colors disabled:opacity-50"
+              className="flex items-center gap-2 px-3.5 py-2 rounded-xl bg-aether-accent hover:bg-aether-accent-hover text-xs font-medium text-white transition-colors disabled:opacity-50 cursor-pointer shadow-sm"
             >
               <Download size={14} />
               Exportar CSV
@@ -245,55 +245,55 @@ export default function AuditLogsPage() {
 
         {/* Metrics Summary */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-          <div className="bg-[#0F172A] border border-[#1E293B] rounded-2xl p-4 flex items-center gap-4">
-            <div className="p-3 rounded-xl bg-[#0EA5E9]/10 text-[#0EA5E9] border border-[#0EA5E9]/20">
+          <div className="bg-aether-surface border border-aether-border rounded-2xl p-4 flex items-center gap-4 shadow-sm">
+            <div className="p-3 rounded-xl bg-aether-accent/10 text-aether-accent border border-aether-accent/20">
               <Activity size={20} />
             </div>
             <div>
-              <p className="text-[10px] font-medium uppercase tracking-wider text-[#94A3B8]">
+              <p className="text-[10px] font-medium uppercase tracking-wider text-aether-text-muted">
                 Total de Eventos
               </p>
-              <p className="text-xl font-bold text-[#F8FAFC]">{total}</p>
+              <p className="text-xl font-bold text-aether-text">{total}</p>
             </div>
           </div>
 
-          <div className="bg-[#0F172A] border border-[#1E293B] rounded-2xl p-4 flex items-center gap-4">
-            <div className="p-3 rounded-xl bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
+          <div className="bg-aether-surface border border-aether-border rounded-2xl p-4 flex items-center gap-4 shadow-sm">
+            <div className="p-3 rounded-xl bg-emerald-500/10 text-emerald-500 border border-emerald-500/20">
               <Shield size={20} />
             </div>
             <div>
-              <p className="text-[10px] font-medium uppercase tracking-wider text-[#94A3B8]">
+              <p className="text-[10px] font-medium uppercase tracking-wider text-aether-text-muted">
                 Acessos & Logins
               </p>
-              <p className="text-xl font-bold text-[#F8FAFC]">
+              <p className="text-xl font-bold text-aether-text">
                 {logs.filter((l) => l.action.includes("LOGIN")).length}
               </p>
             </div>
           </div>
 
-          <div className="bg-[#0F172A] border border-[#1E293B] rounded-2xl p-4 flex items-center gap-4">
-            <div className="p-3 rounded-xl bg-amber-500/10 text-amber-400 border border-amber-500/20">
+          <div className="bg-aether-surface border border-aether-border rounded-2xl p-4 flex items-center gap-4 shadow-sm">
+            <div className="p-3 rounded-xl bg-amber-500/10 text-amber-500 border border-amber-500/20">
               <Layers size={20} />
             </div>
             <div>
-              <p className="text-[10px] font-medium uppercase tracking-wider text-[#94A3B8]">
+              <p className="text-[10px] font-medium uppercase tracking-wider text-aether-text-muted">
                 Operações de Dados
               </p>
-              <p className="text-xl font-bold text-[#F8FAFC]">
+              <p className="text-xl font-bold text-aether-text">
                 {logs.filter((l) => !l.action.includes("LOGIN")).length}
               </p>
             </div>
           </div>
 
-          <div className="bg-[#0F172A] border border-[#1E293B] rounded-2xl p-4 flex items-center gap-4">
-            <div className="p-3 rounded-xl bg-purple-500/10 text-purple-400 border border-purple-500/20">
+          <div className="bg-aether-surface border border-aether-border rounded-2xl p-4 flex items-center gap-4 shadow-sm">
+            <div className="p-3 rounded-xl bg-indigo-500/10 text-indigo-500 border border-indigo-500/20">
               <Globe size={20} />
             </div>
             <div>
-              <p className="text-[10px] font-medium uppercase tracking-wider text-[#94A3B8]">
+              <p className="text-[10px] font-medium uppercase tracking-wider text-aether-text-muted">
                 IPs Distintos
               </p>
-              <p className="text-xl font-bold text-[#F8FAFC]">
+              <p className="text-xl font-bold text-aether-text">
                 {new Set(logs.map((l) => l.ip_address).filter(Boolean)).size}
               </p>
             </div>
@@ -301,19 +301,19 @@ export default function AuditLogsPage() {
         </div>
 
         {/* Filters and Search Controls */}
-        <div className="bg-[#0F172A] border border-[#1E293B] rounded-2xl p-4 space-y-4">
+        <div className="bg-aether-surface border border-aether-border rounded-2xl p-4 space-y-4 shadow-sm">
           <form onSubmit={handleSearchSubmit} className="flex flex-col md:flex-row gap-3">
             <div className="relative flex-1">
               <Search
                 size={16}
-                className="absolute left-3.5 top-1/2 -translate-y-1/2 text-[#94A3B8]"
+                className="absolute left-3.5 top-1/2 -translate-y-1/2 text-aether-text-muted"
               />
               <input
                 type="text"
                 placeholder="Buscar por usuário, email, ação ou endereço IP..."
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
-                className="w-full pl-10 pr-4 py-2 bg-[#090D16] border border-[#1E293B] rounded-xl text-xs text-[#F8FAFC] placeholder-[#64748B] focus:border-[#0EA5E9] focus:outline-none"
+                className="w-full pl-10 pr-4 py-2 bg-aether-bg border border-aether-border rounded-xl text-xs text-aether-text placeholder:text-aether-text-muted/70 focus:border-aether-accent focus:outline-none transition-all"
               />
             </div>
 
@@ -321,7 +321,7 @@ export default function AuditLogsPage() {
               <select
                 value={entityFilter}
                 onChange={(e) => setEntityFilter(e.target.value)}
-                className="bg-[#090D16] border border-[#1E293B] text-xs text-[#F8FAFC] rounded-xl px-3 py-2 focus:border-[#0EA5E9] focus:outline-none"
+                className="bg-aether-bg border border-aether-border text-xs text-aether-text rounded-xl px-3 py-2 focus:border-aether-accent focus:outline-none transition-all"
               >
                 <option value="all">Todas Entidades</option>
                 <option value="auth">Autenticação</option>
@@ -335,7 +335,7 @@ export default function AuditLogsPage() {
               <select
                 value={actionFilter}
                 onChange={(e) => setActionFilter(e.target.value)}
-                className="bg-[#090D16] border border-[#1E293B] text-xs text-[#F8FAFC] rounded-xl px-3 py-2 focus:border-[#0EA5E9] focus:outline-none"
+                className="bg-aether-bg border border-aether-border text-xs text-aether-text rounded-xl px-3 py-2 focus:border-aether-accent focus:outline-none transition-all"
               >
                 <option value="all">Todas Ações</option>
                 <option value="LOGIN_SUCCESS">Logins Efetuados</option>
@@ -350,7 +350,7 @@ export default function AuditLogsPage() {
 
               <button
                 type="submit"
-                className="px-4 py-2 bg-[#1E293B] hover:bg-[#334155] text-xs font-medium text-[#F8FAFC] rounded-xl transition-colors"
+                className="px-4 py-2 bg-aether-bg hover:bg-aether-surface border border-aether-border text-xs font-medium text-aether-text rounded-xl transition-colors cursor-pointer"
               >
                 Filtrar
               </button>
@@ -359,27 +359,27 @@ export default function AuditLogsPage() {
         </div>
 
         {/* Audit Logs Table */}
-        <div className="bg-[#0F172A] border border-[#1E293B] rounded-2xl overflow-hidden shadow-xl">
+        <div className="bg-aether-surface border border-aether-border rounded-2xl overflow-hidden shadow-sm">
           {loading ? (
-            <div className="p-12 text-center text-xs text-[#94A3B8] space-y-3">
-              <RefreshCw size={24} className="animate-spin mx-auto text-[#0EA5E9]" />
+            <div className="p-12 text-center text-xs text-aether-text-muted space-y-3">
+              <RefreshCw size={24} className="animate-spin mx-auto text-aether-accent" />
               <p>Carregando registros de auditoria...</p>
             </div>
           ) : error ? (
-            <div className="p-8 text-center text-xs text-rose-400">
+            <div className="p-8 text-center text-xs text-rose-500">
               {error}
             </div>
           ) : logs.length === 0 ? (
-            <div className="p-12 text-center text-xs text-[#94A3B8] space-y-2">
-              <ShieldCheck size={32} className="mx-auto text-[#64748B]" />
-              <p className="font-semibold text-[#F8FAFC]">Nenhum registro encontrado</p>
+            <div className="p-12 text-center text-xs text-aether-text-muted space-y-2">
+              <ShieldCheck size={32} className="mx-auto text-aether-text-muted" />
+              <p className="font-semibold text-aether-text">Nenhum registro encontrado</p>
               <p>Não há eventos de auditoria correspondentes aos filtros selecionados.</p>
             </div>
           ) : (
             <div className="overflow-x-auto">
               <table className="w-full text-left text-xs border-collapse">
                 <thead>
-                  <tr className="border-b border-[#1E293B] bg-[#090D16]/50 text-[#94A3B8]">
+                  <tr className="border-b border-aether-border bg-aether-bg text-aether-text-muted">
                     <th className="py-3.5 px-4 font-semibold">Data / Hora</th>
                     <th className="py-3.5 px-4 font-semibold">Usuário Responsável</th>
                     <th className="py-3.5 px-4 font-semibold">Ação Registrada</th>
@@ -388,17 +388,17 @@ export default function AuditLogsPage() {
                     <th className="py-3.5 px-4 font-semibold text-right">Detalhes</th>
                   </tr>
                 </thead>
-                <tbody className="divide-y divide-[#1E293B]">
+                <tbody className="divide-y divide-[var(--border-subtle)]">
                   {logs.map((log) => {
                     const badge = getActionBadge(log.action);
                     return (
                       <tr
                         key={log.id}
-                        className="hover:bg-[#1E293B]/40 transition-colors group"
+                        className="hover:bg-[var(--bg-surface-hover)] transition-colors group"
                       >
-                        <td className="py-3.5 px-4 text-[#94A3B8] whitespace-nowrap">
+                        <td className="py-3.5 px-4 text-aether-text-muted whitespace-nowrap">
                           <div className="flex items-center gap-1.5">
-                            <Clock size={13} className="text-[#64748B]" />
+                            <Clock size={13} className="text-aether-text-muted" />
                             <span>
                               {new Date(log.created_at).toLocaleString("pt-BR", {
                                 dateStyle: "short",
@@ -410,13 +410,13 @@ export default function AuditLogsPage() {
 
                         <td className="py-3.5 px-4">
                           <div className="flex items-center gap-2.5">
-                            <div className="w-7 h-7 rounded-full bg-[#0EA5E9]/10 border border-[#0EA5E9]/20 flex items-center justify-center text-[#0EA5E9] font-bold text-[10px]">
+                            <div className="w-7 h-7 rounded-full bg-sky-500/10 border border-sky-500/30 flex items-center justify-center text-sky-500 font-bold text-[10px]">
                               {log.user_name ? log.user_name.slice(0, 2).toUpperCase() : "US"}
                             </div>
                             <div>
-                              <p className="font-medium text-[#F8FAFC]">{log.user_name || "Sistema"}</p>
+                              <p className="font-medium text-aether-text">{log.user_name || "Sistema"}</p>
                               {log.user_email && (
-                                <p className="text-[10px] text-[#64748B]">{log.user_email}</p>
+                                <p className="text-[10px] text-aether-text-muted">{log.user_email}</p>
                               )}
                             </div>
                           </div>
@@ -430,18 +430,18 @@ export default function AuditLogsPage() {
                           </span>
                         </td>
 
-                        <td className="py-3.5 px-4 text-[#94A3B8] whitespace-nowrap font-medium">
+                        <td className="py-3.5 px-4 text-aether-text-muted whitespace-nowrap font-medium">
                           {getEntityLabel(log.entity)}
                         </td>
 
-                        <td className="py-3.5 px-4 text-[#64748B] font-mono text-[11px] whitespace-nowrap">
+                        <td className="py-3.5 px-4 text-aether-text-muted font-mono text-[11px] whitespace-nowrap">
                           {log.ip_address || "127.0.0.1"}
                         </td>
 
                         <td className="py-3.5 px-4 text-right">
                           <button
                             onClick={() => setSelectedLog(log)}
-                            className="p-1.5 rounded-lg bg-[#1E293B] hover:bg-[#334155] text-[#94A3B8] hover:text-[#F8FAFC] transition-colors"
+                            className="p-1.5 rounded-lg bg-aether-bg hover:bg-aether-surface border border-aether-border text-aether-text-muted hover:text-aether-accent transition-colors cursor-pointer"
                             title="Ver detalhes em JSON"
                           >
                             <Eye size={15} />
@@ -458,66 +458,66 @@ export default function AuditLogsPage() {
 
         {/* Modal JSON Details */}
         {selectedLog && (
-          <div className="fixed inset-0 bg-slate-950/80 backdrop-blur-sm z-50 flex items-center justify-center p-4 animate-in fade-in duration-150">
-            <div className="bg-[#0F172A] border border-[#1E293B] rounded-2xl max-w-xl w-full p-6 shadow-2xl space-y-4">
-              <div className="flex items-center justify-between border-b border-[#1E293B] pb-3">
+          <div className="fixed inset-0 bg-aether-surface/40 backdrop-blur-sm z-50 flex items-center justify-center p-4 animate-in fade-in duration-150">
+            <div className="bg-aether-surface border border-aether-border rounded-2xl max-w-xl w-full p-6 shadow-2xl space-y-4">
+              <div className="flex items-center justify-between border-b border-aether-border pb-3">
                 <div className="flex items-center gap-2">
-                  <div className="p-2 rounded-lg bg-[#0EA5E9]/10 text-[#0EA5E9]">
+                  <div className="p-2 rounded-lg bg-aether-accent/10 text-aether-accent">
                     <FileJson size={18} />
                   </div>
                   <div>
-                    <h3 className="font-bold text-sm text-[#F8FAFC]">
+                    <h3 className="font-bold text-sm text-aether-text">
                       Detalhes do Evento de Auditoria
                     </h3>
-                    <p className="text-[10px] text-[#94A3B8] font-mono">{selectedLog.id}</p>
+                    <p className="text-[10px] text-aether-text-muted font-mono">{selectedLog.id}</p>
                   </div>
                 </div>
                 <button
                   onClick={() => setSelectedLog(null)}
-                  className="p-1 rounded-lg text-[#94A3B8] hover:text-white hover:bg-[#1E293B]"
+                  className="p-1 rounded-lg text-aether-text-muted hover:text-aether-text hover:bg-aether-bg transition-colors cursor-pointer"
                 >
                   <X size={18} />
                 </button>
               </div>
 
               <div className="grid grid-cols-2 gap-3 text-xs">
-                <div className="bg-[#090D16] p-3 rounded-xl border border-[#1E293B]">
-                  <span className="text-[10px] text-[#64748B] block uppercase font-medium">
+                <div className="bg-aether-bg p-3 rounded-xl border border-aether-border">
+                  <span className="text-[10px] text-aether-text-muted block uppercase font-medium">
                     Ação
                   </span>
-                  <span className="font-bold text-[#F8FAFC]">{selectedLog.action}</span>
+                  <span className="font-bold text-aether-text">{selectedLog.action}</span>
                 </div>
-                <div className="bg-[#090D16] p-3 rounded-xl border border-[#1E293B]">
-                  <span className="text-[10px] text-[#64748B] block uppercase font-medium">
+                <div className="bg-aether-bg p-3 rounded-xl border border-aether-border">
+                  <span className="text-[10px] text-aether-text-muted block uppercase font-medium">
                     Entidade Afetada
                   </span>
-                  <span className="font-bold text-[#F8FAFC]">
+                  <span className="font-bold text-aether-text">
                     {getEntityLabel(selectedLog.entity)}
                   </span>
                 </div>
-                <div className="bg-[#090D16] p-3 rounded-xl border border-[#1E293B]">
-                  <span className="text-[10px] text-[#64748B] block uppercase font-medium">
+                <div className="bg-aether-bg p-3 rounded-xl border border-aether-border">
+                  <span className="text-[10px] text-aether-text-muted block uppercase font-medium">
                     Usuário
                   </span>
-                  <span className="font-bold text-[#F8FAFC]">
+                  <span className="font-bold text-aether-text">
                     {selectedLog.user_name} ({selectedLog.user_email || "N/A"})
                   </span>
                 </div>
-                <div className="bg-[#090D16] p-3 rounded-xl border border-[#1E293B]">
-                  <span className="text-[10px] text-[#64748B] block uppercase font-medium">
+                <div className="bg-aether-bg p-3 rounded-xl border border-aether-border">
+                  <span className="text-[10px] text-aether-text-muted block uppercase font-medium">
                     Endereço IP
                   </span>
-                  <span className="font-mono text-[#F8FAFC]">
+                  <span className="font-mono text-aether-text">
                     {selectedLog.ip_address || "127.0.0.1"}
                   </span>
                 </div>
               </div>
 
               <div>
-                <span className="text-xs font-semibold text-[#94A3B8] mb-2 block">
+                <span className="text-xs font-semibold text-aether-text-muted mb-2 block">
                   Metadados e Carga Util (JSON Payload)
                 </span>
-                <pre className="bg-[#090D16] border border-[#1E293B] p-4 rounded-xl text-[11px] font-mono text-[#38BDF8] overflow-x-auto max-h-60">
+                <pre className="bg-aether-bg border border-aether-border p-4 rounded-xl text-[11px] font-mono text-sky-500 overflow-x-auto max-h-60">
                   {JSON.stringify(selectedLog.details || {}, null, 2)}
                 </pre>
               </div>
@@ -525,7 +525,7 @@ export default function AuditLogsPage() {
               <div className="flex justify-end pt-2">
                 <button
                   onClick={() => setSelectedLog(null)}
-                  className="px-4 py-2 rounded-xl bg-[#1E293B] hover:bg-[#334155] text-xs font-medium text-[#F8FAFC] transition-colors"
+                  className="px-4 py-2 rounded-xl bg-aether-bg hover:bg-aether-surface border border-aether-border text-xs font-medium text-aether-text transition-colors cursor-pointer"
                 >
                   Fechar
                 </button>
