@@ -185,6 +185,7 @@ export default function ReportsPage() {
             <div className="flex items-center gap-3 text-xs">
               <input
                 type="date"
+                aria-label="Data Inicial"
                 value={startDate}
                 onChange={(e) => setStartDate(e.target.value)}
                 className="bg-aether-bg border border-aether-border rounded-xl px-3 py-1.5 text-aether-text focus:outline-none focus:border-emerald-500"
@@ -192,6 +193,7 @@ export default function ReportsPage() {
               <span className="text-aether-text-muted">até</span>
               <input
                 type="date"
+                aria-label="Data Final"
                 value={endDate}
                 onChange={(e) => setEndDate(e.target.value)}
                 className="bg-aether-bg border border-aether-border rounded-xl px-3 py-1.5 text-aether-text focus:outline-none focus:border-emerald-500"

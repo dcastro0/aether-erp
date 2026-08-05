@@ -55,13 +55,30 @@ export function DashboardLayout({ children }: { children: React.ReactNode }) {
     setTheme((prev) => (prev === "dark" ? "light" : "dark"));
   };
 
-  // Mandatory password change state & User Info
+  // Authentication Check & User Info
   const [user, setUser] = useState(() => {
     if (typeof window !== "undefined") {
-      return JSON.parse(localStorage.getItem("user") || '{"full_name": "Usuário", "role": "owner"}');
+      const token = localStorage.getItem("token");
+      const storedUser = localStorage.getItem("user");
+      if (token && storedUser) {
+        try {
+          return JSON.parse(storedUser);
+        } catch (e) {
+          return null;
+        }
+      }
     }
-    return { full_name: "Usuário", role: "owner" };
+    return null;
   });
+
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      const token = localStorage.getItem("token");
+      if (!token || !user) {
+        navigate("/login", { replace: true });
+      }
+    }
+  }, [navigate, user]);
 
   const [mustChangePassword, setMustChangePassword] = useState(Boolean(user?.must_change_password));
   const [tempPassword, setTempPassword] = useState("");
@@ -70,7 +87,7 @@ export function DashboardLayout({ children }: { children: React.ReactNode }) {
   const [passError, setPassError] = useState("");
   const [passLoading, setPassLoading] = useState(false);
 
-  const role = user?.role || "owner";
+  const role = user?.role || "viewer";
 
   // Role-based menu permissions
   const allMenuItems = [
@@ -143,6 +160,14 @@ export function DashboardLayout({ children }: { children: React.ReactNode }) {
       setPassLoading(false);
     }
   };
+
+  if (!user) {
+    return (
+      <div className="flex h-screen w-screen items-center justify-center bg-aether-bg text-aether-text">
+        <Loader2 className="h-8 w-8 animate-spin text-aether-accent" />
+      </div>
+    );
+  }
 
   return (
     <div className="flex h-screen bg-[var(--bg-canvas)] text-[var(--text-primary)] font-sans antialiased selection:bg-[#0EA5E9]/20 selection:text-[#38BDF8]">

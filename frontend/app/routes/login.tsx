@@ -12,10 +12,21 @@ const loginSchema = z.object({
   password: z.string().min(1, "A senha é obrigatória"),
 });
 
+import { useEffect } from "react";
+
 type LoginForm = z.infer<typeof loginSchema>;
 
 export default function Login() {
   const navigate = useNavigate();
+
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      const token = localStorage.getItem("token");
+      if (token) {
+        navigate("/dashboard", { replace: true });
+      }
+    }
+  }, [navigate]);
 
   const {
     register,

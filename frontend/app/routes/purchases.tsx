@@ -183,17 +183,17 @@ export default function PurchasesPage() {
         {/* Header */}
         <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
           <div>
-            <h1 className="text-2xl font-bold tracking-tight text-slate-100 flex items-center gap-2.5">
-              <ShoppingBag className="w-6 h-6 text-indigo-400" />
+            <h1 className="text-2xl font-bold tracking-tight text-aether-text flex items-center gap-2.5">
+              <ShoppingBag className="w-6 h-6 text-aether-accent" />
               Ordens de Compra & Estoque
             </h1>
-            <p className="text-sm text-slate-400 mt-1">
+            <p className="text-sm text-aether-text-muted mt-1">
               Emita pedidos de compra para fornecedores e dê entrada automática no estoque da empresa
             </p>
           </div>
           <button
             onClick={handleOpenModal}
-            className="flex items-center gap-2 px-4 py-2.5 bg-gradient-to-r from-indigo-500 to-purple-600 hover:from-indigo-400 hover:to-purple-500 text-white font-semibold rounded-lg shadow-lg shadow-indigo-500/20 transition-all text-sm"
+            className="flex items-center gap-2 px-4 py-2.5 bg-aether-accent hover:bg-aether-accent-hover text-white font-semibold rounded-lg shadow-md transition-all text-sm cursor-pointer"
           >
             <Plus className="w-4 h-4" />
             Nova Ordem de Compra
@@ -202,35 +202,35 @@ export default function PurchasesPage() {
 
         {/* Metric Cards */}
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-          <div className="bg-slate-900/60 border border-slate-800 rounded-xl p-4 flex items-center gap-4">
-            <div className="p-3 bg-amber-500/10 border border-amber-500/20 rounded-lg text-amber-400">
+          <div className="bg-aether-surface border border-aether-border rounded-xl p-4 flex items-center gap-4">
+            <div className="p-3 bg-amber-500/10 border border-amber-500/20 rounded-lg text-amber-500">
               <Clock className="w-5 h-5" />
             </div>
             <div>
-              <p className="text-xs text-slate-400 uppercase font-medium tracking-wider">Ordens Pendentes</p>
-              <p className="text-xl font-bold text-slate-100">
+              <p className="text-xs text-aether-text-muted uppercase font-medium tracking-wider">Ordens Pendentes</p>
+              <p className="text-xl font-bold text-aether-text">
                 {orders.filter((o) => o.status === "pending").length}
               </p>
             </div>
           </div>
-          <div className="bg-slate-900/60 border border-slate-800 rounded-xl p-4 flex items-center gap-4">
-            <div className="p-3 bg-emerald-500/10 border border-emerald-500/20 rounded-lg text-emerald-400">
+          <div className="bg-aether-surface border border-aether-border rounded-xl p-4 flex items-center gap-4">
+            <div className="p-3 bg-emerald-500/10 border border-emerald-500/20 rounded-lg text-emerald-500">
               <PackageCheck className="w-5 h-5" />
             </div>
             <div>
-              <p className="text-xs text-slate-400 uppercase font-medium tracking-wider">Recebidas & Em Estoque</p>
-              <p className="text-xl font-bold text-slate-100">
+              <p className="text-xs text-aether-text-muted uppercase font-medium tracking-wider">Recebidas & Em Estoque</p>
+              <p className="text-xl font-bold text-aether-text">
                 {orders.filter((o) => o.status === "received").length}
               </p>
             </div>
           </div>
-          <div className="bg-slate-900/60 border border-slate-800 rounded-xl p-4 flex items-center gap-4">
-            <div className="p-3 bg-indigo-500/10 border border-indigo-500/20 rounded-lg text-indigo-400">
+          <div className="bg-aether-surface border border-aether-border rounded-xl p-4 flex items-center gap-4">
+            <div className="p-3 bg-indigo-500/10 border border-indigo-500/20 rounded-lg text-indigo-500">
               <DollarSign className="w-5 h-5" />
             </div>
             <div>
-              <p className="text-xs text-slate-400 uppercase font-medium tracking-wider">Total em Compras</p>
-              <p className="text-xl font-bold text-slate-100">
+              <p className="text-xs text-aether-text-muted uppercase font-medium tracking-wider">Total em Compras</p>
+              <p className="text-xl font-bold text-aether-text">
                 R$ {orders.reduce((acc, o) => acc + Number(o.total_amount || 0), 0).toLocaleString("pt-BR", { minimumFractionDigits: 2 })}
               </p>
             </div>
@@ -239,38 +239,38 @@ export default function PurchasesPage() {
 
         {/* Filter Bar */}
         <div className="relative">
-          <Search className="w-4 h-4 absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400" />
+          <Search className="w-4 h-4 absolute left-3.5 top-1/2 -translate-y-1/2 text-aether-text-muted" />
           <input
             type="text"
             placeholder="Buscar por fornecedor, código da ordem ou status..."
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            className="w-full bg-slate-900/60 border border-slate-800 rounded-lg pl-10 pr-4 py-2.5 text-sm text-slate-200 placeholder-slate-500 focus:outline-none focus:border-indigo-500/50"
+            className="w-full bg-aether-surface border border-aether-border rounded-lg pl-10 pr-4 py-2.5 text-sm text-aether-text placeholder-aether-text-muted/70 focus:outline-none focus:border-aether-accent"
           />
         </div>
 
         {/* Content Table */}
         {loading ? (
-          <div className="flex items-center justify-center py-12 text-slate-400 gap-3">
-            <Loader2 className="w-6 h-6 animate-spin text-indigo-400" />
+          <div className="flex items-center justify-center py-12 text-aether-text-muted gap-3">
+            <Loader2 className="w-6 h-6 animate-spin text-aether-accent" />
             <span>Carregando ordens de compra...</span>
           </div>
         ) : error ? (
-          <div className="bg-rose-500/10 border border-rose-500/20 rounded-xl p-4 text-rose-400 text-sm flex items-center gap-2">
+          <div className="bg-rose-500/10 border border-rose-500/20 rounded-xl p-4 text-rose-500 text-sm flex items-center gap-2">
             <AlertCircle className="w-5 h-5 flex-shrink-0" />
             <span>{error}</span>
           </div>
         ) : filteredOrders.length === 0 ? (
-          <div className="bg-slate-900/60 border border-slate-800 rounded-xl py-12 text-center text-slate-500">
-            <ShoppingBag className="w-10 h-10 mx-auto mb-3 text-slate-600 stroke-[1.5]" />
-            <p className="text-base font-medium text-slate-300">Nenhuma ordem de compra cadastrada</p>
-            <p className="text-xs text-slate-500 mt-1">Emita a primeira ordem de compra para repor seu estoque.</p>
+          <div className="bg-aether-surface border border-aether-border rounded-xl py-12 text-center text-aether-text-muted">
+            <ShoppingBag className="w-10 h-10 mx-auto mb-3 opacity-50 stroke-[1.5]" />
+            <p className="text-base font-medium text-aether-text">Nenhuma ordem de compra cadastrada</p>
+            <p className="text-xs text-aether-text-muted mt-1">Emita a primeira ordem de compra para repor seu estoque.</p>
           </div>
         ) : (
-          <div className="bg-slate-900/60 border border-slate-800 rounded-xl overflow-hidden shadow-xl">
+          <div className="bg-aether-surface border border-aether-border rounded-xl overflow-hidden shadow-xl">
             <div className="overflow-x-auto">
               <table className="w-full text-left text-sm">
-                <thead className="bg-slate-950/80 text-slate-400 uppercase text-[11px] font-semibold tracking-wider border-b border-slate-800">
+                <thead className="bg-aether-bg text-aether-text-muted uppercase text-[11px] font-semibold tracking-wider border-b border-aether-border">
                   <tr>
                     <th className="px-5 py-3.5">Cód. Ordem</th>
                     <th className="px-5 py-3.5">Fornecedor</th>
@@ -281,35 +281,35 @@ export default function PurchasesPage() {
                     <th className="px-5 py-3.5 text-right">Ação</th>
                   </tr>
                 </thead>
-                <tbody className="divide-y divide-slate-800/60 text-slate-300">
+                <tbody className="divide-y divide-[var(--border-subtle)] text-aether-text">
                   {filteredOrders.map((po) => (
-                    <tr key={po.id} className="hover:bg-slate-800/40 transition-colors">
-                      <td className="px-5 py-3.5 font-mono text-xs text-indigo-400 font-medium">
+                    <tr key={po.id} className="hover:bg-[var(--bg-surface-hover)] transition-colors">
+                      <td className="px-5 py-3.5 font-mono text-xs text-aether-accent font-medium">
                         #{po.id.substring(0, 8)}
                       </td>
-                      <td className="px-5 py-3.5 font-medium text-slate-200">
+                      <td className="px-5 py-3.5 font-medium text-aether-text">
                         {po.supplier_name || "Fornecedor Removido"}
                       </td>
-                      <td className="px-5 py-3.5 font-bold text-slate-100">
+                      <td className="px-5 py-3.5 font-bold text-aether-text">
                         R$ {Number(po.total_amount).toLocaleString("pt-BR", { minimumFractionDigits: 2 })}
                       </td>
                       <td className="px-5 py-3.5">
                         {po.status === "received" ? (
-                          <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-semibold bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
+                          <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-semibold bg-emerald-500/10 text-emerald-500 border border-emerald-500/30">
                             <CheckCircle2 className="w-3.5 h-3.5" />
                             Recebida / Em Estoque
                           </span>
                         ) : (
-                          <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-semibold bg-amber-500/10 text-amber-400 border border-amber-500/20">
+                          <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-semibold bg-amber-500/10 text-amber-500 border border-amber-500/30">
                             <Clock className="w-3.5 h-3.5 animate-pulse" />
                             Aguardando Entrega
                           </span>
                         )}
                       </td>
-                      <td className="px-5 py-3.5 text-xs text-slate-400">
+                      <td className="px-5 py-3.5 text-xs text-aether-text-muted">
                         {new Date(po.created_at).toLocaleDateString("pt-BR")}
                       </td>
-                      <td className="px-5 py-3.5 text-xs text-slate-400">
+                      <td className="px-5 py-3.5 text-xs text-aether-text-muted">
                         {po.received_at ? new Date(po.received_at).toLocaleDateString("pt-BR") : "—"}
                       </td>
                       <td className="px-5 py-3.5 text-right">
@@ -317,7 +317,7 @@ export default function PurchasesPage() {
                           <button
                             onClick={() => handleReceiveOrder(po.id, po.supplier_name)}
                             disabled={receiveLoadingId === po.id}
-                            className="px-3 py-1.5 bg-emerald-500/20 hover:bg-emerald-500/30 text-emerald-400 border border-emerald-500/30 font-semibold rounded-lg transition-colors text-xs inline-flex items-center gap-1.5"
+                            className="px-3 py-1.5 bg-emerald-500/10 hover:bg-emerald-500/20 text-emerald-500 border border-emerald-500/30 font-semibold rounded-lg transition-colors text-xs inline-flex items-center gap-1.5 cursor-pointer"
                           >
                             {receiveLoadingId === po.id ? (
                               <Loader2 className="w-3.5 h-3.5 animate-spin" />
@@ -338,16 +338,16 @@ export default function PurchasesPage() {
 
         {/* Modal Nova Ordem de Compra */}
         {isModalOpen && (
-          <div className="fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-sm flex items-center justify-center p-4">
-            <div className="bg-slate-900 border border-slate-800 rounded-xl w-full max-w-2xl shadow-2xl overflow-hidden">
-              <div className="px-6 py-4 border-b border-slate-800 flex justify-between items-center bg-slate-950/60">
-                <h3 className="font-semibold text-slate-100 text-lg flex items-center gap-2">
-                  <ShoppingBag className="w-5 h-5 text-indigo-400" />
+          <div className="fixed inset-0 z-50 bg-aether-surface/40 backdrop-blur-sm flex items-center justify-center p-4">
+            <div className="bg-aether-surface border border-aether-border rounded-xl w-full max-w-2xl shadow-2xl overflow-hidden">
+              <div className="px-6 py-4 border-b border-aether-border flex justify-between items-center bg-aether-bg">
+                <h3 className="font-semibold text-aether-text text-lg flex items-center gap-2">
+                  <ShoppingBag className="w-5 h-5 text-aether-accent" />
                   Nova Ordem de Compra
                 </h3>
                 <button
                   onClick={() => setIsModalOpen(false)}
-                  className="text-slate-400 hover:text-slate-200 text-sm"
+                  className="text-aether-text-muted hover:text-aether-text text-sm cursor-pointer"
                 >
                   ✕
                 </button>
@@ -355,7 +355,7 @@ export default function PurchasesPage() {
 
               <form onSubmit={handleSaveOrder} className="p-6 space-y-5">
                 {modalError && (
-                  <div className="bg-rose-500/10 border border-rose-500/20 rounded-lg p-3 text-rose-400 text-xs flex items-center gap-2">
+                  <div className="bg-rose-500/10 border border-rose-500/20 rounded-lg p-3 text-rose-500 text-xs flex items-center gap-2">
                     <AlertCircle className="w-4 h-4 flex-shrink-0" />
                     <span>{modalError}</span>
                   </div>
@@ -363,11 +363,11 @@ export default function PurchasesPage() {
 
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   <div className="space-y-1">
-                    <label className="text-xs font-medium text-slate-400">Fornecedor *</label>
+                    <label className="text-xs font-medium text-aether-text-muted">Fornecedor *</label>
                     <select
                       value={selectedSupplierId}
                       onChange={(e) => setSelectedSupplierId(e.target.value)}
-                      className="w-full bg-slate-950 border border-slate-800 rounded-lg px-3 py-2 text-sm text-slate-200 focus:outline-none focus:border-indigo-500/50"
+                      className="w-full bg-aether-bg border border-aether-border rounded-lg px-3 py-2 text-sm text-aether-text focus:outline-none focus:border-aether-accent"
                     >
                       {suppliers.map((s) => (
                         <option key={s.id} value={s.id}>
@@ -378,25 +378,25 @@ export default function PurchasesPage() {
                   </div>
 
                   <div className="space-y-1">
-                    <label className="text-xs font-medium text-slate-400">Previsão de Entrega</label>
+                    <label className="text-xs font-medium text-aether-text-muted">Previsão de Entrega</label>
                     <input
                       type="date"
                       value={expectedDelivery}
                       onChange={(e) => setExpectedDelivery(e.target.value)}
-                      className="w-full bg-slate-950 border border-slate-800 rounded-lg px-3 py-2 text-sm text-slate-200 focus:outline-none focus:border-indigo-500/50"
+                      className="w-full bg-aether-bg border border-aether-border rounded-lg px-3 py-2 text-sm text-aether-text focus:outline-none focus:border-aether-accent"
                     />
                   </div>
                 </div>
 
                 {/* Sub-Seção Adicionar Itens */}
-                <div className="bg-slate-950/60 border border-slate-800 rounded-xl p-4 space-y-3">
-                  <h4 className="text-xs font-semibold text-slate-300 uppercase tracking-wider">Itens da Compra</h4>
+                <div className="bg-aether-bg border border-aether-border rounded-xl p-4 space-y-3">
+                  <h4 className="text-xs font-semibold text-aether-text uppercase tracking-wider">Itens da Compra</h4>
                   <div className="grid grid-cols-1 sm:grid-cols-4 gap-2">
                     <div className="sm:col-span-2">
                       <select
                         value={selectedProductId}
                         onChange={(e) => setSelectedProductId(e.target.value)}
-                        className="w-full bg-slate-900 border border-slate-800 rounded-lg px-2.5 py-1.5 text-xs text-slate-200"
+                        className="w-full bg-aether-surface border border-aether-border rounded-lg px-2.5 py-1.5 text-xs text-aether-text"
                       >
                         {products.map((p) => (
                           <option key={p.id} value={p.id}>
@@ -412,7 +412,7 @@ export default function PurchasesPage() {
                         placeholder="Qtd"
                         value={itemQuantity}
                         onChange={(e) => setItemQuantity(Number(e.target.value))}
-                        className="w-full bg-slate-900 border border-slate-800 rounded-lg px-2.5 py-1.5 text-xs text-slate-200 placeholder-slate-500"
+                        className="w-full bg-aether-surface border border-aether-border rounded-lg px-2.5 py-1.5 text-xs text-aether-text placeholder-aether-text-muted/70"
                       />
                     </div>
                     <div>
@@ -423,14 +423,14 @@ export default function PurchasesPage() {
                         placeholder="Custo Unit (R$)"
                         value={itemUnitCost}
                         onChange={(e) => setItemUnitCost(Number(e.target.value))}
-                        className="w-full bg-slate-900 border border-slate-800 rounded-lg px-2.5 py-1.5 text-xs text-slate-200 placeholder-slate-500"
+                        className="w-full bg-aether-surface border border-aether-border rounded-lg px-2.5 py-1.5 text-xs text-aether-text placeholder-aether-text-muted/70"
                       />
                     </div>
                   </div>
                   <button
                     type="button"
                     onClick={handleAddItem}
-                    className="w-full py-1.5 bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-semibold rounded-lg transition-colors flex items-center justify-center gap-1"
+                    className="w-full py-1.5 bg-aether-surface hover:bg-aether-bg border border-aether-border text-aether-text text-xs font-semibold rounded-lg transition-colors flex items-center justify-center gap-1 cursor-pointer"
                   >
                     <Plus className="w-3.5 h-3.5" />
                     Adicionar Item à Ordem
@@ -438,19 +438,19 @@ export default function PurchasesPage() {
 
                   {/* Tabela de Itens Adicionados */}
                   {items.length > 0 && (
-                    <div className="mt-3 border-t border-slate-800/80 pt-2 space-y-1">
+                    <div className="mt-3 border-t border-aether-border pt-2 space-y-1">
                       {items.map((item, idx) => {
                         const prod = products.find((p) => p.id === item.product_id);
                         return (
-                          <div key={idx} className="flex justify-between items-center text-xs py-1 px-2 bg-slate-900/40 rounded">
-                            <span className="text-slate-200 font-medium">{prod?.name || "Produto"}</span>
+                          <div key={idx} className="flex justify-between items-center text-xs py-1 px-2 bg-aether-surface rounded border border-aether-border">
+                            <span className="text-aether-text font-medium">{prod?.name || "Produto"}</span>
                             <div className="flex items-center gap-3">
-                              <span className="text-slate-400">{item.quantity}x R$ {item.unit_cost.toFixed(2)}</span>
-                              <span className="font-bold text-slate-100">R$ {(item.quantity * item.unit_cost).toFixed(2)}</span>
+                              <span className="text-aether-text-muted">{item.quantity}x R$ {item.unit_cost.toFixed(2)}</span>
+                              <span className="font-bold text-aether-text">R$ {(item.quantity * item.unit_cost).toFixed(2)}</span>
                               <button
                                 type="button"
                                 onClick={() => handleRemoveItem(idx)}
-                                className="text-rose-400 hover:text-rose-300"
+                                className="text-rose-500 hover:text-rose-400 cursor-pointer"
                               >
                                 <Trash2 className="w-3.5 h-3.5" />
                               </button>
@@ -458,7 +458,7 @@ export default function PurchasesPage() {
                           </div>
                         );
                       })}
-                      <div className="flex justify-between items-center pt-2 font-bold text-sm text-indigo-400 border-t border-slate-800">
+                      <div className="flex justify-between items-center pt-2 font-bold text-sm text-aether-accent border-t border-aether-border">
                         <span>Total da Compra:</span>
                         <span>R$ {calculateTotal().toLocaleString("pt-BR", { minimumFractionDigits: 2 })}</span>
                       </div>
@@ -467,28 +467,28 @@ export default function PurchasesPage() {
                 </div>
 
                 <div className="space-y-1">
-                  <label className="text-xs font-medium text-slate-400">Observações / Termos de Pagamento</label>
+                  <label className="text-xs font-medium text-aether-text-muted">Observações / Termos de Pagamento</label>
                   <textarea
                     rows={2}
                     value={notes}
                     onChange={(e) => setNotes(e.target.value)}
                     placeholder="Condição de pagamento 30 dias, prazo de entrega estipulado..."
-                    className="w-full bg-slate-950 border border-slate-800 rounded-lg px-3 py-2 text-sm text-slate-200 focus:outline-none focus:border-indigo-500/50 resize-none"
+                    className="w-full bg-aether-bg border border-aether-border rounded-lg px-3 py-2 text-sm text-aether-text focus:outline-none focus:border-aether-accent resize-none"
                   />
                 </div>
 
-                <div className="pt-4 border-t border-slate-800 flex justify-end gap-3">
+                <div className="pt-4 border-t border-aether-border flex justify-end gap-3">
                   <button
                     type="button"
                     onClick={() => setIsModalOpen(false)}
-                    className="px-4 py-2 bg-slate-800 hover:bg-slate-700 text-slate-300 text-sm font-medium rounded-lg transition-colors"
+                    className="px-4 py-2 bg-aether-bg hover:bg-aether-surface border border-aether-border text-aether-text-muted hover:text-aether-text text-sm font-medium rounded-lg transition-colors cursor-pointer"
                   >
                     Cancelar
                   </button>
                   <button
                     type="submit"
                     disabled={modalLoading}
-                    className="px-4 py-2 bg-indigo-500 hover:bg-indigo-400 text-white text-sm font-semibold rounded-lg transition-colors flex items-center gap-2"
+                    className="px-4 py-2 bg-aether-accent hover:bg-aether-accent-hover text-white text-sm font-semibold rounded-lg transition-colors flex items-center gap-2 cursor-pointer"
                   >
                     {modalLoading && <Loader2 className="w-4 h-4 animate-spin" />}
                     <span>Criar Ordem de Compra</span>

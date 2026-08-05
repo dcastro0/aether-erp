@@ -318,11 +318,11 @@ Acesse o sistema em: http://localhost:5173
     return (
       <DashboardLayout>
         <div className="flex flex-col items-center justify-center min-h-[60vh] text-center space-y-4">
-          <div className="p-4 rounded-2xl bg-red-500/10 border border-red-500/20 text-red-400">
+          <div className="p-4 rounded-2xl bg-rose-500/10 border border-rose-500/20 text-rose-500">
             <ShieldAlert size={48} />
           </div>
-          <h2 className="text-xl font-bold text-[#F8FAFC]">Acesso Restrito</h2>
-          <p className="text-sm text-[#94A3B8] max-w-md leading-relaxed">
+          <h2 className="text-xl font-bold text-aether-text">Acesso Restrito</h2>
+          <p className="text-sm text-aether-text-muted max-w-md leading-relaxed">
             Esta área de gestão de equipe e controle de acessos é exclusiva para Administradores da empresa.
           </p>
         </div>
@@ -336,24 +336,24 @@ Acesse o sistema em: http://localhost:5173
         {/* Header Bar */}
         <div className="flex flex-col justify-between gap-4 md:flex-row md:items-center">
           <div>
-            <h1 className="text-2xl font-bold tracking-tight text-[#F8FAFC]">
+            <h1 className="text-2xl font-bold tracking-tight text-aether-text">
               Equipe & Controle de Acessos (RBAC)
             </h1>
-            <p className="text-sm text-[#94A3B8]">
+            <p className="text-sm text-aether-text-muted">
               Gerencie colaboradores, crie logins automáticos com senhas aleatórias e redefina acessos.
             </p>
           </div>
           <div className="flex gap-3">
             <button
               onClick={handleExport}
-              className="flex items-center gap-2 rounded-xl border border-[#1E293B] bg-[#0F172A] px-4 py-2.5 text-sm font-medium text-[#94A3B8] hover:bg-[#1E293B] hover:text-[#F8FAFC] shadow-sm transition-all"
+              className="flex items-center gap-2 rounded-xl border border-aether-border bg-aether-surface px-4 py-2.5 text-sm font-medium text-aether-text-muted hover:bg-aether-bg hover:text-aether-text shadow-sm transition-all cursor-pointer"
             >
               <Download size={16} />
               Exportar CSV
             </button>
             <button
               onClick={() => setIsCreateModalOpen(true)}
-              className="flex items-center gap-2 rounded-xl bg-[#0EA5E9] px-4 py-2.5 text-sm font-semibold text-white hover:bg-[#0284C7] shadow-lg shadow-sky-500/20 transition-all"
+              className="flex items-center gap-2 rounded-xl bg-aether-accent px-4 py-2.5 text-sm font-semibold text-white hover:bg-aether-accent-hover shadow-md transition-all cursor-pointer"
             >
               <UserPlus size={16} />
               Novo Funcionário
@@ -363,65 +363,65 @@ Acesse o sistema em: http://localhost:5173
 
         {/* Metrics Cards */}
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
-          <div className="rounded-2xl border border-[#1E293B] bg-[#0F172A] p-5 shadow-sm">
+          <div className="rounded-2xl border border-aether-border bg-aether-surface p-5 shadow-sm">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-xs font-medium text-[#64748B] uppercase tracking-wider">
+                <p className="text-xs font-medium text-aether-text-muted uppercase tracking-wider">
                   Total de Colaboradores
                 </p>
-                <p className="mt-1 text-2xl font-bold text-[#F8FAFC]">
+                <p className="mt-1 text-2xl font-bold text-aether-text">
                   {metrics.total}
                 </p>
               </div>
-              <div className="rounded-xl bg-[#0EA5E9]/10 p-3 text-[#0EA5E9]">
+              <div className="rounded-xl bg-sky-500/10 p-3 text-sky-500">
                 <Users size={22} />
               </div>
             </div>
           </div>
 
-          <div className="rounded-2xl border border-[#1E293B] bg-[#0F172A] p-5 shadow-sm">
+          <div className="rounded-2xl border border-aether-border bg-aether-surface p-5 shadow-sm">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-xs font-medium text-[#64748B] uppercase tracking-wider">
+                <p className="text-xs font-medium text-aether-text-muted uppercase tracking-wider">
                   Administradores
                 </p>
-                <p className="mt-1 text-2xl font-bold text-sky-400">
+                <p className="mt-1 text-2xl font-bold text-sky-500">
                   {metrics.admins}
                 </p>
               </div>
-              <div className="rounded-xl bg-sky-500/10 p-3 text-sky-400">
+              <div className="rounded-xl bg-sky-500/10 p-3 text-sky-500">
                 <ShieldCheck size={22} />
               </div>
             </div>
           </div>
 
-          <div className="rounded-2xl border border-[#1E293B] bg-[#0F172A] p-5 shadow-sm">
+          <div className="rounded-2xl border border-aether-border bg-aether-surface p-5 shadow-sm">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-xs font-medium text-[#64748B] uppercase tracking-wider">
+                <p className="text-xs font-medium text-aether-text-muted uppercase tracking-wider">
                   Operadores / Editores
                 </p>
-                <p className="mt-1 text-2xl font-bold text-emerald-400">
+                <p className="mt-1 text-2xl font-bold text-emerald-500">
                   {metrics.editors}
                 </p>
               </div>
-              <div className="rounded-xl bg-emerald-500/10 p-3 text-emerald-400">
+              <div className="rounded-xl bg-emerald-500/10 p-3 text-emerald-500">
                 <Edit size={22} />
               </div>
             </div>
           </div>
 
-          <div className="rounded-2xl border border-[#1E293B] bg-[#0F172A] p-5 shadow-sm">
+          <div className="rounded-2xl border border-aether-border bg-aether-surface p-5 shadow-sm">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-xs font-medium text-[#64748B] uppercase tracking-wider">
+                <p className="text-xs font-medium text-aether-text-muted uppercase tracking-wider">
                   Visualizadores
                 </p>
-                <p className="mt-1 text-2xl font-bold text-slate-300">
+                <p className="mt-1 text-2xl font-bold text-aether-text">
                   {metrics.viewers}
                 </p>
               </div>
-              <div className="rounded-xl bg-slate-500/10 p-3 text-slate-400">
+              <div className="rounded-xl bg-indigo-500/10 p-3 text-indigo-500">
                 <Eye size={22} />
               </div>
             </div>
@@ -429,23 +429,23 @@ Acesse o sistema em: http://localhost:5173
         </div>
 
         {/* Filter Toolbar */}
-        <div className="flex flex-col gap-4 sm:flex-row sm:items-center justify-between bg-[#0F172A] p-3 rounded-2xl border border-[#1E293B] shadow-sm">
+        <div className="flex flex-col gap-4 sm:flex-row sm:items-center justify-between bg-aether-surface p-3 rounded-2xl border border-aether-border shadow-sm">
           <div className="relative flex-1 max-w-md">
             <Search
-              className="absolute left-3 top-1/2 -translate-y-1/2 text-[#64748B]"
+              className="absolute left-3 top-1/2 -translate-y-1/2 text-aether-text-muted"
               size={16}
             />
             <input
               type="text"
               placeholder="Buscar por nome ou e-mail..."
-              className="w-full rounded-xl border border-[#1E293B] bg-[#090D16] py-2 pl-9 pr-4 text-xs text-[#F8FAFC] focus:border-[#0EA5E9] focus:outline-none transition-all"
+              className="w-full rounded-xl border border-aether-border bg-aether-bg py-2 pl-9 pr-4 text-xs text-aether-text focus:border-aether-accent focus:outline-none transition-all"
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
             />
           </div>
 
           <div className="flex flex-wrap items-center gap-2">
-            <span className="text-xs text-[#64748B] font-medium hidden sm:inline">Nível:</span>
+            <span className="text-xs text-aether-text-muted font-medium hidden sm:inline">Nível:</span>
             {[
               { id: "all", label: "Todos" },
               { id: "admin", label: "Admins" },
@@ -455,10 +455,10 @@ Acesse o sistema em: http://localhost:5173
               <button
                 key={role.id}
                 onClick={() => setRoleFilter(role.id)}
-                className={`px-3 py-1.5 text-xs font-semibold rounded-lg transition-all ${
+                className={`px-3 py-1.5 text-xs font-semibold rounded-lg transition-all cursor-pointer ${
                   roleFilter === role.id
-                    ? "bg-[#0EA5E9] text-white shadow-sm"
-                    : "bg-[#1E293B] text-[#94A3B8] hover:text-[#F8FAFC]"
+                    ? "bg-aether-accent text-white shadow-sm"
+                    : "bg-aether-bg text-aether-text-muted hover:text-aether-text border border-aether-border"
                 }`}
               >
                 {role.label}
@@ -468,29 +468,29 @@ Acesse o sistema em: http://localhost:5173
         </div>
 
         {/* Table */}
-        <div className="rounded-2xl border border-[#1E293B] bg-[#0F172A] shadow-sm overflow-hidden">
+        <div className="rounded-2xl border border-aether-border bg-aether-surface shadow-sm overflow-hidden">
           {isLoading ? (
             <div className="flex h-64 items-center justify-center">
-              <Loader2 className="animate-spin text-[#0EA5E9]" size={32} />
+              <Loader2 className="animate-spin text-aether-accent" size={32} />
             </div>
           ) : filteredEmployees?.length === 0 ? (
-            <div className="flex h-64 flex-col items-center justify-center text-[#64748B] gap-2">
+            <div className="flex h-64 flex-col items-center justify-center text-aether-text-muted gap-2">
               <Users size={32} />
               <p className="text-sm font-medium">Nenhum colaborador encontrado.</p>
             </div>
           ) : (
             <div className="overflow-x-auto">
               <table className="w-full text-left text-sm whitespace-nowrap">
-                <thead className="bg-[#090D16] border-b border-[#1E293B]">
+                <thead className="bg-aether-bg border-b border-aether-border">
                   <tr>
-                    <th className="px-6 py-4 font-semibold text-[#94A3B8]">Colaborador</th>
-                    <th className="px-6 py-4 font-semibold text-[#94A3B8]">Nível de Acesso</th>
-                    <th className="px-6 py-4 font-semibold text-[#94A3B8]">Data de Admissão</th>
-                    <th className="px-6 py-4 font-semibold text-[#94A3B8]">Status</th>
-                    <th className="px-6 py-4 text-right font-semibold text-[#94A3B8]">Ações</th>
+                    <th className="px-6 py-4 font-semibold text-aether-text-muted">Colaborador</th>
+                    <th className="px-6 py-4 font-semibold text-aether-text-muted">Nível de Acesso</th>
+                    <th className="px-6 py-4 font-semibold text-aether-text-muted">Data de Admissão</th>
+                    <th className="px-6 py-4 font-semibold text-aether-text-muted">Status</th>
+                    <th className="px-6 py-4 text-right font-semibold text-aether-text-muted">Ações</th>
                   </tr>
                 </thead>
-                <tbody className="divide-y divide-[#1E293B]/60">
+                <tbody className="divide-y divide-[var(--border-subtle)]">
                   {filteredEmployees?.map((emp) => {
                     const badge = getRoleBadge(emp.role);
                     const BadgeIcon = badge.icon;
@@ -502,15 +502,15 @@ Acesse o sistema em: http://localhost:5173
                       .toUpperCase();
 
                     return (
-                      <tr key={emp.id} className="hover:bg-[#1E293B]/40 transition-colors">
+                      <tr key={emp.id} className="hover:bg-[var(--bg-surface-hover)] transition-colors">
                         <td className="px-6 py-4">
                           <div className="flex items-center gap-3">
-                            <div className="h-10 w-10 rounded-full bg-[#0EA5E9]/10 border border-[#0EA5E9]/30 text-[#0EA5E9] flex items-center justify-center font-bold text-xs shrink-0">
+                            <div className="h-10 w-10 rounded-full bg-sky-500/10 border border-sky-500/30 text-sky-500 flex items-center justify-center font-bold text-xs shrink-0">
                               {initials}
                             </div>
                             <div>
-                              <p className="font-semibold text-[#F8FAFC]">{emp.full_name}</p>
-                              <p className="text-xs text-[#64748B]">{emp.email}</p>
+                              <p className="font-semibold text-aether-text">{emp.full_name}</p>
+                              <p className="text-xs text-aether-text-muted">{emp.email}</p>
                             </div>
                           </div>
                         </td>
@@ -520,15 +520,15 @@ Acesse o sistema em: http://localhost:5173
                             {badge.label}
                           </span>
                         </td>
-                        <td className="px-6 py-4 text-xs text-[#94A3B8]">
+                        <td className="px-6 py-4 text-xs text-aether-text-muted">
                           {new Date(emp.joined_at).toLocaleDateString()}
                         </td>
                         <td className="px-6 py-4">
                           <span
                             className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-semibold border ${
                               emp.is_active
-                                ? "bg-emerald-500/10 text-emerald-400 border-emerald-500/20"
-                                : "bg-red-500/10 text-red-400 border-red-500/20"
+                                ? "bg-emerald-500/10 text-emerald-500 border-emerald-500/30"
+                                : "bg-rose-500/10 text-rose-500 border-rose-500/30"
                             }`}
                           >
                             {emp.is_active ? <CheckCircle2 size={12} /> : <XCircle size={12} />}
@@ -540,7 +540,7 @@ Acesse o sistema em: http://localhost:5173
                             <div className="flex items-center justify-end gap-2">
                               <button
                                 onClick={() => openEditModal(emp)}
-                                className="p-2 rounded-lg border border-[#1E293B] text-[#94A3B8] hover:text-[#0EA5E9] hover:bg-[#1E293B] transition-all"
+                                className="p-2 rounded-lg border border-aether-border text-aether-text-muted hover:text-aether-accent hover:bg-aether-bg transition-all cursor-pointer"
                                 title="Editar Colaborador"
                               >
                                 <Edit3 size={15} />
@@ -550,7 +550,7 @@ Acesse o sistema em: http://localhost:5173
                               <button
                                 onClick={() => resetPasswordMutation.mutate(emp)}
                                 disabled={resetPasswordMutation.isPending}
-                                className="p-2 rounded-lg border border-amber-500/30 text-amber-400 hover:bg-amber-500/10 transition-all"
+                                className="p-2 rounded-lg border border-amber-500/30 text-amber-500 hover:bg-amber-500/10 transition-all cursor-pointer"
                                 title="Resetar Senha do Colaborador"
                               >
                                 {resetPasswordMutation.isPending ? (
@@ -562,10 +562,10 @@ Acesse o sistema em: http://localhost:5173
 
                               <button
                                 onClick={() => toggleActiveMutation.mutate(emp.id)}
-                                className={`p-2 rounded-lg border transition-all text-xs font-medium ${
+                                className={`p-2 rounded-lg border transition-all text-xs font-medium cursor-pointer ${
                                   emp.is_active
-                                    ? "border-amber-500/20 text-amber-400 hover:bg-amber-500/10"
-                                    : "border-emerald-500/20 text-emerald-400 hover:bg-emerald-500/10"
+                                    ? "border-amber-500/30 text-amber-500 hover:bg-amber-500/10"
+                                    : "border-emerald-500/30 text-emerald-500 hover:bg-emerald-500/10"
                                 }`}
                                 title={emp.is_active ? "Desativar Acesso" : "Ativar Acesso"}
                               >
@@ -574,7 +574,7 @@ Acesse o sistema em: http://localhost:5173
 
                               <button
                                 onClick={() => setDeletingEmployeeId(emp.id)}
-                                className="p-2 rounded-lg border border-red-500/20 text-red-400 hover:bg-red-500/10 transition-all"
+                                className="p-2 rounded-lg border border-rose-500/30 text-rose-500 hover:bg-rose-500/10 transition-all cursor-pointer"
                                 title="Remover Colaborador"
                               >
                                 <Trash2 size={15} />
@@ -594,16 +594,16 @@ Acesse o sistema em: http://localhost:5173
 
       {/* Modal Novo Funcionário */}
       {isCreateModalOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-xs p-4 animate-in fade-in duration-200">
-          <div className="w-full max-w-md rounded-2xl bg-[#0F172A] p-6 shadow-2xl border border-[#1E293B]">
-            <div className="flex items-center justify-between mb-5 border-b border-[#1E293B] pb-4">
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-aether-surface/40 backdrop-blur-sm p-4 animate-in fade-in duration-200">
+          <div className="w-full max-w-md rounded-2xl bg-aether-surface p-6 shadow-2xl border border-aether-border">
+            <div className="flex items-center justify-between mb-5 border-b border-aether-border pb-4">
               <div className="flex items-center gap-2.5">
-                <div className="p-2 rounded-xl bg-[#0EA5E9]/10 text-[#0EA5E9]">
+                <div className="p-2 rounded-xl bg-aether-accent/10 text-aether-accent">
                   <UserPlus size={20} />
                 </div>
                 <div>
-                  <h2 className="font-bold text-[#F8FAFC]">Cadastrar Novo Colaborador</h2>
-                  <p className="text-xs text-[#94A3B8]">Gere e-mail e senha aleatórios automaticamente.</p>
+                  <h2 className="font-bold text-aether-text">Cadastrar Novo Colaborador</h2>
+                  <p className="text-xs text-aether-text-muted">Gere e-mail e senha aleatórios automaticamente.</p>
                 </div>
               </div>
             </div>
@@ -611,13 +611,13 @@ Acesse o sistema em: http://localhost:5173
             <form onSubmit={handleSubmitCreate(onSubmitCreate)} className="space-y-4">
               <div>
                 <div className="flex items-center justify-between mb-1">
-                  <label className="block text-xs font-medium text-[#94A3B8]">
+                  <label className="block text-xs font-medium text-aether-text-muted">
                     Nome Completo
                   </label>
                   <button
                     type="button"
                     onClick={handleAutoGenerateCredentials}
-                    className="text-[11px] font-semibold text-[#0EA5E9] hover:underline flex items-center gap-1"
+                    className="text-[11px] font-semibold text-aether-accent hover:underline flex items-center gap-1 cursor-pointer"
                   >
                     <Sparkles size={12} /> Auto-Gerar Dados
                   </button>
@@ -625,44 +625,44 @@ Acesse o sistema em: http://localhost:5173
                 <input
                   {...registerCreate("full_name")}
                   placeholder="Ex: Carlos Eduardo Silva"
-                  className="w-full rounded-xl border border-[#1E293B] bg-[#090D16] px-3.5 py-2.5 text-xs text-[#F8FAFC] focus:border-[#0EA5E9] focus:outline-none transition-all placeholder:text-[#64748B]"
+                  className="w-full rounded-xl border border-aether-border bg-aether-bg px-3.5 py-2.5 text-xs text-aether-text focus:border-aether-accent focus:outline-none transition-all placeholder:text-aether-text-muted/70"
                 />
                 {errorsCreate.full_name && (
-                  <p className="text-xs text-[#F87171] mt-1">{errorsCreate.full_name.message}</p>
+                  <p className="text-xs text-rose-500 mt-1">{errorsCreate.full_name.message}</p>
                 )}
               </div>
 
               <div>
-                <label className="block text-xs font-medium text-[#94A3B8] mb-1">
+                <label className="block text-xs font-medium text-aether-text-muted mb-1">
                   E-mail (Deixe em branco para auto-gerar baseado no nome)
                 </label>
                 <input
                   type="text"
                   {...registerCreate("email")}
                   placeholder="carlos.silva@aether.local ou seu e-mail"
-                  className="w-full rounded-xl border border-[#1E293B] bg-[#090D16] px-3.5 py-2.5 text-xs text-[#F8FAFC] focus:border-[#0EA5E9] focus:outline-none transition-all placeholder:text-[#64748B]"
+                  className="w-full rounded-xl border border-aether-border bg-aether-bg px-3.5 py-2.5 text-xs text-aether-text focus:border-aether-accent focus:outline-none transition-all placeholder:text-aether-text-muted/70"
                 />
               </div>
 
               <div>
-                <label className="block text-xs font-medium text-[#94A3B8] mb-1">
+                <label className="block text-xs font-medium text-aether-text-muted mb-1">
                   Senha Provisória (Deixe em branco para gerar aleatória)
                 </label>
                 <input
                   type="text"
                   {...registerCreate("password")}
                   placeholder="Ex: Aether@4928"
-                  className="w-full rounded-xl border border-[#1E293B] bg-[#090D16] px-3.5 py-2.5 text-xs text-[#F8FAFC] focus:border-[#0EA5E9] focus:outline-none transition-all font-mono"
+                  className="w-full rounded-xl border border-aether-border bg-aether-bg px-3.5 py-2.5 text-xs text-aether-text focus:border-aether-accent focus:outline-none transition-all font-mono"
                 />
               </div>
 
               <div>
-                <label className="block text-xs font-medium text-[#94A3B8] mb-1">
+                <label className="block text-xs font-medium text-aether-text-muted mb-1">
                   Nível de Acesso (Cargo RBAC)
                 </label>
                 <select
                   {...registerCreate("role")}
-                  className="w-full rounded-xl border border-[#1E293B] bg-[#090D16] px-3.5 py-2.5 text-xs text-[#F8FAFC] focus:border-[#0EA5E9] focus:outline-none transition-all"
+                  className="w-full rounded-xl border border-aether-border bg-aether-bg px-3.5 py-2.5 text-xs text-aether-text focus:border-aether-accent focus:outline-none transition-all"
                 >
                   <option value="admin">Administrador (Acesso completo)</option>
                   <option value="editor">Operador / Editor (Vendas, Estoque e Financeiro)</option>
@@ -670,18 +670,18 @@ Acesse o sistema em: http://localhost:5173
                 </select>
               </div>
 
-              <div className="flex gap-3 pt-4 border-t border-[#1E293B] mt-6">
+              <div className="flex gap-3 pt-4 border-t border-aether-border mt-6">
                 <button
                   type="button"
                   onClick={closeCreateModal}
-                  className="flex-1 rounded-xl border border-[#1E293B] bg-[#090D16] px-4 py-2.5 text-xs font-semibold text-[#94A3B8] hover:bg-[#1E293B] hover:text-[#F8FAFC] transition-colors"
+                  className="flex-1 rounded-xl border border-aether-border bg-aether-bg px-4 py-2.5 text-xs font-semibold text-aether-text-muted hover:bg-aether-surface hover:text-aether-text transition-colors cursor-pointer"
                 >
                   Cancelar
                 </button>
                 <button
                   type="submit"
                   disabled={createMutation.isPending}
-                  className="flex-1 rounded-xl bg-[#0EA5E9] px-4 py-2.5 text-xs font-semibold text-white hover:bg-[#0284C7] disabled:opacity-70 shadow-lg shadow-sky-500/20 transition-all flex items-center justify-center gap-2"
+                  className="flex-1 rounded-xl bg-aether-accent px-4 py-2.5 text-xs font-semibold text-white hover:bg-aether-accent-hover disabled:opacity-70 shadow-md transition-all flex items-center justify-center gap-2 cursor-pointer"
                 >
                   {createMutation.isPending ? (
                     <>
@@ -699,49 +699,49 @@ Acesse o sistema em: http://localhost:5173
 
       {/* Modal de Credenciais Geradas (Novo Funcionário) */}
       {createdCredentials && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-xs p-4 animate-in fade-in duration-200">
-          <div className="w-full max-w-md rounded-2xl bg-[#0F172A] p-6 shadow-2xl border border-[#0EA5E9]/40 space-y-5">
-            <div className="flex items-center gap-3 text-[#0EA5E9] border-b border-[#1E293B] pb-4">
-              <div className="p-3 bg-[#0EA5E9]/10 rounded-xl border border-[#0EA5E9]/20">
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-aether-surface/40 backdrop-blur-sm p-4 animate-in fade-in duration-200">
+          <div className="w-full max-w-md rounded-2xl bg-aether-surface p-6 shadow-2xl border border-aether-accent/40 space-y-5">
+            <div className="flex items-center gap-3 text-aether-accent border-b border-aether-border pb-4">
+              <div className="p-3 bg-aether-accent/10 rounded-xl border border-aether-accent/20">
                 <Sparkles size={24} />
               </div>
               <div>
-                <h3 className="font-bold text-base text-[#F8FAFC]">Colaborador Criado com Sucesso!</h3>
-                <p className="text-xs text-[#94A3B8]">Copie ou baixe o arquivo com as credenciais abaixo.</p>
+                <h3 className="font-bold text-base text-aether-text">Colaborador Criado com Sucesso!</h3>
+                <p className="text-xs text-aether-text-muted">Copie ou baixe o arquivo com as credenciais abaixo.</p>
               </div>
             </div>
 
-            <div className="bg-[#090D16] p-4 rounded-xl border border-[#1E293B] space-y-2 text-xs font-mono">
+            <div className="bg-aether-bg p-4 rounded-xl border border-aether-border space-y-2 text-xs font-mono">
               <div className="flex justify-between">
-                <span className="text-[#64748B]">Nome:</span>
-                <span className="text-[#F8FAFC] font-semibold">{createdCredentials.full_name}</span>
+                <span className="text-aether-text-muted">Nome:</span>
+                <span className="text-aether-text font-semibold">{createdCredentials.full_name}</span>
               </div>
               <div className="flex justify-between">
-                <span className="text-[#64748B]">E-mail:</span>
-                <span className="text-[#38BDF8] font-bold">{createdCredentials.email}</span>
+                <span className="text-aether-text-muted">E-mail:</span>
+                <span className="text-sky-500 font-bold">{createdCredentials.email}</span>
               </div>
               <div className="flex justify-between">
-                <span className="text-[#64748B]">Senha Provisória:</span>
-                <span className="text-amber-400 font-black">{createdCredentials.password}</span>
+                <span className="text-aether-text-muted">Senha Provisória:</span>
+                <span className="text-amber-500 font-black">{createdCredentials.password}</span>
               </div>
             </div>
 
-            <p className="text-[11px] text-[#94A3B8] italic">
+            <p className="text-[11px] text-aether-text-muted italic">
               * O colaborador precisará alterar a senha no primeiro acesso à sua conta.
             </p>
 
             <div className="flex flex-col gap-2 pt-2">
               <button
                 onClick={() => copyToClipboard(`Nome: ${createdCredentials.full_name}\nE-mail: ${createdCredentials.email}\nSenha: ${createdCredentials.password}`)}
-                className="w-full rounded-xl bg-[#1E293B] hover:bg-[#334155] py-2.5 text-xs font-semibold text-[#F8FAFC] transition-all flex items-center justify-center gap-2 border border-[#334155]"
+                className="w-full rounded-xl bg-aether-bg hover:bg-aether-surface py-2.5 text-xs font-semibold text-aether-text transition-all flex items-center justify-center gap-2 border border-aether-border cursor-pointer"
               >
-                {copied ? <Check size={14} className="text-emerald-400" /> : <Copy size={14} />}
+                {copied ? <Check size={14} className="text-emerald-500" /> : <Copy size={14} />}
                 {copied ? "Credenciais Copiadas!" : "Copiar Credenciais"}
               </button>
 
               <button
                 onClick={() => downloadCredentialsTxt(createdCredentials.full_name, createdCredentials.email, createdCredentials.password, createdCredentials.role)}
-                className="w-full rounded-xl bg-[#0EA5E9] hover:bg-[#0284C7] py-2.5 text-xs font-semibold text-white transition-all flex items-center justify-center gap-2 shadow-lg shadow-sky-500/20"
+                className="w-full rounded-xl bg-aether-accent hover:bg-aether-accent-hover py-2.5 text-xs font-semibold text-white transition-all flex items-center justify-center gap-2 shadow-md cursor-pointer"
               >
                 <Download size={14} />
                 Baixar TXT de Credenciais
@@ -749,7 +749,7 @@ Acesse o sistema em: http://localhost:5173
 
               <button
                 onClick={() => setCreatedCredentials(null)}
-                className="w-full rounded-xl border border-[#1E293B] py-2 text-xs text-[#94A3B8] hover:text-[#F8FAFC] mt-1"
+                className="w-full rounded-xl border border-aether-border py-2 text-xs text-aether-text-muted hover:text-aether-text mt-1 cursor-pointer"
               >
                 Fechar
               </button>
@@ -760,49 +760,49 @@ Acesse o sistema em: http://localhost:5173
 
       {/* Modal de Senha Resetada pelo Admin */}
       {resetCredentials && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-xs p-4 animate-in fade-in duration-200">
-          <div className="w-full max-w-md rounded-2xl bg-[#0F172A] p-6 shadow-2xl border border-amber-500/40 space-y-5">
-            <div className="flex items-center gap-3 text-amber-400 border-b border-[#1E293B] pb-4">
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-aether-surface/40 backdrop-blur-sm p-4 animate-in fade-in duration-200">
+          <div className="w-full max-w-md rounded-2xl bg-aether-surface p-6 shadow-2xl border border-amber-500/40 space-y-5">
+            <div className="flex items-center gap-3 text-amber-500 border-b border-aether-border pb-4">
               <div className="p-3 bg-amber-500/10 rounded-xl border border-amber-500/20">
                 <KeyRound size={24} />
               </div>
               <div>
-                <h3 className="font-bold text-base text-[#F8FAFC]">Senha Resetada com Sucesso!</h3>
-                <p className="text-xs text-[#94A3B8]">Nova senha provisória gerada para {resetCredentials.name}.</p>
+                <h3 className="font-bold text-base text-aether-text">Senha Resetada com Sucesso!</h3>
+                <p className="text-xs text-aether-text-muted">Nova senha provisória gerada para {resetCredentials.name}.</p>
               </div>
             </div>
 
-            <div className="bg-[#090D16] p-4 rounded-xl border border-[#1E293B] space-y-2 text-xs font-mono">
+            <div className="bg-aether-bg p-4 rounded-xl border border-aether-border space-y-2 text-xs font-mono">
               <div className="flex justify-between">
-                <span className="text-[#64748B]">Colaborador:</span>
-                <span className="text-[#F8FAFC] font-semibold">{resetCredentials.name}</span>
+                <span className="text-aether-text-muted">Colaborador:</span>
+                <span className="text-aether-text font-semibold">{resetCredentials.name}</span>
               </div>
               <div className="flex justify-between">
-                <span className="text-[#64748B]">E-mail:</span>
-                <span className="text-[#38BDF8] font-bold">{resetCredentials.email}</span>
+                <span className="text-aether-text-muted">E-mail:</span>
+                <span className="text-sky-500 font-bold">{resetCredentials.email}</span>
               </div>
               <div className="flex justify-between">
-                <span className="text-[#64748B]">Nova Senha Provisória:</span>
-                <span className="text-amber-400 font-black">{resetCredentials.password}</span>
+                <span className="text-aether-text-muted">Nova Senha Provisória:</span>
+                <span className="text-amber-500 font-black">{resetCredentials.password}</span>
               </div>
             </div>
 
-            <p className="text-[11px] text-[#94A3B8] italic">
+            <p className="text-[11px] text-aether-text-muted italic">
               * O colaborador será obrigado a cadastrar uma nova senha ao fazer login.
             </p>
 
             <div className="flex flex-col gap-2 pt-2">
               <button
                 onClick={() => copyToClipboard(`Nome: ${resetCredentials.name}\nE-mail: ${resetCredentials.email}\nNova Senha: ${resetCredentials.password}`)}
-                className="w-full rounded-xl bg-[#1E293B] hover:bg-[#334155] py-2.5 text-xs font-semibold text-[#F8FAFC] transition-all flex items-center justify-center gap-2 border border-[#334155]"
+                className="w-full rounded-xl bg-aether-bg hover:bg-aether-surface py-2.5 text-xs font-semibold text-aether-text transition-all flex items-center justify-center gap-2 border border-aether-border cursor-pointer"
               >
-                {copied ? <Check size={14} className="text-emerald-400" /> : <Copy size={14} />}
+                {copied ? <Check size={14} className="text-emerald-500" /> : <Copy size={14} />}
                 {copied ? "Senha Copiada!" : "Copiar Nova Senha"}
               </button>
 
               <button
                 onClick={() => downloadCredentialsTxt(resetCredentials.name, resetCredentials.email, resetCredentials.password)}
-                className="w-full rounded-xl bg-amber-500 hover:bg-amber-400 py-2.5 text-xs font-bold text-slate-950 transition-all flex items-center justify-center gap-2 shadow-lg shadow-amber-500/20"
+                className="w-full rounded-xl bg-amber-500 hover:bg-amber-400 py-2.5 text-xs font-bold text-slate-950 transition-all flex items-center justify-center gap-2 shadow-md cursor-pointer"
               >
                 <Download size={14} />
                 Baixar TXT com Nova Senha
@@ -810,7 +810,7 @@ Acesse o sistema em: http://localhost:5173
 
               <button
                 onClick={() => setResetCredentials(null)}
-                className="w-full rounded-xl border border-[#1E293B] py-2 text-xs text-[#94A3B8] hover:text-[#F8FAFC] mt-1"
+                className="w-full rounded-xl border border-aether-border py-2 text-xs text-aether-text-muted hover:text-aether-text mt-1 cursor-pointer"
               >
                 Fechar
               </button>
@@ -821,55 +821,55 @@ Acesse o sistema em: http://localhost:5173
 
       {/* Modal Editar Funcionário */}
       {editingEmployee && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-xs p-4 animate-in fade-in duration-200">
-          <div className="w-full max-w-md rounded-2xl bg-[#0F172A] p-6 shadow-2xl border border-[#1E293B]">
-            <div className="flex items-center justify-between mb-5 border-b border-[#1E293B] pb-4">
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-aether-surface/40 backdrop-blur-sm p-4 animate-in fade-in duration-200">
+          <div className="w-full max-w-md rounded-2xl bg-aether-surface p-6 shadow-2xl border border-aether-border">
+            <div className="flex items-center justify-between mb-5 border-b border-aether-border pb-4">
               <div className="flex items-center gap-2.5">
-                <div className="p-2 rounded-xl bg-sky-500/10 text-sky-400">
+                <div className="p-2 rounded-xl bg-sky-500/10 text-sky-500">
                   <Edit3 size={20} />
                 </div>
                 <div>
-                  <h2 className="font-bold text-[#F8FAFC]">Editar Colaborador</h2>
-                  <p className="text-xs text-[#94A3B8]">Atualize nome, e-mail ou cargo de acesso.</p>
+                  <h2 className="font-bold text-aether-text">Editar Colaborador</h2>
+                  <p className="text-xs text-aether-text-muted">Atualize nome, e-mail ou cargo de acesso.</p>
                 </div>
               </div>
             </div>
 
             <form onSubmit={handleSubmitEdit(onSubmitEdit)} className="space-y-4">
               <div>
-                <label className="block text-xs font-medium text-[#94A3B8] mb-1">
+                <label className="block text-xs font-medium text-aether-text-muted mb-1">
                   Nome Completo
                 </label>
                 <input
                   {...registerEdit("full_name")}
-                  className="w-full rounded-xl border border-[#1E293B] bg-[#090D16] px-3.5 py-2.5 text-xs text-[#F8FAFC] focus:border-[#0EA5E9] focus:outline-none transition-all"
+                  className="w-full rounded-xl border border-aether-border bg-aether-bg px-3.5 py-2.5 text-xs text-aether-text focus:border-aether-accent focus:outline-none transition-all"
                 />
                 {errorsEdit.full_name && (
-                  <p className="text-xs text-[#F87171] mt-1">{errorsEdit.full_name.message}</p>
+                  <p className="text-xs text-rose-500 mt-1">{errorsEdit.full_name.message}</p>
                 )}
               </div>
 
               <div>
-                <label className="block text-xs font-medium text-[#94A3B8] mb-1">
+                <label className="block text-xs font-medium text-aether-text-muted mb-1">
                   E-mail
                 </label>
                 <input
                   type="email"
                   {...registerEdit("email")}
-                  className="w-full rounded-xl border border-[#1E293B] bg-[#090D16] px-3.5 py-2.5 text-xs text-[#F8FAFC] focus:border-[#0EA5E9] focus:outline-none transition-all"
+                  className="w-full rounded-xl border border-aether-border bg-aether-bg px-3.5 py-2.5 text-xs text-aether-text focus:border-aether-accent focus:outline-none transition-all"
                 />
                 {errorsEdit.email && (
-                  <p className="text-xs text-[#F87171] mt-1">{errorsEdit.email.message}</p>
+                  <p className="text-xs text-rose-500 mt-1">{errorsEdit.email.message}</p>
                 )}
               </div>
 
               <div>
-                <label className="block text-xs font-medium text-[#94A3B8] mb-1">
+                <label className="block text-xs font-medium text-aether-text-muted mb-1">
                   Nível de Acesso (Cargo RBAC)
                 </label>
                 <select
                   {...registerEdit("role")}
-                  className="w-full rounded-xl border border-[#1E293B] bg-[#090D16] px-3.5 py-2.5 text-xs text-[#F8FAFC] focus:border-[#0EA5E9] focus:outline-none transition-all"
+                  className="w-full rounded-xl border border-aether-border bg-aether-bg px-3.5 py-2.5 text-xs text-aether-text focus:border-aether-accent focus:outline-none transition-all"
                 >
                   <option value="admin">Administrador (Acesso completo)</option>
                   <option value="editor">Operador / Editor (Vendas, Estoque e Financeiro)</option>
@@ -877,18 +877,18 @@ Acesse o sistema em: http://localhost:5173
                 </select>
               </div>
 
-              <div className="flex gap-3 pt-4 border-t border-[#1E293B] mt-6">
+              <div className="flex gap-3 pt-4 border-t border-aether-border mt-6">
                 <button
                   type="button"
                   onClick={() => setEditingEmployee(null)}
-                  className="flex-1 rounded-xl border border-[#1E293B] bg-[#090D16] px-4 py-2.5 text-xs font-semibold text-[#94A3B8] hover:bg-[#1E293B] hover:text-[#F8FAFC] transition-colors"
+                  className="flex-1 rounded-xl border border-aether-border bg-aether-bg px-4 py-2.5 text-xs font-semibold text-aether-text-muted hover:bg-aether-surface hover:text-aether-text transition-colors cursor-pointer"
                 >
                   Cancelar
                 </button>
                 <button
                   type="submit"
                   disabled={updateDetailsMutation.isPending}
-                  className="flex-1 rounded-xl bg-[#0EA5E9] px-4 py-2.5 text-xs font-semibold text-white hover:bg-[#0284C7] disabled:opacity-70 shadow-lg shadow-sky-500/20 transition-all flex items-center justify-center gap-2"
+                  className="flex-1 rounded-xl bg-aether-accent px-4 py-2.5 text-xs font-semibold text-white hover:bg-aether-accent-hover disabled:opacity-70 shadow-md transition-all flex items-center justify-center gap-2 cursor-pointer"
                 >
                   {updateDetailsMutation.isPending ? (
                     <>
@@ -906,26 +906,26 @@ Acesse o sistema em: http://localhost:5173
 
       {/* Modal Confirmação de Exclusão */}
       {deletingEmployeeId && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-xs p-4 animate-in fade-in duration-200">
-          <div className="w-full max-w-sm rounded-2xl bg-[#0F172A] p-6 shadow-2xl border border-[#1E293B] text-center">
-            <div className="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-full bg-red-500/10 text-red-400">
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-aether-surface/40 backdrop-blur-sm p-4 animate-in fade-in duration-200">
+          <div className="w-full max-w-sm rounded-2xl bg-aether-surface p-6 shadow-2xl border border-aether-border text-center">
+            <div className="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-full bg-rose-500/10 text-rose-500">
               <Trash2 size={24} />
             </div>
-            <h3 className="text-base font-bold text-[#F8FAFC]">Remover Colaborador?</h3>
-            <p className="mt-2 text-xs text-[#94A3B8]">
+            <h3 className="text-base font-bold text-aether-text">Remover Colaborador?</h3>
+            <p className="mt-2 text-xs text-aether-text-muted">
               Esta ação removerá o funcionário da empresa. O acesso será revogado imediatamente.
             </p>
             <div className="mt-6 flex gap-3">
               <button
                 onClick={() => setDeletingEmployeeId(null)}
-                className="flex-1 rounded-xl border border-[#1E293B] bg-[#090D16] px-4 py-2.5 text-xs font-semibold text-[#94A3B8] hover:bg-[#1E293B] hover:text-[#F8FAFC] transition-colors"
+                className="flex-1 rounded-xl border border-aether-border bg-aether-bg px-4 py-2.5 text-xs font-semibold text-aether-text-muted hover:bg-aether-surface hover:text-aether-text transition-colors cursor-pointer"
               >
                 Cancelar
               </button>
               <button
                 onClick={() => deleteMutation.mutate(deletingEmployeeId)}
                 disabled={deleteMutation.isPending}
-                className="flex-1 rounded-xl bg-[#F87171] px-4 py-2.5 text-xs font-semibold text-white hover:bg-red-600 disabled:opacity-70 shadow-lg shadow-red-500/20 transition-all flex items-center justify-center gap-2"
+                className="flex-1 rounded-xl bg-rose-500 px-4 py-2.5 text-xs font-semibold text-white hover:bg-rose-600 disabled:opacity-70 shadow-md transition-all flex items-center justify-center gap-2 cursor-pointer"
               >
                 {deleteMutation.isPending ? (
                   <Loader2 className="animate-spin" size={14} />
